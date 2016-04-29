@@ -16,21 +16,10 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.control;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package benchmarks.control.metrics;
 
 /**
  * @author Sergey Pomelov on 15/04/2016.
  */
-final class GNUCopyright {
-
-    private static final Logger log = LoggerFactory.getLogger(GNUCopyright.class);
-
-    private GNUCopyright() { /* utility class */ }
-
-    static void printLicence() {
-        //log.info("{}{}", LS, GNU_COPYRIGHT_MSG);
-    }
+public class SimulationControllerRunner {
 }

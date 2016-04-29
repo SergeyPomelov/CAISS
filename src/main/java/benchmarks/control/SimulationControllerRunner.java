@@ -35,5 +35,6 @@ public final class SimulationControllerRunner {
     public static void main(String... args) {
         GNUCopyright.printLicence();
         log.info((new SimulationController()).simulate());
+        System.exit(0);
     }
 }
