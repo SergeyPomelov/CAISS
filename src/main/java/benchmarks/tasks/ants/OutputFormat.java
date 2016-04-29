@@ -16,8 +16,31 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @author Sergei Pomelov on 18.03.15.
- * Computational experiment with ants.
- */
 package benchmarks.tasks.ants;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
+/**
+ * @author Sergey Pomelov on 28/04/2016.
+ */
+public final class OutputFormat {
+
+    private OutputFormat() { /* utility class */ }
+
+    @Nonnull
+    public static String printTour(int... iterable) {
+        return printIterableTour(Arrays.stream(iterable).boxed().collect(Collectors.toList()));
+    }
+
+    @Nonnull
+    static String printIterableTour(final Iterable<Integer> iterable) {
+        final StringBuilder out = new StringBuilder(64);
+        for (final int element : iterable) {
+            out.append(element + 1).append('>');
+        }
+        return out.toString();
+    }
+}

@@ -18,27 +18,31 @@
 
 package benchmarks.tasks.ants;
 
-import java.io.Serializable;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 
 /**
- * The interface for Ant's optimization.
- *
- * @author Sergei Pomelov 20.01.15.
+ * @author Sergey Pomelov on 29/04/2016. Class for executing n parallel ants.
+ * @see AntsColony
  */
-public interface IAntsOptimization extends Serializable {
-    /**
-     * @param stopNanos - The time stop criteria.
-     * @return the best solution length
-     */
-    @Nonnegative
-    long run(@Nonnegative long stopNanos);
+final class AntsParallelExecutor {
 
-    /**
-     * @return the additional computation logs
-     */
-    @Nonnull
-    String getLog();
+    private AntsParallelExecutor() { /* package-local utility class */ }
+
+    static void runExecutor(Runnable antRun, @Nonnegative int parallelAnts) {
+        final ThreadPoolExecutor executor = AntsThreadPoolExecutorBuilder.build();
+        for (int i = 0; i < parallelAnts; i++) {
+            executor.execute(antRun);
+        }
+        //noinspection MethodCallInLoopCondition - completed tasks need be checked every time
+        while (executor.getCompletedTaskCount() < parallelAnts) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ignored) {
+                // we are waiting
+            }
+        }
+        executor.shutdown();
+    }
 }
