@@ -30,7 +30,7 @@ repositories {
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
-//noinspection GroovyUnusedAssignment, while it works don't touch it
+//noinspection GroovyUnusedAssignment - false, while it works don't touch it
 targetCompatibility = sourceCompatibility
 
 tasks.withType(AbstractCompile)*.options*.encoding = "UTF-8"
@@ -38,8 +38,19 @@ tasks.withType(AbstractCompile)*.options*.encoding = "UTF-8"
 jmh.jmhVersion = '1.12'
 tasks.jmh.main = 'benchmarks.control.JMHBenchmarksRunner'
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
 jmhJar {
-    //noinspection GroovyAssignabilityCheck, while it works don't touch it
+    //noinspection GroovyAssignabilityCheck - false, while it works don't touch it
     manifest.attributes 'Main-Class': tasks.jmh.main
     append 'META-INF/BenchmarkList'
     append 'META-INF/CompilerHints'
