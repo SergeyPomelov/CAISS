@@ -33,11 +33,9 @@ public final class Restrictions {
     private Restrictions() { /* util class */ }
 
     public static void ifContainsNullFastFail(Object... objects) {
-        for (Object object : objects) {
-            if (object == null) {
-                throw new IllegalArgumentException("Objects: " + Arrays.toString(objects)
-                        + "contain null!");
-            }
+        if (containsNull(objects)) {
+            throw new IllegalArgumentException("Objects: " + Arrays.toString(objects)
+                    + "contain null!");
         }
     }
 
@@ -45,6 +43,23 @@ public final class Restrictions {
         for (Object object : objects) {
             if (object == null) {
                 log.error("Objects: {} contain null!", Arrays.toString(objects));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void ifNotOnlyPositivesFastFail(Number... numbers) {
+        if (containsNegativee(numbers)) {
+            throw new IllegalArgumentException("Number: " + Arrays.toString(numbers)
+                    + "contain negative or null value!");
+        }
+    }
+
+    public static boolean containsNegativee(Number... numbers) {
+        for (Number number : numbers) {
+            if ((number == null) || (number.doubleValue() < 0.0D)) {
+                log.error("Numbers: {} contain negative or null!", Arrays.toString(numbers));
                 return true;
             }
         }
