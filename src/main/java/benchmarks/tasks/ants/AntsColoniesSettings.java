@@ -31,7 +31,6 @@ import static util.Constants.FS;
 @Immutable
 final class AntsColoniesSettings {
 
-    static final int SIZE = GRAPH.getSize();
     static final double EVAPORATION_COEFFICIENT = 0.03D;
     static final double INITIAL_TRAIL = 1.0D;
     // public static final String tspFileName = "wi29";
@@ -39,6 +38,7 @@ final class AntsColoniesSettings {
     static final IDistancesData GRAPH = // new FixedGraph();
             new TSPDistanceData(FS + "build" + FS + "resources" + FS + "main" + FS + "tsp_data" +
                     FS + tspFileName + ".tsp");
+    static final int SIZE = GRAPH.getSize();
 
     private AntsColoniesSettings() { /* package local constants holder */ }
 }
