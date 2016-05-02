@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -32,7 +32,8 @@ import javax.annotation.concurrent.Immutable;
 import simulation.structures.interaction.DataType;
 
 /**
- * @author Sergei Pomelov on 2.5.14. Operation Memory
+ * Operation Memory.
+ * @author Sergey Pomelov on 2/5/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
@@ -48,16 +49,16 @@ public final class MemoryNode extends ArchitectureComponent {
     @Nonnull
     private final List<Integer> dataCapacity;
 
-    public MemoryNode(MemoryNode init) {
-        this(init.getName(), init.dataType, init.dataCapacity, init.byteCapacity);
+    public MemoryNode(MemoryNode toCopy) {
+        this(toCopy.getName(), toCopy.dataType, toCopy.dataCapacity, toCopy.byteCapacity);
     }
 
-    public MemoryNode(String inName, Collection<DataType> inDataType,
-                      Collection<Integer> inDataCapacity, @Nonnegative BigDecimal inByteCapacity) {
-        super(inName);
-        dataType = ImmutableList.copyOf(inDataType);
-        dataCapacity = ImmutableList.copyOf(inDataCapacity);
-        byteCapacity = inByteCapacity;
+    MemoryNode(String name, Collection<DataType> dataType,
+               Collection<Integer> dataCapacity, @Nonnegative BigDecimal byteCapacity) {
+        super(name);
+        this.dataType = ImmutableList.copyOf(dataType);
+        this.dataCapacity = ImmutableList.copyOf(dataCapacity);
+        this.byteCapacity = byteCapacity;
     }
 
     @Nonnull

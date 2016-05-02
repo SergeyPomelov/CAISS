@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * @author Sergey Pomelov on 06.04.16.
+ * @author Sergey Pomelov on 06/04/16.
+ * @see Measurer
  */
 @Immutable
 @ParametersAreNonnullByDefault

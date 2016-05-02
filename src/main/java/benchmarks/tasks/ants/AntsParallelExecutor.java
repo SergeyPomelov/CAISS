@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,9 +23,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnegative;
 
 /**
- * @author Sergey Pomelov on 29/04/2016. Class for executing n parallel ants.
+ * Class for executing n parallel ants.
+ * @author Sergey Pomelov on 29/04/2016.
  * @see AntsColony
  */
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 final class AntsParallelExecutor {
 
     private AntsParallelExecutor() { /* package-local utility class */ }

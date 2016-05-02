@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -28,7 +28,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * @author Sergey Pomelov 04/01./015. Generates a random data for ACO.
+ * Generates a random data for ACO.
+ * @author Sergey Pomelov 04/01/15.
  */
 @Immutable
 public final class RandomGraphMatrix implements IDistancesData {

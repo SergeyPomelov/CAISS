@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
  */
 
 /**
- * @author Sergey Pomelov on 29/04/2016. This package intended for one ant's solution seeking and
- * reporting implementation classes.
+ * This package intended for one ant's solution seeking and reporting implementation classes.
+ *
+ * @author Sergey Pomelov on 29/04/2016.
  */
 package benchmarks.tasks.ants.ant;

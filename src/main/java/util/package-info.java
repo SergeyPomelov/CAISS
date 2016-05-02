@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -16,10 +16,9 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.control.metrics;
-
 /**
- * @author Sergey Pomelov on 15/04/2016.
+ * Project wide utility class' package.
+ *
+ * @author Sergey Pomelov on 02/05/2016.
  */
-public class SimulationControllerRunner {
-}
+package util;

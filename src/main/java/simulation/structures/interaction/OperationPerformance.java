@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * @author Sergei Pomelov on 2.5.14. Representation of how fast we can do this OperationwithData
+ * Representation of how fast we can do this {@code OperationWithData.class}.
+ * @author Sergey Pomelov on 2/5/14.
  * @see OperationWithData
  */
 @Immutable
@@ -35,7 +36,7 @@ public final class OperationPerformance extends ComputingObject {
     private static final long serialVersionUID = -5609898011539390298L;
 
     @Nonnull
-    private final OperationWithData oper;                  // what we do
+    private final OperationWithData operation;                  // what we do
     @Nonnull
     @Nonnegative
     private final Long time;                  // how fast
@@ -44,23 +45,23 @@ public final class OperationPerformance extends ComputingObject {
         this("ZeroOperationPerformance", new OperationWithData(), 0L);
     }
 
-    public OperationPerformance(OperationPerformance inOperation) {
-        this(inOperation.getName(), inOperation.oper, inOperation.time);
+    public OperationPerformance(OperationPerformance operation) {
+        this(operation.getName(), operation.operation, operation.time);
     }
 
     /**
-     * @param inOper which operation
-     * @param inTime how fast we can do it
+     * @param operation which operation
+     * @param time how fast we can do it
      */
-    public OperationPerformance(String inName, OperationWithData inOper, Long inTime) {
-        super(inName);
-        oper = new OperationWithData(inOper);
-        time = inTime;
+    public OperationPerformance(String name, OperationWithData operation, Long time) {
+        super(name);
+        this.operation = new OperationWithData(operation);
+        this.time = time;
     }
 
     @Nonnull
     public OperationWithData getOperation() {
-        return oper;
+        return operation;
     }
 
     @Nonnull
@@ -72,6 +73,6 @@ public final class OperationPerformance extends ComputingObject {
     @Nonnull
     @Override
     public String info() {
-        return (String.format("%s(%s) t=%smc", super.info(), oper.info(), time.toString()));
+        return (String.format("%s(%s) t=%smc", super.info(), operation.info(), time.toString()));
     }
 }

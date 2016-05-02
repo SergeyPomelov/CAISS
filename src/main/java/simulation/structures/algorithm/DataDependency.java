@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -34,12 +34,13 @@ import simulation.structures.interaction.OperationWithData;
 import static util.Constants.LS;
 
 /**
- * @author Sergei Pomelov on 2.10.14 dependencies on algorithm steps a.k.a. data flow dependencies
+ * Dependencies on algorithm steps a.k.a. data flow dependencies
+ * @author Sergey Pomelov on 2/10/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
 @ParametersAreNonnullByDefault
-public final class DataDependency extends AlgorithmComponent {
+final class DataDependency extends AlgorithmComponent {
 
     private static final long serialVersionUID = 988170536445679820L;
     private static final String LINK_CAP_OVERWHELMED = "Link cap overwhelmed";
@@ -53,23 +54,22 @@ public final class DataDependency extends AlgorithmComponent {
     @Nonnull
     private final List<OperationWithData> out;
 
-    public DataDependency(DataDependency init) {
-        this(init.getName(), init.type, init.in, init.out);
+    DataDependency(DataDependency toCopy) {
+        this(toCopy.getName(), toCopy.type, toCopy.in, toCopy.out);
     }
 
-
     /**
-     * @param inName name of transfer operation
-     * @param inType flow operation type
-     * @param inIn   flow start data
-     * @param inOut  low end data
+     * @param name name of transfer operation
+     * @param type flow operation type
+     * @param in   flow start data
+     * @param out  low end data
      */
-    public DataDependency(String inName, DependencyType inType,
-                          Collection<OperationWithData> inIn, Collection<OperationWithData> inOut) {
-        super(inName);
-        type = DependencyType.valueOf(inType.name());
-        in = ImmutableList.copyOf(inIn);
-        out = ImmutableList.copyOf(inOut);
+    DataDependency(String name, DependencyType type, Collection<OperationWithData> in,
+                   Collection<OperationWithData> out) {
+        super(name);
+        this.type = DependencyType.valueOf(type.name());
+        this.in = ImmutableList.copyOf(in);
+        this.out = ImmutableList.copyOf(out);
     }
 
     @Nonnull

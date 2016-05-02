@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * @author Sergei Pomelov on 12.2.14 Graph like structure represents algorithm
+ * Graph like structure represents algorithm.
+ * @author Sergey Pomelov on 12/2/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable

@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -21,9 +21,6 @@ package benchmarks.control;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Sergey Pomelov on 15/04/2016.
- */
 final class GNUCopyright {
 
     private static final Logger log = LoggerFactory.getLogger(GNUCopyright.class);

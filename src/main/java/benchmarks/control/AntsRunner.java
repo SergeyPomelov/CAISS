@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,9 @@ import benchmarks.tasks.ants.data.TSPDistanceData;
 import static util.Constants.FS;
 
 /**
+ * Runs ACO.
  * @author Sergey Pomelov on 13/04/2016.
+ * @see AntsColony
  */
 final class AntsRunner {
 
@@ -60,11 +62,10 @@ final class AntsRunner {
         Integer previousNodeNumber = null;
         for (String nodeNumberString : route) {
             final int nodeNumber = Integer.parseInt(nodeNumberString);
-            double length = 0.0D;
             if (previousNodeNumber != null) {
-                length = GRAPH.getDist(previousNodeNumber - 1, nodeNumber - 1);
-                sum += length;
-                log.info("{} -> {} = {}, total {}", previousNodeNumber, nodeNumber, length, sum);
+                final double dist = GRAPH.getDist(previousNodeNumber - 1, nodeNumber - 1);
+                sum += dist;
+                log.info("{} -> {} = {}, total {}", previousNodeNumber, nodeNumber, dist, sum);
             }
 
             previousNodeNumber = Integer.parseInt(nodeNumberString);

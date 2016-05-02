@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * DataBlock Tester.
  *
- * @author created by Sergei Pomelov on 12.03.15.
+ * @author Sergey Pomelov on 12.03.15.
  */
 public class DataBlockTest {
 

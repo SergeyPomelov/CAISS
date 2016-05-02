@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @author Sergey Pomelov on 28/04/2016. Class for spraing pheromones trail along the route.
+ * Class for spray pheromones trail along the route.
+ * @author Sergey Pomelov on 28/04/2016.
  * @see RunningAnt
  */
 @ParametersAreNonnullByDefault

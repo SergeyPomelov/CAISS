@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -45,8 +45,9 @@ import static org.openjdk.jmh.annotations.Mode.AverageTime;
 import static org.openjdk.jmh.annotations.Mode.Throughput;
 
 /**
- * @author Sergey Pomelov on 06.04.16. Class can't be final or not public because runtime
- *         instrumentation reasons.
+ * JMH benchmarks run class.
+ * This class can't be final or not public because runtime instrumentation reasons.
+ * @author Sergey Pomelov on 06/04/16.
  */
 @Fork(1)
 @State(Scope.Benchmark)

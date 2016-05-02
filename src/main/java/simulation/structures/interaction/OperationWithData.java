@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * @author Sergei Pomelov on 2.5.14.
+ * @author Sergey Pomelov on 2/5/14.
  */
 @Immutable
 @ParametersAreNonnullByDefault
@@ -43,8 +43,8 @@ public final class OperationWithData extends ComputingObject {
                 new DataBlock("ZeroDataBlock", DataType.BOOL, 0L));
     }
 
-    public OperationWithData(OperationWithData init) {
-        this(init.getName(), init.type, init.data);
+    public OperationWithData(OperationWithData toCopy) {
+        this(toCopy.getName(), toCopy.type, toCopy.data);
     }
 
     /**

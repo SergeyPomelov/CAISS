@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ import javax.annotation.concurrent.Immutable;
 import static util.ConversionUtil.nullFilter;
 
 /**
- * @author Sergei Pomelov on 12.2.14. Computation node or core
+ * Computation node or core.
+ * @author Sergey Pomelov on 12/2/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
@@ -45,7 +46,7 @@ public final class Computer implements Serializable {
     private final List<MemoryNode> memory;         // memory nodes list
 
     /** architecture graph */
-    public Computer(@Nonnull final Collection<DataLink> structure) {
+    public Computer(@Nonnull Collection<DataLink> structure) {
         architecture = ImmutableList.copyOf(nullFilter(structure));
 
         final Collection<ArithmeticNode> tempArchNodes = new ArrayList<>(5);

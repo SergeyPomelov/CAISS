@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -53,8 +53,8 @@ final class DataLinkTransferCapabilities implements Serializable {
     @Nonnegative
     private final Long byteCapacity;
 
-    DataLinkTransferCapabilities(DataLinkTransferCapabilities init) {
-        this(init.dataType, init.dataCapacity, init.dataTransferSpeed, init.byteCapacity);
+    DataLinkTransferCapabilities(DataLinkTransferCapabilities toCopy) {
+        this(toCopy.dataType, toCopy.dataCapacity, toCopy.dataTransferSpeed, toCopy.byteCapacity);
     }
 
     /**

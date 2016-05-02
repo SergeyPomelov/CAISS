@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -31,14 +31,15 @@ import simulation.structures.interaction.OperationType;
 import simulation.structures.interaction.OperationWithData;
 
 /**
- * @author Sergei Pomelov on 12.2.14 utility class for build some algorith templates.
+ * Utility class for build some algorithm templates.
+ * @author Sergey Pomelov on 12/2/14.
  */
 @Immutable
 public final class AlgorithmBuilder implements Serializable {
 
     private static final long serialVersionUID = 4170724840376687664L;
 
-    private AlgorithmBuilder() { /*no public constructor*/ }
+    private AlgorithmBuilder() { /* utility class */ }
 
     /**
      * @return parallel inversion template algorithm

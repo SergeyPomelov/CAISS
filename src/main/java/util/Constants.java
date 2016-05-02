@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@ package util;
 import java.io.File;
 
 /**
+ * Project wide constants container.
+ *
  * @author Sergey Pomelov on 12.03.15.
  */
 public final class Constants {

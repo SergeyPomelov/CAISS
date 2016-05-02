@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@ import java.io.Serializable;
 import javax.annotation.Nonnull;
 
 /**
- * @author Sergei Pomelov at 2.6.14. Main computational process controller
+ * Main computational process controller.
+ * @author Sergey Pomelov at 2/6/14.
  */
 @FunctionalInterface
 interface ISimulationController extends Serializable {

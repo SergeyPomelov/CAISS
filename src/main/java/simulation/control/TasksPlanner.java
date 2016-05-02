@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -45,8 +45,9 @@ import static util.Constants.LS;
 import static util.Restrictions.containsNull;
 
 /**
- * @author Sergei Pomelov on 9.3.14. Utility class wich plans computational process by finding
- *         operarion executors. Second puropose is writing a computationsl process journal.
+ * Utility class which plans computational process by finding operation executors. Second purpose
+ * is writing a computations process journal.
+ * @author Sergey Pomelov on 9/3/14.
  */
 final class TasksPlanner {
     private static final Logger log = LoggerFactory.getLogger(TasksPlanner.class);
@@ -180,7 +181,7 @@ final class TasksPlanner {
                 }
             }
         }
-        return Optional.of(readyCore);
+        return Optional.ofNullable(readyCore);
     }
 
     /**

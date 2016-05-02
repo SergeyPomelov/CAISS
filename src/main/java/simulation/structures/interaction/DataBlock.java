@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * @author Sergei Pomelov on 2.5.14. Data representation
+ * Data representation.
+ * @author Sergey Pomelov on 2/5/14.
  */
 @Immutable
 @ParametersAreNonnullByDefault
@@ -40,27 +41,23 @@ public final class DataBlock extends ComputingObject {
     @Nonnegative
     private final Long size;
 
-    private DataBlock() {
-        this("ZeroMemory", DataType.EIGHT_B_FL, 0L);
-    }
-
-    /** @param init DataBlock for copying */
-    public DataBlock(final DataBlock init) {
-        this(init.getName(), init.type, init.size);
+    /** @param toCopy DataBlock for copying */
+    DataBlock(DataBlock toCopy) {
+        this(toCopy.getName(), toCopy.type, toCopy.size);
     }
 
     /**
-     * @param inName ordinary human-friendly name of the object
-     * @param inType type of contained data
-     * @param inSize how many data objects of this type are contained here
+     * @param name ordinary human-friendly name of the object
+     * @param type type of contained data
+     * @param size how many data objects of this type are contained here
      */
-    public DataBlock(final String inName, final DataType inType, @Nonnegative final Long inSize) {
-        super(inName);
-        if (inSize <= 0L) {
-            throw new IllegalArgumentException("Wrong inSize for createAlgorithm DataBlock");
+    public DataBlock(String name, DataType type, @Nonnegative Long size) {
+        super(name);
+        if (size <= 0L) {
+            throw new IllegalArgumentException("Wrong size for createAlgorithm DataBlock");
         }
-        type = DataType.valueOf(inType.name());
-        size = inSize;
+        this.type = DataType.valueOf(type.name());
+        this.size = size;
     }
 
     @Nonnull

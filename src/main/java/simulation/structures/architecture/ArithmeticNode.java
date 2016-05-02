@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -32,7 +32,8 @@ import simulation.structures.interaction.OperationPerformance;
 import simulation.structures.interaction.OperationWithData;
 
 /**
- * @author Sergei Pomelov on 2.5.14. Computation node or core
+ * Computation node or core.
+ * @author Sergey Pomelov on 2/5/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
@@ -43,13 +44,13 @@ public final class ArithmeticNode extends ArchitectureComponent {
     @Nonnull
     private final List<OperationPerformance> allowedOperations;
 
-    public ArithmeticNode(ArithmeticNode init) {
-        this(init.getName(), init.allowedOperations);
+    public ArithmeticNode(ArithmeticNode toCopy) {
+        this(toCopy.getName(), toCopy.allowedOperations);
     }
 
-    public ArithmeticNode(String inName, Collection<OperationPerformance> inAllowedOperations) {
-        super(inName);
-        allowedOperations = ImmutableList.copyOf(inAllowedOperations);
+    ArithmeticNode(String name, Collection<OperationPerformance> allowedOperations) {
+        super(name);
+        this.allowedOperations = ImmutableList.copyOf(allowedOperations);
     }
 
     @Nullable

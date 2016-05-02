@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 /**
  * The interface for Ant's optimization.
  *
- * @author Sergei Pomelov 20.01.15.
+ * @author Sergey Pomelov 20.01.15.
  */
 public interface IAntsOptimization extends Serializable {
     /**

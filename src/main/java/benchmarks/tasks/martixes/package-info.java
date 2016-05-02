@@ -16,13 +16,9 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package simulation.structures.commons;
-
 /**
- * The upper level entities classification.
+ * Parallel dummy matrix processing tasks,
  *
- * @author Sergey Pomelov on 2/5/14.
+ * @author Sergey Pomelov on 02/05/2016.
  */
-public enum ComponentType {
-    ARCHITECTURE, ALGORITHM
-}
+package benchmarks.tasks.martixes;

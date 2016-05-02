@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,8 +24,10 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 /**
+ * Conditions checkers collection.
  * @author Sergey Pomelov on 15/04/2016.
  */
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class Restrictions {
 
     private static final Logger log = LoggerFactory.getLogger(Restrictions.class);
@@ -50,13 +52,13 @@ public final class Restrictions {
     }
 
     public static void ifNotOnlyPositivesFastFail(Number... numbers) {
-        if (containsNegativee(numbers)) {
+        if (containsNegatives(numbers)) {
             throw new IllegalArgumentException("Number: " + Arrays.toString(numbers)
                     + "contain negative or null value!");
         }
     }
 
-    public static boolean containsNegativee(Number... numbers) {
+    private static boolean containsNegatives(Number... numbers) {
         for (Number number : numbers) {
             if ((number == null) || (number.doubleValue() < 0.0D)) {
                 log.error("Numbers: {} contain negative or null!", Arrays.toString(numbers));

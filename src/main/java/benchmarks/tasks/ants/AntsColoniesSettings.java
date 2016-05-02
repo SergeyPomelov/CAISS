@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -29,16 +29,16 @@ import static util.Constants.FS;
  * @author Sergey Pomelov on 28/04/2016. Package-local constants and ACO settings holder.
  */
 @Immutable
-final class AntsColoniesSettings {
-
+final class AntsColoniesSettings { // @formatter:off
+    
     static final double EVAPORATION_COEFFICIENT = 0.03D;
     static final double INITIAL_TRAIL = 1.0D;
+    static final int SIZE = GRAPH.getSize();
     // public static final String tspFileName = "wi29";
     private static final String tspFileName = "qa194";
     static final IDistancesData GRAPH = // new FixedGraph();
             new TSPDistanceData(FS + "build" + FS + "resources" + FS + "main" + FS + "tsp_data" +
                     FS + tspFileName + ".tsp");
-    static final int SIZE = GRAPH.getSize();
 
     private AntsColoniesSettings() { /* package local constants holder */ }
 }

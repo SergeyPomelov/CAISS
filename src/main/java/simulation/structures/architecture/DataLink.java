@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -38,7 +38,8 @@ import static util.Constants.LS;
 import static util.ConversionUtil.nullFilter;
 
 /**
- * @author Sergei Pomelov on 2.5.14. Link between components
+ * Link between components.
+ * @author Sergey Pomelov on 2/5/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
@@ -55,23 +56,21 @@ public final class DataLink extends ArchitectureComponent {
     @Nonnull
     private final List<ArchitectureComponent> out;
 
-    public DataLink(DataLink init) {
-        this(init.getName(), init.dataLinkTransferCapabilities, init.in, init.out);
+    public DataLink(DataLink toCopy) {
+        this(toCopy.getName(), toCopy.dataLinkTransferCapabilities, toCopy.in, toCopy.out);
     }
 
     /**
-     * @param inName name of physical link
-     * @param inIn   from where link can transfer
-     * @param inOut  to where link can transfer
+     * @param name name of physical link
+     * @param in   from where link can transfer
+     * @param out  to where link can transfer
      */
-    public DataLink(String inName,
-                    DataLinkTransferCapabilities dataLinkTransferCapabilities,
-                    Collection<ArchitectureComponent> inIn,
-                    Collection<ArchitectureComponent> inOut) {
-        super(inName);
+    DataLink(String name, DataLinkTransferCapabilities dataLinkTransferCapabilities,
+             Collection<ArchitectureComponent> in, Collection<ArchitectureComponent> out) {
+        super(name);
         this.dataLinkTransferCapabilities = dataLinkTransferCapabilities;
-        in = ImmutableList.copyOf(nullFilter(inIn));
-        out = ImmutableList.copyOf(nullFilter(inOut));
+        this.in = ImmutableList.copyOf(nullFilter(in));
+        this.out = ImmutableList.copyOf(nullFilter(out));
     }
 
     @Nullable
@@ -125,21 +124,6 @@ public final class DataLink extends ArchitectureComponent {
         return ImmutableList.copyOf(cores);
     }
 
-    @Nullable
-    public Collection<MemoryNode> getMemoryNodes() {
-        final Collection<MemoryNode> memory = new ArrayList<>(1);
-        final Collection<ArchitectureComponent> all = new ArrayList<>(in);
-        all.addAll(out);
-
-        all.stream().filter(el ->
-                el.getArchitectureComponentType() == ArchitectureComponentType.MEMORY_NODE)
-                .forEach(el -> {
-                    final MemoryNode node = (MemoryNode) el;
-                    memory.add(node);
-                });
-        return ImmutableList.copyOf(memory);
-    }
-
     @Nonnull
     @Override
     public ArchitectureComponentType getArchitectureComponentType() {
@@ -172,6 +156,21 @@ public final class DataLink extends ArchitectureComponent {
             output.append(String.format("| %s ", el.info()));
         }
         return output.toString();
+    }
+
+    @Nullable
+    Collection<MemoryNode> getMemoryNodes() {
+        final Collection<MemoryNode> memory = new ArrayList<>(1);
+        final Collection<ArchitectureComponent> all = new ArrayList<>(in);
+        all.addAll(out);
+
+        all.stream().filter(el ->
+                el.getArchitectureComponentType() == ArchitectureComponentType.MEMORY_NODE)
+                .forEach(el -> {
+                    final MemoryNode node = (MemoryNode) el;
+                    memory.add(node);
+                });
+        return ImmutableList.copyOf(memory);
     }
 
     @Nonnull

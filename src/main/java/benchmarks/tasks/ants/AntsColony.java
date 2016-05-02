@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -37,6 +37,13 @@ import static benchmarks.tasks.ants.AntsColoniesSettings.INITIAL_TRAIL;
 import static benchmarks.tasks.ants.AntsColoniesSettings.SIZE;
 import static benchmarks.tasks.ants.AntsParallelExecutor.runExecutor;
 
+/**
+ * Implements the Ants Colony optimization.
+ *
+ * @author Sergey Pomelov 20.01.15.
+ * @see RunningAnt
+ * @see AntsColoniesSettings
+ */
 public final class AntsColony implements IAntsOptimization {
 
     private static final long serialVersionUID = 1858529504894436119L;

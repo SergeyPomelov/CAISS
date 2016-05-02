@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * @author Sergey Pomelov on 29/04/2016. Package local statistics for AntsColony work.
+ * Package local statistics for AntsColony work.
+ * @author Sergey Pomelov on 29/04/2016.
  * @see AntsColony
  */
 @ThreadSafe
@@ -59,21 +60,12 @@ final class AntsStatistics implements Serializable {
     }
 
     void addGoodRun(String runJournal) {
+        journal.append(runJournal);
         log.info("ant find better: {}/{} avg:|{}|, solution:{}",
                 antsGoodRuns.incrementAndGet(),
                 antsRuns.get(),
                 avgRunLength.get(),
                 runJournal);
-    }
-
-    @Nonnegative
-    int getAntsGoodRuns() {
-        return antsGoodRuns.get();
-    }
-
-    @Nonnegative
-    int getAntsRuns() {
-        return antsRuns.get();
     }
 
     @Nonnegative
@@ -83,11 +75,6 @@ final class AntsStatistics implements Serializable {
 
     void setBestRunLength(@Nonnegative long bestRunLength) {
         this.bestRunLength.set(bestRunLength);
-    }
-
-    @Nonnegative
-    long getAvgRunLength() {
-        return avgRunLength.get();
     }
 
     @Nonnull

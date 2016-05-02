@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,20 +23,21 @@ import java.io.Serializable;
 import javax.annotation.Nonnegative;
 
 /**
- * @author Sergei Pomelov 07.01.2015. Interface of Class answering to size of problem (i.d. how mani
- *         vertexes there) and stating metrixes for distances betweeb the vertexes.
+ * Interface of Class answering to size of problem (i.d. how man vertexes there) and stating
+ * 	metrics for distances between the vertexes.
+ * @author Sergey Pomelov 07/01/2015.
  */
 public interface IDistancesData extends Serializable {
     /**
-     * @param start   the start vertex
-     * @param destiny the destiny vertex
-     * @return the distance between them
+     * @param start   the start vertex.
+     * @param destiny the destiny vertex.
+     * @return the distance between them.
      */
     @Nonnegative
     int getDist(int start, int destiny);
 
     /**
-     * @return amount of possible vertexes here
+     * @return amount of possible vertexes here.
      */
     @Nonnegative
     int getSize();

@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,13 +24,14 @@ import simulation.structures.commons.ComponentType;
 import simulation.structures.commons.StructureElement;
 
 /**
- * @author Sergei Pomelov on 12.5.14 basic Physical component
+ * A basic physical component.
+ * @author Sergey Pomelov on 12/5/14.
  */
 public abstract class ArchitectureComponent extends StructureElement {
 
     private static final long serialVersionUID = -4700793405282367855L;
 
-    ArchitectureComponent(@Nonnull final String name) {
+    ArchitectureComponent(@Nonnull String name) {
         super(name);
     }
 
