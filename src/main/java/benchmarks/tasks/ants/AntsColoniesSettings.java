@@ -22,23 +22,30 @@ import javax.annotation.concurrent.Immutable;
 
 import benchmarks.tasks.ants.data.IDistancesData;
 import benchmarks.tasks.ants.data.TSPDistanceData;
+import util.TimeUtil;
 
 import static util.Constants.FS;
 
 /**
- * @author Sergey Pomelov on 28/04/2016. Package-local constants and ACO settings holder.
+ * Package-local constants and ACO settings holder.
+ *
+ * @author Sergey Pomelov on 28/04/2016.
  */
 @Immutable
-final class AntsColoniesSettings { // @formatter:off
-    
-    static final double EVAPORATION_COEFFICIENT = 0.03D;
-    static final double INITIAL_TRAIL = 1.0D;
-    static final int SIZE = GRAPH.getSize();
-    // public static final String tspFileName = "wi29";
-    private static final String tspFileName = "qa194";
-    static final IDistancesData GRAPH = // new FixedGraph();
-            new TSPDistanceData(FS + "build" + FS + "resources" + FS + "main" + FS + "tsp_data" +
-                    FS + tspFileName + ".tsp");
+public final class AntsColoniesSettings {
 
-    private AntsColoniesSettings() { /* package local constants holder */ }
+    public static final int OPTIMUM = 27603; //  9352
+    static final long RUN_PERIOD_NANOS = TimeUtil.secToNano(60);
+    static final long SOLUTION_EXCHANGE_NANOS = TimeUtil.mlsToNano(1000);
+    static final double EVAPORATION_COEFFICIENT = 0.1D;
+    static final double INITIAL_TRAIL = 1.0D;
+    // @formatter:off
+    private static final String FILE = "wi29"; // qa194
+    public static final IDistancesData GRAPH = // new FixedGraph();
+            new TSPDistanceData(FS + "build" + FS + "resources" + FS + "main"
+                    + FS + "tsp_data" + FS + FILE + ".tsp");
+    // @formatter:on
+
+    private AntsColoniesSettings() { /* constants holder */ }
+
 }

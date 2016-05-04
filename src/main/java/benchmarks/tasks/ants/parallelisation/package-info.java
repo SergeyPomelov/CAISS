@@ -16,22 +16,9 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.tasks.ants;
-
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 /**
- * @author Sergey Pomelov on 28/04/2016.
+ * Parallel ants' execution stuff.
+ *
+ * @author Sergey Pomelov on 02/05/2016.
  */
-@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
-final class AntsThreadPoolExecutorBuilder {
-
-    private AntsThreadPoolExecutorBuilder() { /* utility class */ }
-
-    static ThreadPoolExecutor build() {
-        return new ThreadPoolExecutor(2, 2, 10, TimeUnit.SECONDS, new SynchronousQueue<>(),
-                new AntsThreadsFactory());
-    }
-}
+package benchmarks.tasks.ants.parallelisation;

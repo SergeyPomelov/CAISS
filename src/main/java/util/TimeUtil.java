@@ -33,6 +33,14 @@ public final class TimeUtil {
         return TimeUnit.NANOSECONDS.toMillis(nano);
     }
 
+    public static long secToNano(int seconds) {
+        return TimeUnit.SECONDS.toNanos(seconds);
+    }
+
+    public static long mlsToNano(int milliseconds) {
+        return TimeUnit.SECONDS.toNanos(milliseconds);
+    }
+
     static int getCurrentYear() {
         return Calendar.getInstance().get(Calendar.YEAR);
     }

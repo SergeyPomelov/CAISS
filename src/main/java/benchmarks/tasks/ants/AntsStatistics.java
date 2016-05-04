@@ -18,17 +18,23 @@
 
 package benchmarks.tasks.ants;
 
+import com.sun.istack.internal.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.ThreadSafe;
+
+import benchmarks.tasks.ants.ant.AntRunResult;
 
 /**
  * Package local statistics for AntsColony work.
@@ -42,6 +48,8 @@ final class AntsStatistics implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(AntsStatistics.class);
     private static final long serialVersionUID = 3702542113880074571L;
 
+    @NotNull
+    private final AtomicReference<AntRunResult> bestRun = new AtomicReference<>(null);
     @Nonnegative
     private final AtomicInteger antsGoodRuns = new AtomicInteger(0);
     @Nonnegative
@@ -53,15 +61,22 @@ final class AntsStatistics implements Serializable {
     @Nonnull
     private final StringBuilder journal = new StringBuilder(512);
 
+    @Nullable
+    AntRunResult getBestRun() {
+        return bestRun.get();
+    }
+
     void addFinishedRun(@Nonnegative long runLength) {
         antsRuns.incrementAndGet();
         avgRunLength.set(((avgRunLength.longValue() * antsRuns.get())
                 + runLength) / (antsRuns.get() + 1));
     }
 
-    void addGoodRun(String runJournal) {
+    void setNewBestRun(AntRunResult runResult, String runJournal) {
+        bestRun.set(runResult);
+        bestRunLength.set(runResult.getLength());
         journal.append(runJournal);
-        log.info("ant find better: {}/{} avg:|{}|, solution:{}",
+        log.debug("ant find better: {}/{} avg:|{}|, solution:{}",
                 antsGoodRuns.incrementAndGet(),
                 antsRuns.get(),
                 avgRunLength.get(),

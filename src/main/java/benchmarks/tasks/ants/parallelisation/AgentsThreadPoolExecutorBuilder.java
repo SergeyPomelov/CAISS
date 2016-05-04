@@ -16,35 +16,28 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.tasks.ants;
+package benchmarks.tasks.ants.parallelisation;
 
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnegative;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Class for executing n parallel ants.
- * @author Sergey Pomelov on 29/04/2016.
- * @see AntsColony
+ * @author Sergey Pomelov on 28/04/2016.
  */
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
-final class AntsParallelExecutor {
+@ParametersAreNonnullByDefault
+final class AgentsThreadPoolExecutorBuilder {
 
-    private AntsParallelExecutor() { /* package-local utility class */ }
+    private AgentsThreadPoolExecutorBuilder() { /* utility class */ }
 
-    static void runExecutor(Runnable antRun, @Nonnegative int parallelAnts) {
-        final ThreadPoolExecutor executor = AntsThreadPoolExecutorBuilder.build();
-        for (int i = 0; i < parallelAnts; i++) {
-            executor.execute(antRun);
-        }
-        //noinspection MethodCallInLoopCondition - completed tasks need be checked every time
-        while (executor.getCompletedTaskCount() < parallelAnts) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ignored) {
-                // we are waiting
-            }
-        }
-        executor.shutdown();
+    static ThreadPoolExecutor build(@Nonnegative int parallelTasks,
+                                    String poolName, String agentName) {
+        return new ThreadPoolExecutor(parallelTasks, parallelTasks, 1, TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                new AgentsThreadsFactory(poolName, agentName));
     }
 }

@@ -19,22 +19,38 @@
 package benchmarks.tasks.ants;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+
+import benchmarks.tasks.ants.ant.AntRunResult;
 
 /**
  * The interface for Ant's optimization.
  *
  * @author Sergey Pomelov 20.01.15.
  */
-public interface IAntsOptimization extends Serializable {
+interface IAntsOptimization extends Serializable {
     /**
      * @param stopNanos - The time stop criteria.
      * @return the best solution length
      */
     @Nonnegative
     long run(@Nonnegative long stopNanos);
+
+
+    /**
+     * @param neighbours - Colonies to send them the best solution. The "time to time" defined
+     *                   inside the {@code benchmarks.tasks.ants .AntsColoniesSettings#SOLUTION_EXCHANGE_NANOS}.
+     */
+    void addNeighbours(List<IAntsOptimization> neighbours);
+
+    /**
+     * @param antRunResult - method implementing obtaining the information about other colony's best
+     *                     solution.
+     */
+    void receiveSolution(AntRunResult antRunResult);
 
     /**
      * @return the additional computation logs

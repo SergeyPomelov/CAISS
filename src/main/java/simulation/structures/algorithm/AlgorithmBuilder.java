@@ -73,4 +73,10 @@ public final class AlgorithmBuilder implements Serializable {
 
         return new Algorithm(listDep);
     }
+
+    public static Algorithm createAntsAlgorithm() {
+
+        final DataBlock subMatrix = new DataBlock("TSP_data", DataType.FOUR_B_FL, 194L);
+        return null;
+    }
 }

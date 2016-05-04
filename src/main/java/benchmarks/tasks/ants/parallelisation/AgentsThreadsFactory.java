@@ -16,17 +16,18 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.tasks.ants;
+package benchmarks.tasks.ants.parallelisation;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author Sergey Pomelov on 28/04/2016.
  */
-final class AntsThreadsFactory implements ThreadFactory {
+@ParametersAreNonnullByDefault
+final class AgentsThreadsFactory implements ThreadFactory {
 
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
 
@@ -34,15 +35,15 @@ final class AntsThreadsFactory implements ThreadFactory {
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String namePrefix;
 
-    AntsThreadsFactory() {
+    AgentsThreadsFactory(String poolName, String agentName) {
         final SecurityManager securityManager = System.getSecurityManager();
         group = (securityManager != null) ?
                 securityManager.getThreadGroup() : Thread.currentThread().getThreadGroup();
-        namePrefix = "run-" + poolNumber.getAndIncrement() + "-ant-";
+        namePrefix = poolName + '-' + poolNumber.getAndIncrement() + '-' + agentName + '-';
     }
 
     @Override
-    public Thread newThread(@Nonnull Runnable run) {
+    public Thread newThread(Runnable run) {
         final Thread thread = new Thread(group, run,
                 namePrefix + threadNumber.getAndIncrement(), 0);
         if (thread.isDaemon()) {

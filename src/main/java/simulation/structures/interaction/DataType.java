@@ -24,5 +24,5 @@ package simulation.structures.interaction;
  */
 public enum DataType {
     BOOL, B_DEC, TWO_B_DEC, FOUR_B_DEC, EIGHT_B_DEC, SIXTEEN_B_DEC,
-    ONE_B_FL, TWO_B_FL, FOUR_B_FL, EIGHT_B_FL, SIXTEEN_B_FL
+    FOUR_B_FL, EIGHT_B_FL, SIXTEEN_B_FL
 }

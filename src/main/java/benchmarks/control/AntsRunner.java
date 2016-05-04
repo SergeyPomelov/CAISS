@@ -21,12 +21,17 @@ package benchmarks.control;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import benchmarks.tasks.ants.AntsColony;
-import benchmarks.tasks.ants.IAntsOptimization;
-import benchmarks.tasks.ants.data.IDistancesData;
-import benchmarks.tasks.ants.data.TSPDistanceData;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static util.Constants.FS;
+import javax.annotation.Nonnegative;
+
+import benchmarks.tasks.ants.AntsColonies;
+import benchmarks.tasks.ants.AntsColony;
+
+import static benchmarks.tasks.ants.AntsColoniesSettings.GRAPH;
+import static benchmarks.tasks.ants.AntsColoniesSettings.OPTIMUM;
 
 /**
  * Runs ACO.
@@ -35,23 +40,32 @@ import static util.Constants.FS;
  */
 final class AntsRunner {
 
-    private static final String tspFileName = "wi29"; //qa194
-    private static final IDistancesData GRAPH = // new FixedGraph();
-            new TSPDistanceData(FS + "build" + FS + "resources" + FS + "main"
-                    + FS + "tsp_data" + FS + tspFileName + ".tsp");
-
     private static final Logger log = LoggerFactory.getLogger(AntsRunner.class);
-    private static final long TEN_SEC_IN_NANOS = 200_000_000_000L;
 
     private AntsRunner() { /* runnable class */ }
 
     public static void main(String... args) {
         GNUCopyright.printLicence();
-        final IAntsOptimization colony = new AntsColony(2);
-        colony.run(System.nanoTime() + TEN_SEC_IN_NANOS);
-        log.info(colony.getLog());
+        Arrays.asList(1).forEach(
+                coloniesAmount ->
+                        Arrays.asList(1).forEach(
+                                antsAmount ->
+                                        runSeveralTimes(coloniesAmount, antsAmount, 3)));
+
         // check();
         System.exit(0);
+    }
+
+    private static void runSeveralTimes(@Nonnegative int coloniesAmount,
+                                        @Nonnegative int antsPerColony,
+                                        @Nonnegative int iterations) {
+        final List<Long> results = new ArrayList<>(iterations);
+        for (int i = 0; i < iterations; i++) {
+            results.add(AntsColonies.runCalculations(coloniesAmount, antsPerColony, GRAPH));
+        }
+        log.info("{} colonies, x {} ants, accuracy: {}.", coloniesAmount, antsPerColony,
+                results.stream().mapToDouble(result -> ((OPTIMUM * 100.0D) / result)).average()
+                        .getAsDouble());
     }
 
     private static void check() {
@@ -63,7 +77,8 @@ final class AntsRunner {
         for (String nodeNumberString : route) {
             final int nodeNumber = Integer.parseInt(nodeNumberString);
             if (previousNodeNumber != null) {
-                final double dist = GRAPH.getDist(previousNodeNumber - 1, nodeNumber - 1);
+                final double dist = GRAPH.getDist(previousNodeNumber - 1,
+                        nodeNumber - 1);
                 sum += dist;
                 log.info("{} -> {} = {}, total {}", previousNodeNumber, nodeNumber, dist, sum);
             }

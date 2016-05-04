@@ -17,11 +17,12 @@
  */
 
 plugins {
-    id 'java'
-    id 'idea'
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
-    id 'me.champeau.gradle.jmh' version '0.3.0'
-    id 'net.ltgt.apt' version '0.6'
+    id "java"
+    id "idea"
+    // jmh
+    id "com.github.johnrengelman.shadow" version "1.2.3"
+    id "me.champeau.gradle.jmh" version "0.3.0"
+    id "net.ltgt.apt" version "0.6"
 }
 
 repositories {
@@ -30,41 +31,42 @@ repositories {
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
-//noinspection GroovyUnusedAssignment - false, while it works don't touch it
+//noinspection GroovyUnusedAssignment - false, while it works don"t touch it
 targetCompatibility = sourceCompatibility
 
 tasks.withType(AbstractCompile)*.options*.encoding = "UTF-8"
 
-jmh.jmhVersion = '1.12'
-tasks.jmh.main = 'benchmarks.control.JMHBenchmarksRunner'
+jmh.jmhVersion = "1.12"
+// the main class where other test classes should be registered.
+tasks.jmh.main = "benchmarks.control.JMHBenchmarksRunner"
 
+//noinspection GroovyAssignabilityCheck - false, while it works don"t touch it
 sourceSets {
-    //noinspection GroovyAssignabilityCheck - false, while it works don't touch it
     main {
         java {
-            srcDir 'src/main/java'
+            srcDir "src/main/java"
         }
         resources {
-            srcDir 'src/main/resources'
+            srcDir "src/main/resources"
         }
     }
 }
 
 jmhJar {
-    //noinspection GroovyAssignabilityCheck - false, while it works don't touch it
-    manifest.attributes 'Main-Class': tasks.jmh.main
-    append 'META-INF/BenchmarkList'
-    append 'META-INF/CompilerHints'
+    //noinspection GroovyAssignabilityCheck - false, while it works don"t touch it
+    manifest.attributes "Main-Class": tasks.jmh.main
+    append "META-INF/BenchmarkList"
+    append "META-INF/CompilerHints"
 }
 
 dependencies {
-    apt "org.openjdk.jmh:jmh-generator-annprocess:${jmh.jmhVersion}"
+    apt "org.openjdk.jmh:jmh-generator-annprocess:${jmh.jmhVersion}" // jmh benchmarking
 
-    compile "org.openjdk.jmh:jmh-core:${jmh.jmhVersion}"
-    compile "org.slf4j:slf4j-api:1.7.+"
-    compile "ch.qos.logback:logback-classic:1.1.+"
-    compile 'com.google.code.findbugs:jsr305:3.0.+'
-    compile 'com.google.guava:guava:19.0'
+    compile "org.openjdk.jmh:jmh-core:${jmh.jmhVersion}"// jmh
+    compile "org.slf4j:slf4j-api:1.7.+"                 // logging-api
+    compile "ch.qos.logback:logback-classic:1.1.+"      // logger
+    compile "com.google.code.findbugs:jsr305:3.0.+"     // QA annotations
+    compile "com.google.guava:guava:19.0"               // commons lib
 
-    testCompile 'junit:junit:4.12'
+    testCompile "junit:junit:4.12"  // main tests lib
 }
