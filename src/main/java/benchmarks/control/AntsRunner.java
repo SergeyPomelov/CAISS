@@ -71,7 +71,7 @@ final class AntsRunner {
 
         Double sum = 0.0D;
         Integer previousNodeNumber = null;
-        for (String nodeNumberString : route) {
+        for (final String nodeNumberString : route) {
             final int nodeNumber = Integer.parseInt(nodeNumberString);
             if (previousNodeNumber != null) {
                 final double dist = GRAPH.getDist(previousNodeNumber - 1, nodeNumber - 1);

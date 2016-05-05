@@ -63,7 +63,7 @@ public final class FixedGraph implements IDistancesData {
     }
 
     private static int searchInDistList(Iterable<Pair<Integer, Integer>> pairs, int destiny) {
-        for (Pair<Integer, Integer> pair : pairs) {
+        for (final Pair<Integer, Integer> pair : pairs) {
             if (pair.getKey() == destiny) {
                 return pair.getValue();
             }

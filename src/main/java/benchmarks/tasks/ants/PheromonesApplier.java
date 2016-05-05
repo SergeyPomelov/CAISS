@@ -37,7 +37,7 @@ final class PheromonesApplier {
         final int trailLength = trailsToChange.length;
         for (int i = 0; i < trailLength; i++) {
             for (int j = 0; j < i; j++) {
-                float t = ((1.0F - EVAPORATION_COEFFICIENT) * trailsToChange[i][j])
+                final float t = ((1.0F - EVAPORATION_COEFFICIENT) * trailsToChange[i][j])
                         + runResult.getPheromonesDelta()[i][j]
                         + runResult.getPheromonesDelta()[j][i];
                 trailsToChange[i][j] = t;

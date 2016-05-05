@@ -18,10 +18,14 @@
 
 package simulation.structures.interaction;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Data types list.
+ *
  * @author Sergey Pomelov on 2/10/14.
  */
+@Immutable
 public enum DataType {
     BOOL, B_DEC, TWO_B_DEC, FOUR_B_DEC, EIGHT_B_DEC, SIXTEEN_B_DEC,
     FOUR_B_FL, EIGHT_B_FL, SIXTEEN_B_FL

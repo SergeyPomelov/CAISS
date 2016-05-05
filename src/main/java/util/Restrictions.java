@@ -42,7 +42,7 @@ public final class Restrictions {
     }
 
     public static boolean containsNull(Object... objects) {
-        for (Object object : objects) {
+        for (final Object object : objects) {
             if (object == null) {
                 log.error("Objects: {} contain null!", Arrays.toString(objects));
                 return true;
@@ -59,7 +59,7 @@ public final class Restrictions {
     }
 
     private static boolean containsNegatives(Number... numbers) {
-        for (Number number : numbers) {
+        for (final Number number : numbers) {
             if ((number == null) || (number.doubleValue() < 0.0D)) {
                 log.error("Numbers: {} contain negative or null!", Arrays.toString(numbers));
                 return true;

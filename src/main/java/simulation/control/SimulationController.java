@@ -60,9 +60,6 @@ public final class SimulationController implements ISimulationController {
     private final OperationWithData transferSmall =
             new OperationWithData("inverse", OperationType.TRANSFER, subMatrix);
 
-    public SimulationController() {
-    }
-
     @Nonnull
     @Override
     public String simulate() {
@@ -91,7 +88,7 @@ public final class SimulationController implements ISimulationController {
     private static void addElementsListInfo(Iterable<? extends StructureElement> elements,
                                             StringBuilder out, String label) {
         addDivider(out, label);
-        for (StructureElement element : elements) {
+        for (final StructureElement element : elements) {
             out.append(element.info());
         }
     }

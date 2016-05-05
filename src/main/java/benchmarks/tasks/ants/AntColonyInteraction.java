@@ -41,7 +41,7 @@ final class AntColonyInteraction {
 
     static Callable<Long> interactionProcedure(
             IDistancesData data, float[][] trails, AntsStatistics statistics,
-            Collection<Integer> bestRunVertexes, AtomicBoolean gotNewSolutionToSend) {
+            Collection<Integer> bestRunVertexes, AtomicBoolean gotNewSolution) {
 
         return () -> {
             final AntRunResult runResult = new RunningAnt(data, trails).getRunResult();
@@ -50,7 +50,7 @@ final class AntColonyInteraction {
             //log.debug("Colony {}, ant run {} {}.", id, runJournal, statistics.getBestRunLength());
             statistics.addFinishedRun(runLength);
             takeActionsIfSolutionTheBest(runResult, runLength, statistics, bestRunVertexes,
-                    gotNewSolutionToSend, false, runJournal, trails);
+                    gotNewSolution, false, runJournal, trails);
             return runLength;
         };
     }
@@ -58,24 +58,24 @@ final class AntColonyInteraction {
     static void takeActionsIfSolutionTheBest(AntRunResult runResult,
                                              AntsStatistics statistics,
                                              Collection<Integer> bestRunVertexes,
-                                             AtomicBoolean gotNewSolutionToSend,
+                                             AtomicBoolean gotNewSolution,
                                              boolean gotOutside,
                                              float[][] trails) {
         takeActionsIfSolutionTheBest(runResult, runResult.getLength(), statistics, bestRunVertexes,
-                gotNewSolutionToSend, gotOutside, runResult.getJournal(), trails);
+                gotNewSolution, gotOutside, runResult.getJournal(), trails);
     }
 
     private static void takeActionsIfSolutionTheBest(AntRunResult runResult,
                                                      long runLength,
                                                      AntsStatistics statistics,
                                                      Collection<Integer> bestRunVertexes,
-                                                     AtomicBoolean gotNewSolutionToSend,
+                                                     AtomicBoolean gotNewSolution,
                                                      boolean gotOutside,
                                                      String runJournal,
                                                      float[][] trails) {
         if (runResult.isSuccess()) {
             if (runLength < statistics.getBestRunLength()) {
-                changeTheBestSolution(runResult, bestRunVertexes, gotNewSolutionToSend,
+                changeTheBestSolution(runResult, bestRunVertexes, gotNewSolution,
                         statistics, gotOutside, runJournal);
             }
             applyPheromones(runResult, trails);
@@ -84,7 +84,7 @@ final class AntColonyInteraction {
 
     private static void changeTheBestSolution(AntRunResult runResult,
                                               Collection<Integer> bestRunVertexes,
-                                              AtomicBoolean gotNewSolutionToSend,
+                                              AtomicBoolean gotNewSolution,
                                               AntsStatistics statistics,
                                               boolean gotOutside,
                                               String runJournal) {
@@ -95,7 +95,7 @@ final class AntColonyInteraction {
             bestRunVertexes.add(vertex);
         }
         if (!gotOutside) {
-            gotNewSolutionToSend.set(true);
+            gotNewSolution.set(true);
         }
         statistics.setNewBestRun(runResult, runJournal);
     }

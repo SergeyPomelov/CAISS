@@ -43,7 +43,7 @@ import static util.Constants.LS;
 final class DataDependency extends AlgorithmComponent {
 
     private static final long serialVersionUID = 988170536445679820L;
-    private static final String LINK_CAP_OVERWHELMED = "Link cap overwhelmed";
+    private static final String OVERWHELMED = "Link cap overwhelmed";
     /** flow operation type */
     @Nonnull
     private final DependencyType type;
@@ -75,7 +75,7 @@ final class DataDependency extends AlgorithmComponent {
     @Nonnull
     public OperationWithData getIn(int i) {
         if (i >= in.size()) {
-            throw new IllegalArgumentException(LINK_CAP_OVERWHELMED);
+            throw new IllegalArgumentException(OVERWHELMED);
         }
         return in.get(i);
     }
@@ -83,7 +83,7 @@ final class DataDependency extends AlgorithmComponent {
     @Nonnull
     public OperationWithData getOut(int i) {
         if (i >= out.size()) {
-            throw new IllegalArgumentException(LINK_CAP_OVERWHELMED);
+            throw new IllegalArgumentException(OVERWHELMED);
         }
         return out.get(i);
     }

@@ -37,7 +37,7 @@ public final class AntsSettings {
 
     public static final int OPTIMUM = 9352; //  27603
     static final long RUN_PERIOD_NANOS = TimeUtil.secToNano(600); // 600
-    static final long SOLUTION_EXCHANGE_NANOS = TimeUtil.mlsToNano(1000);
+    static final long EXCHANGE_NANOS = TimeUtil.mlsToNano(1000);
 
     static final float EVAPORATION_COEFFICIENT = 0.1F;
     static final float INITIAL_TRAIL = 1.0F;

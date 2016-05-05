@@ -24,6 +24,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import util.Restrictions;
+
 /**
  * Data representation.
  * @author Sergey Pomelov on 2/5/14.
@@ -53,10 +55,9 @@ public final class DataBlock extends ComputingObject {
      */
     public DataBlock(String name, DataType type, @Nonnegative Long size) {
         super(name);
-        if (size <= 0L) {
-            throw new IllegalArgumentException("Wrong size for createAlgorithm DataBlock");
-        }
-        this.type = DataType.valueOf(type.name());
+        Restrictions.ifContainsNullFastFail(name, type);
+        Restrictions.ifNotOnlyPositivesFastFail(size);
+        this.type = type;
         this.size = size;
     }
 
@@ -72,7 +73,7 @@ public final class DataBlock extends ComputingObject {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         return (obj instanceof DataBlock) && ((((DataBlock) obj).type == type)
                 && (((DataBlock) obj).size.equals(size)));
     }

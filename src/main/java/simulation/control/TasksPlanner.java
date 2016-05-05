@@ -150,7 +150,7 @@ final class TasksPlanner {
         //noinspection MethodCallInLoopCondition, by design
         for (Entry<ArchitectureComponent, Long> actor = componentIterator.next();
              componentIterator.hasNext() && (actor != null); actor = componentIterator.next()) {
-            Long endTime = timeTable.get(actor.getKey());
+            final Long endTime = timeTable.get(actor.getKey());
             if (maxTime < endTime) {
                 maxTime = endTime;
             }

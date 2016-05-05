@@ -42,8 +42,8 @@ import util.Restrictions;
 
 import static benchmarks.tasks.ants.AntColonyInteraction.interactionProcedure;
 import static benchmarks.tasks.ants.AntColonyInteraction.takeActionsIfSolutionTheBest;
+import static benchmarks.tasks.ants.AntsSettings.EXCHANGE_NANOS;
 import static benchmarks.tasks.ants.AntsSettings.INITIAL_TRAIL;
-import static benchmarks.tasks.ants.AntsSettings.SOLUTION_EXCHANGE_NANOS;
 
 /**
  * Implements the Ants Colony optimization.
@@ -70,7 +70,7 @@ final class AntsColony implements IAntsColony {
     @Nonnegative
     private final int parallelAnts;
     @Nonnull
-    private final AtomicBoolean gotNewSolutionToSend = new AtomicBoolean(true);
+    private final AtomicBoolean gotNewSolution = new AtomicBoolean(true);
     @Nonnegative
     private final AtomicLong lastSendDataNanos = new AtomicLong(System.nanoTime());
     @Nonnull
@@ -119,7 +119,7 @@ final class AntsColony implements IAntsColony {
     public void receiveSolution(AntRunResult antRunResult) {
         if (antRunResult != null) {
             takeActionsIfSolutionTheBest(antRunResult, statistics, bestRunVertexes,
-                    gotNewSolutionToSend, true, trails);
+                    gotNewSolution, true, trails);
             log.debug("Colony {} received a solution {}.", id, antRunResult.getLength());
         } else {
             log.warn("Sent AntRunResult must not be null!");
@@ -136,15 +136,17 @@ final class AntsColony implements IAntsColony {
     }
 
     private void logResult(@Nonnegative long startMilis) {
-        log.info("Colony {}, Best tour: |{}" + '|' + "{}. Total: {} ms", id,
-                statistics.getBestRunLength(),
-                OutputFormat.printIterableTour(bestRunVertexes),
-                System.currentTimeMillis() - startMilis);
+        if (log.isInfoEnabled()) {
+            log.info("Colony {}, Best tour: |{}" + '|' + "{}. Total: {} ms", id,
+                    statistics.getBestRunLength(),
+                    OutputFormat.printIterableTour(bestRunVertexes),
+                    System.currentTimeMillis() - startMilis);
+        }
     }
 
     private void runAnts(@Nonnegative long stopNanos) {
         final Callable<Long> antRun = interactionProcedure(data, trails, statistics,
-                bestRunVertexes, gotNewSolutionToSend);
+                bestRunVertexes, gotNewSolution);
         //noinspection MethodCallInLoopCondition - the nanoTime need be called each time
         ContinuousParallelExecutor.run(antRun, parallelAnts,
                 () -> System.nanoTime() >= stopNanos,
@@ -158,14 +160,14 @@ final class AntsColony implements IAntsColony {
             final AntRunResult bestRun = statistics.getBestRun();
             if (bestRun != null) {
                 neighbours.forEach(neighbour -> neighbour.receiveSolution(bestRun));
-                gotNewSolutionToSend.compareAndSet(true, false);
+                gotNewSolution.compareAndSet(true, false);
                 lastSendDataNanos.set(System.nanoTime());
             }
         }
     }
 
     private boolean isTimeToSendSolution(@Nonnegative long currentNanos) {
-        return gotNewSolutionToSend.get() &&
-                ((lastSendDataNanos.longValue() + SOLUTION_EXCHANGE_NANOS) >= currentNanos);
+        return gotNewSolution.get() &&
+                ((lastSendDataNanos.longValue() + EXCHANGE_NANOS) >= currentNanos);
     }
 }

@@ -21,8 +21,11 @@ package simulation.structures.interaction;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
+import util.Restrictions;
+
 /**
  * Computational abstract actor.
+ *
  * @author Sergey Pomelov on 2/5/14.
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
@@ -38,7 +41,8 @@ abstract class ComputingObject implements SerializableElement {
     private final String name;
 
     /** @param name ordinary human-friendly name of the object */
-    ComputingObject(@Nonnull String name) {
+    ComputingObject(String name) {
+        Restrictions.ifContainsNullFastFail(name);
         this.name = name;
     }
 

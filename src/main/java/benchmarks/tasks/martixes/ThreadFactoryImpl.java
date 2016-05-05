@@ -43,7 +43,8 @@ final class ThreadFactoryImpl implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable run) {
-        Thread thread = new Thread(group, run, namePrefix + threadNumber.getAndIncrement(), 0);
+        final Thread thread = new Thread(group, run, namePrefix +
+                threadNumber.getAndIncrement(), 0);
         if (thread.isDaemon()) {
             thread.setDaemon(false);
         }

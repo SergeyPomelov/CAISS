@@ -16,9 +16,24 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package testutil;
+
+import static org.junit.Assert.assertTrue;
+
 /**
- * Objects which represents actors in computations process
- *
- * @author Sergey Pomelov on 18.03.15.
+ * @author Sergey Pomelov on 05/05/2016.
  */
-package simulation.structures.interaction;
+public final class TestUtil {
+
+    private TestUtil() { /* tests' utility class */ }
+
+    public static void passedIfException(Runnable runnable) {
+        boolean thrown = false;
+        try {
+            runnable.run();
+        } catch (RuntimeException ignored) {
+            thrown = true;
+        }
+        assertTrue(thrown);
+    }
+}

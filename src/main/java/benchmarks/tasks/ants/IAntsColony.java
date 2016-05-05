@@ -41,7 +41,7 @@ interface IAntsColony extends Serializable {
 
     /**
      * @param neighbours - Colonies to send them the best solution. The "time to time" defined
-     *                   inside the {@code benchmarks.tasks.ants .AntsColoniesSettings#SOLUTION_EXCHANGE_NANOS}.
+     *                   inside the {@code benchmarks.tasks.ants .AntsColoniesSettings#EXCHANGE_NANOS}.
      */
     void addNeighbours(List<IAntsColony> neighbours);
 

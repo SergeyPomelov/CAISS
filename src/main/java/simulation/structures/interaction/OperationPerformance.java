@@ -24,8 +24,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import util.Restrictions;
+
 /**
  * Representation of how fast we can do this {@code OperationWithData.class}.
+ *
  * @author Sergey Pomelov on 2/5/14.
  * @see OperationWithData
  */
@@ -37,25 +40,22 @@ public final class OperationPerformance extends ComputingObject {
 
     @Nonnull
     private final OperationWithData operation;                  // what we do
-    @Nonnull
     @Nonnegative
-    private final Long time;                  // how fast
+    private final long time;                                    // how fast
 
-    OperationPerformance() {
-        this("ZeroOperationPerformance", new OperationWithData(), 0L);
-    }
-
-    public OperationPerformance(OperationPerformance operation) {
+    OperationPerformance(OperationPerformance operation) {
         this(operation.getName(), operation.operation, operation.time);
     }
 
     /**
      * @param operation which operation
-     * @param time how fast we can do it
+     * @param time      how fast we can do it
      */
-    public OperationPerformance(String name, OperationWithData operation, Long time) {
+    public OperationPerformance(String name, OperationWithData operation, long time) {
         super(name);
-        this.operation = new OperationWithData(operation);
+        Restrictions.ifContainsNullFastFail(operation);
+        Restrictions.ifNotOnlyPositivesFastFail(time);
+        this.operation = operation;
         this.time = time;
     }
 
@@ -64,15 +64,14 @@ public final class OperationPerformance extends ComputingObject {
         return operation;
     }
 
-    @Nonnull
     @Nonnegative
-    public Long getTime() {
+    public long getTime() {
         return time;
     }
 
     @Nonnull
     @Override
     public String info() {
-        return (String.format("%s(%s) t=%smc", super.info(), operation.info(), time.toString()));
+        return (String.format("%s(%s) t=%smc", super.info(), operation.info(), time));
     }
 }

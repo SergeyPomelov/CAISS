@@ -18,10 +18,14 @@
 
 package simulation.structures.interaction;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Computational operations types.
+ *
  * @author Sergey Pomelov on 2/10/14.
  */
+@Immutable
 public enum OperationType {
     INVERSE, ADDITION, TRANSPOSE, TRANSFER, NONE
 }

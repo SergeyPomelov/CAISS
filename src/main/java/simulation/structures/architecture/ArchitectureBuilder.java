@@ -72,7 +72,7 @@ public final class ArchitectureBuilder implements Serializable {
     private static final List<OperationPerformance> speed;
 
     static {
-        Collection<OperationPerformance> performances = new ArrayList<>(2);
+        final Collection<OperationPerformance> performances = new ArrayList<>(2);
         performances.add(inverseLargePerformance);
         performances.add(inverseSmallPerformance);
         speed = ImmutableList.copyOf(performances);
