@@ -31,20 +31,19 @@ import benchmarks.tasks.ants.ant.AntRunResult;
  *
  * @author Sergey Pomelov 20.01.15.
  */
-interface IAntsOptimization extends Serializable {
+interface IAntsColony extends Serializable {
     /**
      * @param stopNanos - The time stop criteria.
      * @return the best solution length
      */
     @Nonnegative
-    long run(@Nonnegative long stopNanos);
-
+    long run(@Nonnegative long periodNanos);
 
     /**
      * @param neighbours - Colonies to send them the best solution. The "time to time" defined
      *                   inside the {@code benchmarks.tasks.ants .AntsColoniesSettings#SOLUTION_EXCHANGE_NANOS}.
      */
-    void addNeighbours(List<IAntsOptimization> neighbours);
+    void addNeighbours(List<IAntsColony> neighbours);
 
     /**
      * @param antRunResult - method implementing obtaining the information about other colony's best

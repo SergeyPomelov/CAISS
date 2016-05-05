@@ -59,7 +59,7 @@ final class AntsStatistics implements Serializable {
     @Nonnegative
     private final AtomicLong avgRunLength = new AtomicLong(0L);
     @Nonnull
-    private final StringBuilder journal = new StringBuilder(512);
+    private final StringBuilder journal = new StringBuilder(32);
 
     @Nullable
     AntRunResult getBestRun() {
@@ -75,7 +75,6 @@ final class AntsStatistics implements Serializable {
     void setNewBestRun(AntRunResult runResult, String runJournal) {
         bestRun.set(runResult);
         bestRunLength.set(runResult.getLength());
-        journal.append(runJournal);
         log.debug("ant find better: {}/{} avg:|{}|, solution:{}",
                 antsGoodRuns.incrementAndGet(),
                 antsRuns.get(),

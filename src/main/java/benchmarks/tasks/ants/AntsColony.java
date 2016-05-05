@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,26 +32,27 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.GuardedBy;
 
 import benchmarks.tasks.ants.ant.AntRunResult;
 import benchmarks.tasks.ants.ant.RunningAnt;
 import benchmarks.tasks.ants.data.IDistancesData;
+import benchmarks.tasks.ants.parallelisation.ContinuousParallelExecutor;
+import util.ConversionUtil;
 import util.Restrictions;
 
-import static benchmarks.tasks.ants.AntsColoniesSettings.EVAPORATION_COEFFICIENT;
-import static benchmarks.tasks.ants.AntsColoniesSettings.INITIAL_TRAIL;
-import static benchmarks.tasks.ants.AntsColoniesSettings.SOLUTION_EXCHANGE_NANOS;
-import static benchmarks.tasks.ants.parallelisation.NParallelExecutor.runExecutor;
+import static benchmarks.tasks.ants.AntColonyInteraction.interactionProcedure;
+import static benchmarks.tasks.ants.AntColonyInteraction.takeActionsIfSolutionTheBest;
+import static benchmarks.tasks.ants.AntsSettings.INITIAL_TRAIL;
+import static benchmarks.tasks.ants.AntsSettings.SOLUTION_EXCHANGE_NANOS;
 
 /**
  * Implements the Ants Colony optimization.
  *
  * @author Sergey Pomelov 20.01.15.
  * @see RunningAnt
- * @see AntsColoniesSettings
+ * @see AntsSettings
  */
-public final class AntsColony implements IAntsOptimization {
+final class AntsColony implements IAntsColony {
 
     private static final long serialVersionUID = 1858529504894436119L;
     private static final Logger log = LoggerFactory.getLogger(AntsColony.class);
@@ -60,7 +62,7 @@ public final class AntsColony implements IAntsOptimization {
     @Nonnull
     private final IDistancesData data;
     @Nonnull
-    private final double[][] trail;
+    private final float[][] trails;
     @Nonnull
     private final Collection<Integer> bestRunVertexes = new CopyOnWriteArrayList<>();
     @Nonnull
@@ -71,18 +73,16 @@ public final class AntsColony implements IAntsOptimization {
     private final AtomicBoolean gotNewSolutionToSend = new AtomicBoolean(true);
     @Nonnegative
     private final AtomicLong lastSendDataNanos = new AtomicLong(System.nanoTime());
-    @GuardedBy("data")
     @Nonnull
-    private List<IAntsOptimization> neighbours = Collections.emptyList();
+    private List<IAntsColony> neighbours = Collections.emptyList();
 
-
-    public AntsColony(String id, int parallelAnts, IDistancesData data) {
+    AntsColony(String id, int parallelAnts, IDistancesData data) {
         Restrictions.ifNotOnlyPositivesFastFail(parallelAnts);
         Restrictions.ifContainsNullFastFail(id, data);
         this.id = id;
         this.data = data;
         this.parallelAnts = parallelAnts;
-        trail = new double[data.getSize()][data.getSize()];
+        trails = new float[data.getSize()][data.getSize()];
     }
 
     @Override
@@ -103,10 +103,11 @@ public final class AntsColony implements IAntsOptimization {
     }
 
     @Override
-    public void addNeighbours(List<IAntsOptimization> neighbours) {
+    public void addNeighbours(List<IAntsColony> neighbours) {
         if (neighbours != null) {
             synchronized (data) {
-                this.neighbours = neighbours.stream().filter(colony -> colony != this)
+                this.neighbours = ConversionUtil.nullFilter(neighbours).stream()
+                        .filter(colony -> colony != this)
                         .collect(Collectors.toList());
             }
         } else {
@@ -117,17 +118,19 @@ public final class AntsColony implements IAntsOptimization {
     @Override
     public void receiveSolution(AntRunResult antRunResult) {
         if (antRunResult != null) {
-            applyPheromones(antRunResult);
+            takeActionsIfSolutionTheBest(antRunResult, statistics, bestRunVertexes,
+                    gotNewSolutionToSend, true, trails);
             log.debug("Colony {} received a solution {}.", id, antRunResult.getLength());
         } else {
-            log.warn("AntRunResult must not be null!");
+            log.warn("Sent AntRunResult must not be null!");
         }
     }
 
     private void initialTrail() {
-        for (int i = 0; i < data.getSize(); i++) {
-            for (int j = 0; j < data.getSize(); j++) {
-                trail[i][j] = INITIAL_TRAIL;
+        final int size = data.getSize();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                trails[i][j] = INITIAL_TRAIL;
             }
         }
     }
@@ -140,59 +143,29 @@ public final class AntsColony implements IAntsOptimization {
     }
 
     private void runAnts(@Nonnegative long stopNanos) {
-        final Runnable antRun = () -> {
-            final AntRunResult runResult = new RunningAnt(data, trail.clone()).getRunResult();
-            final String runJournal = runResult.getJournal();
-            final long runLength = runResult.getLength();
-            //log.debug("Colony {}, ant run {} {}.", id, runJournal, statistics.getBestRunLength());
-            statistics.addFinishedRun(runLength);
-            if (runResult.isSuccess()) {
-                if (runLength < statistics.getBestRunLength()) {
-                    final int[] currentRunTour = runResult.getTour();
-                    bestRunVertexes.clear();
-                    for (final int vertex : currentRunTour) {
-                        bestRunVertexes.add(vertex);
-                    }
-                    gotNewSolutionToSend.set(true);
-                    statistics.setNewBestRun(runResult, runJournal);
-                }
-                applyPheromones(runResult);
-            }
-
-        };
+        final Callable<Long> antRun = interactionProcedure(data, trails, statistics,
+                bestRunVertexes, gotNewSolutionToSend);
         //noinspection MethodCallInLoopCondition - the nanoTime need be called each time
-        while (System.nanoTime() < stopNanos) {
-            runExecutor(antRun, parallelAnts, "colony" + id, "ant");
-            sendSolutionIfNeed(System.nanoTime());
-        }
+        ContinuousParallelExecutor.run(antRun, parallelAnts,
+                () -> System.nanoTime() >= stopNanos,
+                () -> sendSolutionIfNeed(System.nanoTime()),
+                "colony" + id,
+                "ant");
     }
 
-    private void sendSolutionIfNeed(long currentNanos) {
-        if (gotNewSolutionToSend.get() &&
-                (lastSendDataNanos.longValue() + SOLUTION_EXCHANGE_NANOS) >= currentNanos) {
+    private void sendSolutionIfNeed(@Nonnegative long currentNanos) {
+        if (isTimeToSendSolution(currentNanos)) {
             final AntRunResult bestRun = statistics.getBestRun();
             if (bestRun != null) {
-                synchronized (data) {
-                    neighbours.forEach(neighbour -> neighbour.receiveSolution(bestRun));
-                }
+                neighbours.forEach(neighbour -> neighbour.receiveSolution(bestRun));
                 gotNewSolutionToSend.compareAndSet(true, false);
                 lastSendDataNanos.set(System.nanoTime());
             }
         }
     }
 
-    private void applyPheromones(@Nonnull AntRunResult runResult) {
-        final double stick = 1.0D - EVAPORATION_COEFFICIENT;
-        final int trailLength = trail.length;
-
-        for (int i = 0; i < trailLength; i++) {
-            for (int j = 0; j < i; j++) {
-                double t = (stick * trail[i][j])
-                        + runResult.getPheromonesDelta()[i][j]
-                        + runResult.getPheromonesDelta()[j][i];
-                trail[i][j] = t;
-                trail[j][i] = t;
-            }
-        }
+    private boolean isTimeToSendSolution(@Nonnegative long currentNanos) {
+        return gotNewSolutionToSend.get() &&
+                ((lastSendDataNanos.longValue() + SOLUTION_EXCHANGE_NANOS) >= currentNanos);
     }
 }

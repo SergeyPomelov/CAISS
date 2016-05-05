@@ -21,43 +21,45 @@ package benchmarks.tasks.ants.ant;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Class for spray pheromones trail along the route.
  * @author Sergey Pomelov on 28/04/2016.
  * @see RunningAnt
  */
+@NotThreadSafe
 @ParametersAreNonnullByDefault
 final class PheromonesTrail {
 
     @Nonnull
-    private final double[][] trailDelta;
+    private final float[][] trailsDelta;
 
     PheromonesTrail(@Nonnegative int size) {
-        trailDelta = new double[size][size];
+        trailsDelta = new float[size][size];
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                trailDelta[i][j] = 0;
+                trailsDelta[i][j] = 0;
             }
         }
     }
 
     @Nonnull
-    double[][] generateTrail(int[] tour, @Nonnegative double amount) {
+    float[][] generateTrail(int[] tour, @Nonnegative float amount) {
         int from = tour[0];
         for (final int vertex : tour) { // iterates through the tour
             final int destination = from;
             from = vertex;
-            trailDelta[from][destination] += amount; // spraying the trail delta
+            trailsDelta[from][destination] += amount; // spraying the trail delta
         }
         //noinspection ReturnOfCollectionOrArrayField, while pacjage local this lack of
-        return trailDelta; // encapsulation is ok
+        return trailsDelta; // encapsulation is ok
     }
 
     @Nonnull
-    double[][] getTrailDelta() {
+    float[][] getTrailsDelta() {
         //noinspection ReturnOfCollectionOrArrayField, while it used package-local it's ok.
-        return trailDelta;
+        return trailsDelta;
     }
 }

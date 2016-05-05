@@ -49,10 +49,10 @@ public final class RunningAnt {
     @Nonnegative
     private final long startMls = System.currentTimeMillis();
 
-    public RunningAnt(IDistancesData graph, double[][] trail) {
+    public RunningAnt(IDistancesData graph, float[][] trails) {
         this.graph = graph;
         trailSpray = new PheromonesTrail(graph.getSize());
-        tourBuilder = new TourBuilder(graph, trail);
+        tourBuilder = new TourBuilder(graph, trails);
         runResult = runAnt();
     }
 
@@ -61,25 +61,28 @@ public final class RunningAnt {
         return runResult;
     }
 
+    private static boolean checkFinishedTourLength(long finalTourLength) {
+        if (finalTourLength <= 0) {
+            throw new IllegalStateException("Wrong tour length had been obtained!");
+        }
+        return finalTourLength < Integer.MAX_VALUE;
+    }
+
     @SuppressWarnings("FeatureEnvy")
     @Nonnull
     private AntRunResult runAnt() {
         final TourData tourData = tourBuilder.buildUncycledTour();
         final int[] tour = tourData.getTour();
 
-        long finalTourLength = 0L;
+        long finalTourLength = Long.MAX_VALUE;
         boolean finalSuccess = tourData.isSuccess();
         if (finalSuccess) {
             finalTourLength = tryToFinishCycle(tour, tourData.getLength());
-            if (finalTourLength >= Integer.MAX_VALUE) {
-                finalSuccess = false;
-            } else if (finalTourLength <= 0) {
-                throw new IllegalStateException("Wrong tour length had been obtained!");
-            }
+            finalSuccess = checkFinishedTourLength(finalTourLength);
         }
 
         final TourData finalTourData = new TourData(finalSuccess, tour, finalTourLength);
-        return new AntRunResult(finalTourData, trailSpray.getTrailDelta(),
+        return new AntRunResult(finalTourData, trailSpray.getTrailsDelta(),
                 resultToString(finalTourData));
     }
 
@@ -97,7 +100,7 @@ public final class RunningAnt {
         final int end = tour[tour.length - 1];
         final int lastPathLength = graph.getDist(end, start);
         if (lastPathLength < Integer.MAX_VALUE) {
-            final double chg = 1.0D / tourLength;
+            final float chg = 1.0F / tourLength;
             trailSpray.generateTrail(tour, chg);
             return tourLength + lastPathLength; // returning to the start point length addition
         } else {

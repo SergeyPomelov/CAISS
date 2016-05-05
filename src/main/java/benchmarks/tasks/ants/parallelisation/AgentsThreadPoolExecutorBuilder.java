@@ -32,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 final class AgentsThreadPoolExecutorBuilder {
 
-    private AgentsThreadPoolExecutorBuilder() { /* utility class */ }
+    private AgentsThreadPoolExecutorBuilder() { /* package-local utility class */ }
 
     static ThreadPoolExecutor build(@Nonnegative int parallelTasks,
                                     String poolName, String agentName) {

@@ -21,7 +21,7 @@ package benchmarks.tasks.ants.ant;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Class for storing data about finished ant's run.
@@ -29,19 +29,19 @@ import javax.annotation.concurrent.Immutable;
  * @author Sergey Pomelov on 28/04/2016.
  * @see RunningAnt
  */
-@Immutable
+@ThreadSafe
 @ParametersAreNonnullByDefault
 public final class AntRunResult {
     @Nonnull
     private final TourData tourData;
     @Nonnull
-    private final double[][] pheromonesDelta;
+    private final float[][] pheromonesDelta;
     @Nonnull
     private final String journal;
 
-    AntRunResult(TourData tourData, double[][] pheromonesDelta, String journal) {
+    AntRunResult(TourData tourData, float[][] pheromonesDelta, String journal) {
         this.tourData = tourData;
-        this.pheromonesDelta = pheromonesDelta.clone();
+        this.pheromonesDelta = pheromonesDelta;
         this.journal = journal;
     }
 
@@ -59,9 +59,10 @@ public final class AntRunResult {
         return tourData.getLength();
     }
 
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // huge arrays, coping is worse case.
     @Nonnull
-    public double[][] getPheromonesDelta() {
-        return pheromonesDelta.clone();
+    public float[][] getPheromonesDelta() {
+        return pheromonesDelta;
     }
 
     @Nonnull

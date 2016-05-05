@@ -24,6 +24,7 @@ import java.util.Random;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.NotThreadSafe;
 
 import benchmarks.tasks.ants.data.IDistancesData;
 
@@ -33,8 +34,10 @@ import static benchmarks.tasks.ants.ant.RouteFinder.findNextVertex;
  * @author Sergey Pomelov on 29/04/2016.
  * @see RunningAnt
  */
+@NotThreadSafe
 @ParametersAreNonnullByDefault
 final class TourBuilder {
+
     private static final Random rand = new SecureRandom();
 
     @Nonnull
@@ -46,27 +49,27 @@ final class TourBuilder {
     @Nonnull
     private final boolean[] visited;
     @Nonnull
-    private final double[][] vertexQualities;
+    private final float[][] edgesQualities;
     @Nonnegative
     private final int size;
 
-    TourBuilder(IDistancesData graphMatrix, double[][] trail) {
+    TourBuilder(IDistancesData graphMatrix, float[][] trail) {
         this.graphMatrix = graphMatrix;
 
         size = graphMatrix.getSize();
         tour = new int[size];
         allowedVertexes = new int[size];
         visited = new boolean[size];
-        vertexQualities = new double[size][size];
+        edgesQualities = new float[size][size];
 
         initPheromones(trail);
     }
 
-    private void initPheromones(double[][] trail) {
+    private void initPheromones(float[][] trail) {
         for (int i = 0; i < size; i++) {
             visited[i] = false;
             for (int j = 0; j < size; j++) {
-                vertexQualities[i][j] = StrictMath.pow(graphMatrix.getDist(i, j), -1.0)
+                edgesQualities[i][j] = (float) StrictMath.pow(graphMatrix.getDist(i, j), -1.0)
                         * trail[i][j];
             }
         }
@@ -81,7 +84,7 @@ final class TourBuilder {
 
         boolean success = true;
         for (int i = 1; (i < size) && success; i++) {
-            final Integer destinationIndex = findNextVertex(startVertex, size, vertexQualities,
+            final Integer destinationIndex = findNextVertex(startVertex, size, edgesQualities,
                     visited, allowedVertexes);
             if (destinationIndex == null) {
                 tourLength = Integer.MAX_VALUE;

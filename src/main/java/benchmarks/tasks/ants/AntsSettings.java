@@ -32,20 +32,22 @@ import static util.Constants.FS;
  * @author Sergey Pomelov on 28/04/2016.
  */
 @Immutable
-public final class AntsColoniesSettings {
-
-    public static final int OPTIMUM = 27603; //  9352
-    static final long RUN_PERIOD_NANOS = TimeUtil.secToNano(60);
-    static final long SOLUTION_EXCHANGE_NANOS = TimeUtil.mlsToNano(1000);
-    static final double EVAPORATION_COEFFICIENT = 0.1D;
-    static final double INITIAL_TRAIL = 1.0D;
+public final class AntsSettings {
     // @formatter:off
-    private static final String FILE = "wi29"; // qa194
+
+    public static final int OPTIMUM = 9352; //  27603
+    static final long RUN_PERIOD_NANOS = TimeUtil.secToNano(600); // 600
+    static final long SOLUTION_EXCHANGE_NANOS = TimeUtil.mlsToNano(1000);
+
+    static final float EVAPORATION_COEFFICIENT = 0.1F;
+    static final float INITIAL_TRAIL = 1.0F;
+
+    private static final String FILE = "qa194"; // wi29
     public static final IDistancesData GRAPH = // new FixedGraph();
             new TSPDistanceData(FS + "build" + FS + "resources" + FS + "main"
                     + FS + "tsp_data" + FS + FILE + ".tsp");
-    // @formatter:on
 
-    private AntsColoniesSettings() { /* constants holder */ }
+    // @formatter:on
+    private AntsSettings() { /* constants holder */ }
 
 }

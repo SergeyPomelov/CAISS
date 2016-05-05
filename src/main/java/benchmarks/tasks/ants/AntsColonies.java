@@ -32,10 +32,10 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import benchmarks.tasks.ants.data.IDistancesData;
-import benchmarks.tasks.ants.parallelisation.NParallelExecutor;
+import benchmarks.tasks.ants.parallelisation.ParallelExecutor;
 import util.Restrictions;
 
-import static benchmarks.tasks.ants.AntsColoniesSettings.RUN_PERIOD_NANOS;
+import static benchmarks.tasks.ants.AntsSettings.RUN_PERIOD_NANOS;
 
 /**
  * @author Sergey Pomelov on 02/05/2016.
@@ -55,7 +55,7 @@ public final class AntsColonies {
     private static SortedSet<Long> generateSolutions(@Nonnegative int coloniesAmount,
                                                      @Nonnull IDistancesData data) {
         final SortedSet<Long> solutions = new TreeSet<>();
-        NParallelExecutor.runExecutor(
+        ParallelExecutor.runOnce(
                 generateAgents(coloniesAmount, data).stream()
                         .map(colony -> (Runnable) () -> solutions.add(colony.run(RUN_PERIOD_NANOS)))
                         .collect(Collectors.toList()),
@@ -66,11 +66,11 @@ public final class AntsColonies {
         return solutions;
     }
 
-    private static Collection<IAntsOptimization> generateAgents(@Nonnegative int coloniesAmount,
-                                                                @Nonnull IDistancesData data) {
-        final List<IAntsOptimization> colonies = new ArrayList<>(coloniesAmount);
+    private static Collection<IAntsColony> generateAgents(@Nonnegative int coloniesAmount,
+                                                          @Nonnull IDistancesData data) {
+        final List<IAntsColony> colonies = new ArrayList<>(coloniesAmount);
         for (int i = 0; i < coloniesAmount; i++) {
-            final IAntsOptimization colony = new AntsColony(String.valueOf(i + 1), coloniesAmount,
+            final IAntsColony colony = new AntsColony(String.valueOf(i + 1), coloniesAmount,
                     data);
             colonies.add(colony);
         }

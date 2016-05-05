@@ -16,44 +16,33 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.tasks.ants.ant;
+package benchmarks.tasks.ants;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.concurrent.Immutable;
+
+import benchmarks.tasks.ants.ant.AntRunResult;
+
+import static benchmarks.tasks.ants.AntsSettings.EVAPORATION_COEFFICIENT;
 
 /**
- * Class for saving the tour results.
- * @author Sergey Pomelov on 29/04/2016.
- * @see AntRunResult
+ * @author Sergey Pomelov on 04/05/2016.
  */
-@Immutable
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 @ParametersAreNonnullByDefault
-final class TourData {
-    private final boolean success;
-    @Nonnull
-    private final int[] tour;
-    @Nonnegative
-    private final long length;
+final class PheromonesApplier {
 
-    TourData(boolean success, int[] tour, @Nonnegative long length) {
-        this.success = success;
-        this.tour = tour.clone();
-        this.length = length;
-    }
+    private PheromonesApplier() { /* package local utility class*/ }
 
-    boolean isSuccess() {
-        return success;
-    }
-
-    @Nonnull
-    int[] getTour() {
-        return tour.clone();
-    }
-
-    @Nonnegative
-    long getLength() {
-        return length;
+    static void applyPheromones(AntRunResult runResult, float[][] trailsToChange) {
+        final int trailLength = trailsToChange.length;
+        for (int i = 0; i < trailLength; i++) {
+            for (int j = 0; j < i; j++) {
+                float t = ((1.0F - EVAPORATION_COEFFICIENT) * trailsToChange[i][j])
+                        + runResult.getPheromonesDelta()[i][j]
+                        + runResult.getPheromonesDelta()[j][i];
+                trailsToChange[i][j] = t;
+                trailsToChange[j][i] = t;
+            }
+        }
     }
 }

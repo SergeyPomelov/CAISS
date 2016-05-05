@@ -24,6 +24,7 @@ import java.util.Random;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Implements the ant's decision about the next vertex to go.
@@ -31,11 +32,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @author Sergey Pomelov on 28/04/2016.
  * @see RunningAnt
  */
+@ThreadSafe
 @ParametersAreNonnullByDefault
 final class RouteFinder {
 
     private static final Random rand = new SecureRandom();
-    private static final double COMP_MAX_ERR = Double.MIN_VALUE * 10.0E-3D;
+    private static final float COMP_MAX_ERR = Float.MIN_VALUE * 10.0E3F;
 
     private RouteFinder() { /* utility package-local class */ }
 
@@ -43,14 +45,14 @@ final class RouteFinder {
     @Nullable
     @Nonnegative
     static Integer findNextVertex(@Nonnegative int startVertex, @Nonnegative int size,
-                                  double[][] vertexQualities, boolean[] visited,
+                                  float[][] vertexQualities, boolean[] visited,
                                   int[] allowedVertexes) {
         int possibleVertexesToGo = 0;
-        double totalWeight = 0;
-        final double[] weights = new double[size];
+        float totalWeight = 0;
+        final float[] weights = new float[size];
         for (int j = 0; j < size; j++) {
             boolean success = true;
-            final double vertexQuality = vertexQualities[startVertex][j];
+            final float vertexQuality = vertexQualities[startVertex][j];
             if (visited[j] || (vertexQuality < COMP_MAX_ERR)) {
                 success = false;
             }
@@ -66,9 +68,9 @@ final class RouteFinder {
                 null : calculateDestination(totalWeight, possibleVertexesToGo, weights);
     }
 
-    @SuppressWarnings("MethodCanBeVariableArityMethod")
-    private static int calculateDestination(double totalWeight, int possibleVertexesToGo,
-                                            double[] weights) {
+    @SuppressWarnings("MethodCanBeVariableArityMethod") // by design
+    private static int calculateDestination(float totalWeight, int possibleVertexesToGo,
+                                            float[] weights) {
         int result = 0;
         final double val = totalWeight * rand.nextDouble();
         for (int i = 0; i < possibleVertexesToGo; i++) {

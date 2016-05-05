@@ -23,35 +23,33 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.Nonnegative;
 
 import benchmarks.tasks.ants.AntsColonies;
-import benchmarks.tasks.ants.AntsColony;
 
-import static benchmarks.tasks.ants.AntsColoniesSettings.GRAPH;
-import static benchmarks.tasks.ants.AntsColoniesSettings.OPTIMUM;
+import static benchmarks.tasks.ants.AntsSettings.GRAPH;
+import static benchmarks.tasks.ants.AntsSettings.OPTIMUM;
 
 /**
  * Runs ACO.
  * @author Sergey Pomelov on 13/04/2016.
- * @see AntsColony
  */
 final class AntsRunner {
 
     private static final Logger log = LoggerFactory.getLogger(AntsRunner.class);
+    private static final double PERCENTS = 100.0D;
 
     private AntsRunner() { /* runnable class */ }
 
     public static void main(String... args) {
         GNUCopyright.printLicence();
-        Arrays.asList(1).forEach(
+        Arrays.asList(1, 2, 3).forEach(
                 coloniesAmount ->
-                        Arrays.asList(1).forEach(
+                        Arrays.asList(1, 2, 3).forEach(
                                 antsAmount ->
-                                        runSeveralTimes(coloniesAmount, antsAmount, 3)));
-
+                                        runSeveralTimes(coloniesAmount, antsAmount, 10)));
         // check();
         System.exit(0);
     }
@@ -59,13 +57,12 @@ final class AntsRunner {
     private static void runSeveralTimes(@Nonnegative int coloniesAmount,
                                         @Nonnegative int antsPerColony,
                                         @Nonnegative int iterations) {
-        final List<Long> results = new ArrayList<>(iterations);
+        final Collection<Long> results = new ArrayList<>(iterations);
         for (int i = 0; i < iterations; i++) {
             results.add(AntsColonies.runCalculations(coloniesAmount, antsPerColony, GRAPH));
         }
         log.info("{} colonies, x {} ants, accuracy: {}.", coloniesAmount, antsPerColony,
-                results.stream().mapToDouble(result -> ((OPTIMUM * 100.0D) / result)).average()
-                        .getAsDouble());
+                results.stream().mapToDouble(result -> ((OPTIMUM * PERCENTS) / result)).average());
     }
 
     private static void check() {
@@ -77,8 +74,7 @@ final class AntsRunner {
         for (String nodeNumberString : route) {
             final int nodeNumber = Integer.parseInt(nodeNumberString);
             if (previousNodeNumber != null) {
-                final double dist = GRAPH.getDist(previousNodeNumber - 1,
-                        nodeNumber - 1);
+                final double dist = GRAPH.getDist(previousNodeNumber - 1, nodeNumber - 1);
                 sum += dist;
                 log.info("{} -> {} = {}, total {}", previousNodeNumber, nodeNumber, dist, sum);
             }

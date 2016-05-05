@@ -18,33 +18,32 @@
 
 package benchmarks.tasks.ants.parallelisation;
 
-import java.util.Collections;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import benchmarks.tasks.ants.AntsColony;
 
 /**
  * Class for executing n parallel ants.
+ *
  * @author Sergey Pomelov on 29/04/2016.
- * @see AntsColony
  */
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 @ParametersAreNonnullByDefault
-public final class NParallelExecutor {
+public final class ParallelExecutor {
 
-    private NParallelExecutor() { /* utility class */ }
+    private static final Logger log = LoggerFactory.getLogger(ParallelExecutor.class);
+    private static final String INTERRUPTED_EX = "Got an interrupted exception!";
 
-    public static void runExecutor(Runnable agent, @Nonnegative int parallelAgents,
-                                   String poolName, String agentName) {
-        runExecutor(Collections.nCopies(parallelAgents, agent), poolName, agentName);
-    }
+    private ParallelExecutor() { /* utility class */ }
 
-    public static void runExecutor(List<Runnable> agents, String poolName, String agentName) {
-        final ThreadPoolExecutor executor = buildExecutor(agents.size(), poolName, agentName);
+    public static void runOnce(Collection<Runnable> agents, String poolName, String agentName) {
+        final ThreadPoolExecutor executor =
+                buildBarrierExecutor(agents.size(), poolName, agentName);
         agents.forEach(executor::execute);
         awaitExecution(executor, agents.size());
     }
@@ -54,13 +53,13 @@ public final class NParallelExecutor {
         while (executor.getCompletedTaskCount() < parallelAgents) {
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException ignored) {
-                // we are waiting
+            } catch (InterruptedException e) {
+                log.warn(INTERRUPTED_EX, e);
             }
         }
     }
 
-    private static ThreadPoolExecutor buildExecutor(int size, String poolName, String agentName) {
+    private static ThreadPoolExecutor buildBarrierExecutor(int size, String poolName, String agentName) {
         return AgentsThreadPoolExecutorBuilder.build(size, poolName, agentName);
     }
 }
