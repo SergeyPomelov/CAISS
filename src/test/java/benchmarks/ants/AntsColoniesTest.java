@@ -16,9 +16,20 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package benchmarks.ants;
+
+import org.junit.Test;
+
 /**
- * Collection of inner tasks runnable classes.
- *
- * @author Sergey Pomelov on 02/05/2016.
+ * @author Sergey Pomelov on 06/05/2016.
  */
-package benchmarks.control;
+public class AntsColoniesTest {
+
+    private static final AntsSettings SETTINGS = new AntsSettings(27603, 1000, 100, 0.1F,
+            1.0F, "wi29");
+
+    @Test
+    public void antsSmoke() {
+        AntsColonies.runCalculations(2, 2, SETTINGS);
+    }
+}

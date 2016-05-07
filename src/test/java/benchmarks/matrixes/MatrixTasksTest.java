@@ -16,19 +16,27 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package simulation.control;
+package benchmarks.matrixes;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-
 /**
- * @author Sergey Pomelov on 05/05/2016.
+ * @author Sergey Pomelov on 06/05/2016.
  */
-public class SimulationControllerTest {
+public class MatrixTasksTest {
+
+    private static final int ITERATIONS = 1;
+    private static final int SQUARE_ROOT_OF_DATA_SIZE = 2;
+    private static final int CALCULATIONS_MULTIPLICATOR = 2;
 
     @Test
-    public void testSimulateSmoke() {
-        assertFalse(new SimulationController().simulate().isEmpty());
+    public void matrixPowSmoke() {
+        MatrixTasks.matrixPowInner(2, ITERATIONS,
+                SQUARE_ROOT_OF_DATA_SIZE, CALCULATIONS_MULTIPLICATOR);
     }
-} 
+
+    @Test
+    public void memoryAllocSmoke() {
+        MatrixTasks.memoryAlloc(3);
+    }
+}
