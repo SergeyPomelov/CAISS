@@ -31,89 +31,97 @@ import static testutil.TestUtil.passedIfException;
  *
  * @author Sergey Pomelov on 12.03.15.
  */
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "NonBooleanMethodNameMayNotStartWithQuestion"})
 public class DataBlockTest {
 
-    private static final DataBlock data1 = new DataBlock("1", DataType.B_DEC, 2L);
+    private static final String NAME = "data";
+    private static final DataType TYPE = DataType.B_DEC;
+    private static final long SIZE = 2L;
+    private static final DataBlock DATA = new DataBlock(NAME, TYPE, SIZE);
 
     @Test
     public void nullName() {
-        passedIfException(() -> new DataBlock(null, DataType.B_DEC, 1L));
+        passedIfException(() -> new DataBlock(null, TYPE, SIZE));
     }
 
     @Test
     public void nullType() {
-        passedIfException(() -> new DataBlock("1", null, 1L));
+        passedIfException(() -> new DataBlock(NAME, null, SIZE));
     }
 
     @Test
     public void negativeSize() {
-        passedIfException(() -> new DataBlock("1", DataType.B_DEC, -1L));
+        passedIfException(() -> new DataBlock(NAME, TYPE, -1L));
     }
 
     @Test
     public void equals() {
-        final DataBlock data2 = new DataBlock("1", DataType.B_DEC, 2L);
-        assertEquals(data1, data2);
-        assertEquals(data1.hashCode(), data2.hashCode());
+        final DataBlock data2 = new DataBlock(NAME, TYPE, SIZE);
+        assertEquals(DATA, data2);
+        assertEquals(DATA.hashCode(), data2.hashCode());
     }
 
     @Test
     public void equalsDespiteName() {
-        final DataBlock data2 = new DataBlock("2", DataType.B_DEC, 2L);
-        assertEquals(data1, data2);
-        assertEquals(data1.hashCode(), data2.hashCode());
+        final DataBlock data2 = new DataBlock("2", TYPE, SIZE);
+        assertEquals(DATA, data2);
+        assertEquals(DATA.hashCode(), data2.hashCode());
     }
 
     @Test
     public void notEquals() {
-        final DataBlock data2 = new DataBlock("1", DataType.B_DEC, 1L);
-        assertNotEquals(data1, data2);
-        assertNotEquals(data1.hashCode(), data2.hashCode());
+        final DataBlock data2 = new DataBlock(NAME, TYPE, 1L);
+        assertNotEquals(DATA, data2);
+        assertNotEquals(DATA.hashCode(), data2.hashCode());
     }
 
     @Test
     public void equalsBack() {
-        final DataBlock data2 = new DataBlock("1", DataType.B_DEC, 2L);
-        assertEquals(data2, data1);
+        final DataBlock data2 = new DataBlock(NAME, TYPE, SIZE);
+        assertEquals(DATA, data2);
     }
 
     @Test
     public void equalsReflective() {
-        assertEquals(data1, data1);
+        assertEquals(DATA, DATA);
     }
 
     @Test
     public void equalsCopy() {
-        final DataBlock data2 = new DataBlock(data1);
-        assertEquals(data1, data2);
+        final DataBlock data2 = new DataBlock(DATA);
+        assertEquals(DATA, data2);
     }
 
     @Test
     public void notReferenceCopy() {
-        final DataBlock data2 = new DataBlock(data1);
-        assertNotSame(data1, data2);
+        final DataBlock data2 = new DataBlock(DATA);
+        assertNotSame(DATA, data2);
     }
 
     @Test
     public void getType() {
-        final DataBlock data2 = new DataBlock("1", DataType.B_DEC, 2L);
-        assertEquals(DataType.B_DEC, data2.getType());
+        final DataBlock data2 = new DataBlock(NAME, TYPE, SIZE);
+        assertEquals(TYPE, data2.getType());
     }
 
     @Test
     public void getSize() {
-        final DataBlock data2 = new DataBlock("1", DataType.B_DEC, 2L);
-        assertEquals(2L, data2.getSize().longValue());
+        final DataBlock data2 = new DataBlock(NAME, TYPE, SIZE);
+        assertEquals(SIZE, data2.getSize().longValue());
     }
 
     @Test
     public void info() {
-        assertNotNull(data1.info());
+        assertNotNull(DATA.info());
     }
 
     @Test
     public void getId() {
-        assertNotNull(data1.getId());
+        assertNotNull(DATA.getId());
+    }
+
+    @Test
+    public void getName() {
+        assertEquals(NAME, DATA.getName());
     }
 }

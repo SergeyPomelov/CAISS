@@ -23,50 +23,53 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static testutil.TestUtil.passedIfException;
 
 /**
  * @author Sergey Pomelov on 05/05/2016.
  */
+@SuppressWarnings("ConstantConditions")
 public class OperationPerformanceTest {
 
-    private static final DataBlock data1 = new DataBlock("data1", DataType.B_DEC, 1L);
-    private static final OperationWithData operationWithData1 =
-            new OperationWithData("operationWithData1", OperationType.ADDITION, data1);
-    private static final OperationPerformance operationPerformance1
-            = new OperationPerformance("operationPerformance1", operationWithData1, 1L);
+    private static final long SIZE = 1L;
+    private static final DataBlock DATA = new DataBlock("data1", DataType.B_DEC, SIZE);
+    private static final OperationWithData OPERATION =
+            new OperationWithData("operationWithData1", OperationType.ADDITION, DATA);
+    private static final OperationPerformance PERFORMANCE
+            = new OperationPerformance("operationPerformance1", OPERATION, SIZE);
 
     @Test
     public void nullOperation() {
         passedIfException(() ->
-                new OperationPerformance("operationPerformance1", null, 1L));
+                new OperationPerformance("operationPerformance1", null, SIZE));
     }
 
     @Test
     public void negativeSpeed() {
         passedIfException(() ->
-                new OperationPerformance("operationPerformance1", operationWithData1, -1L));
+                new OperationPerformance("operationPerformance1", OPERATION, -1L));
     }
 
     @Test
     public void notReferenceCopy() {
         final OperationPerformance operationPerformance2
-                = new OperationPerformance(operationPerformance1);
-        assertNotSame(operationPerformance1, operationPerformance2);
+                = new OperationPerformance(PERFORMANCE);
+        assertNotSame(PERFORMANCE, operationPerformance2);
     }
 
     @Test
     public void getOperation() {
-        assertEquals(operationWithData1, operationPerformance1.getOperation());
+        assertSame(OPERATION, PERFORMANCE.getOperation());
     }
 
     @Test
     public void getTime() {
-        assertEquals(1L, operationPerformance1.getTime());
+        assertEquals(SIZE, PERFORMANCE.getTime());
     }
 
     @Test
     public void info() {
-        assertNotNull(operationWithData1.info());
+        assertNotNull(OPERATION.info());
     }
 }

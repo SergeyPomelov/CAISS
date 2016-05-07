@@ -31,50 +31,50 @@ import static testutil.TestUtil.passedIfException;
 @SuppressWarnings("ConstantConditions")
 public class OperationWithDataTest {
 
-    private static final String name = "operWithData1";
-    private static final OperationType operType = OperationType.ADDITION;
-    private static final DataBlock dataBlock1 = new DataBlock("dataBlock1", DataType.B_DEC, 1L);
-    private static final OperationWithData operationWithData1 =
-            new OperationWithData(name, operType, dataBlock1);
+    private static final String NAME = "operWithData1";
+    private static final OperationType OPER_TYPE = OperationType.ADDITION;
+    private static final DataBlock DATA_BLOCK_1 = new DataBlock("dataBlock1", DataType.B_DEC, 1L);
+    private static final OperationWithData OPERATION_WITH_DATA =
+            new OperationWithData(NAME, OPER_TYPE, DATA_BLOCK_1);
 
     @Test
     public void nullName() {
-        passedIfException(() -> new OperationWithData(null, operType, dataBlock1));
+        passedIfException(() -> new OperationWithData(null, OPER_TYPE, DATA_BLOCK_1));
     }
 
     @Test
     public void nullType() {
-        passedIfException(() -> new OperationWithData(name, null, dataBlock1));
+        passedIfException(() -> new OperationWithData(NAME, null, DATA_BLOCK_1));
     }
 
     @Test
     public void nullDataBlock() {
-        passedIfException(() -> new OperationWithData(name, operType, null));
+        passedIfException(() -> new OperationWithData(NAME, OPER_TYPE, null));
     }
 
     @Test
     public void notReferenceCopy() {
-        final OperationWithData operationWithData2 = new OperationWithData(operationWithData1);
-        assertNotSame(operationWithData1, operationWithData2);
+        final OperationWithData operationWithData2 = new OperationWithData(OPERATION_WITH_DATA);
+        assertNotSame(OPERATION_WITH_DATA, operationWithData2);
     }
 
     @Test
     public void getName() {
-        assertEquals(name, operationWithData1.getName());
+        assertEquals(NAME, OPERATION_WITH_DATA.getName());
     }
 
     @Test
     public void getType() {
-        assertEquals(operType, operationWithData1.getType());
+        assertEquals(OPER_TYPE, OPERATION_WITH_DATA.getType());
     }
 
     @Test
     public void getData() {
-        assertEquals(dataBlock1, operationWithData1.getData());
+        assertEquals(DATA_BLOCK_1, OPERATION_WITH_DATA.getData());
     }
 
     @Test
     public void info() {
-        assertNotNull(operationWithData1.info());
+        assertNotNull(OPERATION_WITH_DATA.info());
     }
 }
