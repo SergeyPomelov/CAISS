@@ -22,49 +22,53 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import simulation.structures.interaction.OperationPerformance;
 import simulation.structures.interaction.OperationWithData;
 
+import static util.ConversionUtil.nullFilter;
+
 /**
  * Computation node or core.
+ *
  * @author Sergey Pomelov on 2/5/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
 @ParametersAreNonnullByDefault
-public final class ArithmeticNode extends ArchitectureComponent {
+public final class CalculationNode extends ArchitectureComponent {
 
     private static final long serialVersionUID = -2778594112555207896L;
+
     @Nonnull
     private final List<OperationPerformance> allowedOperations;
 
-    public ArithmeticNode(ArithmeticNode toCopy) {
+    CalculationNode(CalculationNode toCopy) {
         this(toCopy.getName(), toCopy.allowedOperations);
     }
 
-    ArithmeticNode(String name, Collection<OperationPerformance> allowedOperations) {
+    CalculationNode(String name, Collection<OperationPerformance> allowedOperations) {
         super(name);
-        this.allowedOperations = ImmutableList.copyOf(allowedOperations);
+        this.allowedOperations = ImmutableList.copyOf(nullFilter(allowedOperations));
     }
 
-    @Nullable
-    public Long getOperationTime(OperationWithData operationWithData) {
+    @Nonnull
+    public Optional<Long> getOperationTime(OperationWithData operationWithData) {
         for (final OperationPerformance oper : allowedOperations) {
             if (oper.getOperation().getType() == operationWithData.getType()) {
                 final int i = allowedOperations.indexOf(oper);
-                return (long) (getAllowedOperation(i).getTime() *
+                return Optional.of((long) (getAllowedOperation(i).getTime() *
                         ((float) operationWithData.getData().getSize()
                                 / getAllowedOperation(i).getOperation().getData().getSize()
-                        ));
+                        )));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Nonnull
@@ -75,7 +79,7 @@ public final class ArithmeticNode extends ArchitectureComponent {
     @Nonnull
     @Override
     public ArchitectureComponentType getArchitectureComponentType() {
-        return ArchitectureComponentType.ARITHMETIC_NODE;
+        return ArchitectureComponentType.CALCULATION_NODE;
     }
 
     @Nonnull

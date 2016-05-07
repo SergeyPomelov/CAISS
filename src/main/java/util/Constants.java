@@ -28,7 +28,7 @@ import java.io.File;
 public final class Constants {
     public static final String LS = System.lineSeparator().intern();
     public static final String FS = File.separator;
-    public static final String GNU_COPYRIGHT_MSG =
+    static final String GNU_COPYRIGHT_MSG =
             "    Computer and algorithm interaction simulation software (CAISS)." + LS +
                     "    Copyright (C) " + TimeUtil.getCurrentYear()
                     + " Pomelov Sergey Valer'evich." + LS +

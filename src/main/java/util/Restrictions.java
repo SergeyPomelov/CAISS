@@ -27,7 +27,7 @@ import java.util.Arrays;
  * Conditions checkers collection.
  * @author Sergey Pomelov on 15/04/2016.
  */
-@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
+@SuppressWarnings({"StaticMethodOnlyUsedInOneClass", "ClassWithTooManyDependents"})
 public final class Restrictions {
 
     private static final Logger log = LoggerFactory.getLogger(Restrictions.class);
@@ -49,6 +49,21 @@ public final class Restrictions {
             }
         }
         return false;
+    }
+
+    @SuppressWarnings("ProhibitedExceptionThrown")
+    public static <T> T ifNullFail(T object) {
+        if (object == null) {
+            throw new NullPointerException("Null pointer is forbidden here!");
+        }
+        return object;
+    }
+
+    public static <T extends Number> T ifNegativeFail(T number) {
+        if ((number == null) || (number.doubleValue() < 0.0D)) {
+            throw new IllegalArgumentException("Null or negative is forbidden here!");
+        }
+        return number;
     }
 
     public static void ifNotOnlyPositivesFastFail(Number... numbers) {

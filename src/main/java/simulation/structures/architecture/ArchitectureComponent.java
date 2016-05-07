@@ -31,7 +31,7 @@ public abstract class ArchitectureComponent extends StructureElement {
 
     private static final long serialVersionUID = -4700793405282367855L;
 
-    ArchitectureComponent(@Nonnull String name) {
+    ArchitectureComponent(String name) {
         super(name);
     }
 

@@ -22,6 +22,7 @@ package simulation.structures.architecture;
  * Global computer components typing.
  * @author Sergey Pomelov on 11.11.14.
  */
+@SuppressWarnings("WeakerAccess")
 public enum ArchitectureComponentType {
-    ARITHMETIC_NODE, MEMORY_NODE, LINK
+    CALCULATION_NODE, MEMORY_NODE, LINK
 }

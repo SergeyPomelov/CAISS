@@ -18,9 +18,12 @@
 
 package simulation.structures.algorithm;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * @author Sergey Pomelov on 2/10/14.
  */
+@Immutable
 enum DependencyType {
     DATA_TRUE, DATA_FLOW, DATA_ANTI, CONTROL
 }

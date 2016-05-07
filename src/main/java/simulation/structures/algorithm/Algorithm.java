@@ -24,10 +24,11 @@ import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
+
+import static util.ConversionUtil.nullFilter;
 
 /**
  * Graph like structure represents algorithm.
@@ -43,9 +44,8 @@ public final class Algorithm implements Serializable {
     @Nonnull
     private final List<DataDependency> structure;
 
-    public Algorithm(@Nonnull Collection<DataDependency> structure) {
-        this.structure = ImmutableList.copyOf(structure.stream().filter(obj -> obj != null)
-                .collect(Collectors.toList()));
+    Algorithm(@Nonnull Collection<DataDependency> structure) {
+        this.structure = ImmutableList.copyOf(nullFilter(structure));
     }
 
     @Nonnull

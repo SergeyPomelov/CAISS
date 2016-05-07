@@ -16,12 +16,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.control;
+package simulation.control;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import simulation.control.SimulationController;
+import util.GNUCopyright;
 
 /**
  * Runs algorithm & architecture simulation and prints logs.

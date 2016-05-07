@@ -35,6 +35,7 @@ public final class ConversionUtil {
         return bytes / BYTES_IN_MEGABYTES;
     }
 
+    // by design throws NPE if the collection pointer is null
     public static <T> Collection<T> nullFilter(Collection<T> collection) {
         return collection.stream().filter(obj -> obj != null).collect(Collectors.toList());
     }

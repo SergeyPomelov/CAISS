@@ -18,6 +18,7 @@
 
 package simulation.structures.architecture;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
 import java.math.BigDecimal;
@@ -26,10 +27,12 @@ import java.util.List;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import simulation.structures.interaction.DataType;
+import simulation.structures.interaction.DataBlock;
+
+import static util.ConversionUtil.nullFilter;
+import static util.Restrictions.ifNegativeFail;
 
 /**
  * Operation Memory.
@@ -37,46 +40,25 @@ import simulation.structures.interaction.DataType;
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
-@ParametersAreNonnullByDefault
 public final class MemoryNode extends ArchitectureComponent {
 
     private static final long serialVersionUID = 5900012936947627885L;
+
     @Nonnull
     @Nonnegative
     private final BigDecimal byteCapacity;
     @Nonnull
-    private final List<DataType> dataType;
-    @Nonnull
-    private final List<Integer> dataCapacity;
+    private final List<DataBlock> dataCapacity;
 
-    public MemoryNode(MemoryNode toCopy) {
-        this(toCopy.getName(), toCopy.dataType, toCopy.dataCapacity, toCopy.byteCapacity);
+    MemoryNode(MemoryNode toCopy) {
+        this(toCopy.getName(), toCopy.dataCapacity, toCopy.byteCapacity);
     }
 
-    MemoryNode(String name, Collection<DataType> dataType,
-               Collection<Integer> dataCapacity, @Nonnegative BigDecimal byteCapacity) {
+    MemoryNode(String name, Collection<DataBlock> dataCapacity,
+               @Nonnegative BigDecimal byteCapacity) {
         super(name);
-        this.dataType = ImmutableList.copyOf(dataType);
-        this.dataCapacity = ImmutableList.copyOf(dataCapacity);
-        this.byteCapacity = byteCapacity;
-    }
-
-    @Nonnull
-    public DataType getDataType(final int i) {
-        if (i >= dataType.size()) {
-            throw new IllegalArgumentException("cap exceed");
-        }
-        return dataType.get(i);
-    }
-
-    @Nonnull
-    public List<DataType> getDataTypeList() {
-        return dataType;
-    }
-
-    @Nonnull
-    public List<Integer> getDataCapacityList() {
-        return dataCapacity;
+        this.dataCapacity = ImmutableList.copyOf(nullFilter(dataCapacity));
+        this.byteCapacity = ifNegativeFail(byteCapacity);
     }
 
     @Nonnull
@@ -96,19 +78,19 @@ public final class MemoryNode extends ArchitectureComponent {
     public String info() {
         final StringBuilder output = new StringBuilder(32);
         output.append(String.format("%s %sb :", super.info(), byteCapacity));
-        if (dataCapacity.size() == dataType.size()) {
-            dataType.forEach(dataTypeLocal -> output
-                    .append(String.format(" %sX%s",
-                            dataTypeLocal.name(),
-                            getDataCapacity(dataType.indexOf(dataTypeLocal)).toString())));
-        }
+        dataCapacity.forEach(entry -> output.append(String.format(" %s", entry.info())));
         return output.toString();
     }
 
     @Nonnull
-    @Nonnegative
-    private Integer getDataCapacity(final int i) {
-        if (i >= dataType.size()) {
+    List<DataBlock> getDataCapacityList() {
+        return dataCapacity;
+    }
+
+    @Nonnull
+    @VisibleForTesting
+    DataBlock getDataCapacity(int i) {
+        if (i >= dataCapacity.size()) {
             throw new IllegalArgumentException("cap exceed");
         }
         return dataCapacity.get(i);

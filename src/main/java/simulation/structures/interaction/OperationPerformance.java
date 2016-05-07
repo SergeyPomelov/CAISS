@@ -24,7 +24,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import util.Restrictions;
+import static util.Restrictions.ifNegativeFail;
+import static util.Restrictions.ifNullFail;
 
 /**
  * Representation of how fast we can do this {@code OperationWithData.class}.
@@ -53,10 +54,8 @@ public final class OperationPerformance extends ComputingObject {
      */
     public OperationPerformance(String name, OperationWithData operation, long time) {
         super(name);
-        Restrictions.ifContainsNullFastFail(operation);
-        Restrictions.ifNotOnlyPositivesFastFail(time);
-        this.operation = operation;
-        this.time = time;
+        this.operation = ifNullFail(operation);
+        this.time = ifNegativeFail(time);
     }
 
     @Nonnull

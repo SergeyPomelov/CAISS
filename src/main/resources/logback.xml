@@ -25,7 +25,7 @@
         </encoder>
     </appender>
 
-    <logger name="benchmarks.tasks.ants" level="INFO"/>
+    <logger name="benchmarks.ants" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

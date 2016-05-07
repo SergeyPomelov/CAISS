@@ -32,6 +32,8 @@ import simulation.structures.interaction.DataBlock;
 import simulation.structures.interaction.OperationWithData;
 
 import static util.Constants.LS;
+import static util.ConversionUtil.nullFilter;
+import static util.Restrictions.ifNullFail;
 
 /**
  * Dependencies on algorithm steps a.k.a. data flow dependencies
@@ -67,9 +69,9 @@ final class DataDependency extends AlgorithmComponent {
     DataDependency(String name, DependencyType type, Collection<OperationWithData> in,
                    Collection<OperationWithData> out) {
         super(name);
-        this.type = DependencyType.valueOf(type.name());
-        this.in = ImmutableList.copyOf(in);
-        this.out = ImmutableList.copyOf(out);
+        this.type = ifNullFail(type);
+        this.in = ImmutableList.copyOf(nullFilter(in));
+        this.out = ImmutableList.copyOf(nullFilter(out));
     }
 
     @Nonnull

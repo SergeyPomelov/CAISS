@@ -29,9 +29,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import simulation.structures.interaction.DataType;
-
 import static util.ConversionUtil.nullFilter;
+import static util.Restrictions.ifNegativeFail;
 
 /**
  * @author Sergey Pomelov on 15/04/2016.
@@ -39,55 +38,37 @@ import static util.ConversionUtil.nullFilter;
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
 @ParametersAreNonnullByDefault
-final class DataLinkTransferCapabilities implements Serializable {
+final class TransferCapabilities implements Serializable {
 
     private static final long serialVersionUID = -5931373465895118508L;
 
     @Nonnull
-    private final List<DataType> dataType;
-    @Nonnull
-    private final List<Integer> dataCapacity;
-    @Nonnull
-    private final List<Long> dataTransferSpeed;
+    private final List<TransferCapability> transferCapabilities;
     @Nonnull
     @Nonnegative
     private final Long byteCapacity;
 
-    DataLinkTransferCapabilities(DataLinkTransferCapabilities toCopy) {
-        this(toCopy.dataType, toCopy.dataCapacity, toCopy.dataTransferSpeed, toCopy.byteCapacity);
+    TransferCapabilities(TransferCapabilities toCopy) {
+        this(toCopy.transferCapabilities, toCopy.byteCapacity);
     }
 
     /**
-     * @param dataType     what data types link could transfer
-     * @param dataCapacity how much data we could transfer. Element number i means how much we can
-     *                     capacity type of {code inDataType.get(i)}
-     * @param byteCapacity how much physically data could be transferred
+     * @param transferCapabilities what data types link could transfer and how much data we could
+     *                             transfer.
+     * @param byteCapacity         how much physically data could be transferred
      */
-    DataLinkTransferCapabilities(Collection<DataType> dataType, Collection<Integer> dataCapacity,
-                                 Collection<Long> dataTransferSpeed, Long byteCapacity) {
-        this.dataType = ImmutableList.copyOf(nullFilter(dataType));
-        this.dataCapacity = ImmutableList.copyOf(nullFilter(dataCapacity));
-        this.dataTransferSpeed = ImmutableList.copyOf(nullFilter(dataTransferSpeed));
-        this.byteCapacity = byteCapacity;
+    TransferCapabilities(Collection<TransferCapability> transferCapabilities, Long byteCapacity) {
+        this.transferCapabilities = ImmutableList.copyOf(nullFilter(transferCapabilities));
+        this.byteCapacity = ifNegativeFail(byteCapacity);
     }
 
     @Nonnull
-    public List<DataType> getDataType() {
-        return dataType;
+    List<TransferCapability> getTransferCapabilities() {
+        return transferCapabilities;
     }
 
     @Nonnull
-    public List<Integer> getDataCapacity() {
-        return dataCapacity;
-    }
-
-    @Nonnull
-    public List<Long> getDataTransferSpeed() {
-        return dataTransferSpeed;
-    }
-
-    @Nonnull
-    public Long getByteCapacity() {
+    Long getByteCapacity() {
         return byteCapacity;
     }
 }

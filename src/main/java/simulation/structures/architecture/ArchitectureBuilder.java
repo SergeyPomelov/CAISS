@@ -49,10 +49,9 @@ public final class ArchitectureBuilder implements Serializable {
     private static final String INVERSE = "inverse";
 
     private static final MemoryNode memory = new MemoryNode("DDR3",
-            new ArrayList<>(Collections.singletonList(DataType.EIGHT_B_FL)),
-            new ArrayList<>(Collections.singletonList(1000 * 1000)),
+            Collections.singletonList(
+                    new DataBlock("8bytes", DataType.EIGHT_B_FL, 1000L * 1000L)),
             BigDecimal.valueOf(8L * 1000L * 1000L));
-
 
     private static final DataBlock matrix =
             new DataBlock(WHOLE_ARRAY, DataType.FOUR_B_FL, 1000L * 1000L);
@@ -87,25 +86,22 @@ public final class ArchitectureBuilder implements Serializable {
     @Nonnull
     public static Computer buildFourCore() {
 
-        final ArithmeticNode coreOne = new ArithmeticNode("Core1", speed);
-        final ArithmeticNode coreTwo = new ArithmeticNode("Core2", speed);
-        final ArithmeticNode coreThree = new ArithmeticNode("Core3", speed);
-        final ArithmeticNode coreFour = new ArithmeticNode("Core4", speed);
+        final CalculationNode coreOne = new CalculationNode("Core1", speed);
+        final CalculationNode coreTwo = new CalculationNode("Core2", speed);
+        final CalculationNode coreThree = new CalculationNode("Core3", speed);
+        final CalculationNode coreFour = new CalculationNode("Core4", speed);
 
-        final ArrayList<DataType> inDataType =
-                new ArrayList<>(Collections.singletonList(DataType.FOUR_B_FL));
-        final ArrayList<Integer> inDataCapacity =
-                new ArrayList<>(Collections.singletonList(1000000));
-        final ArrayList<Long> inDataTransferSpeed =
-                new ArrayList<>(Collections.singletonList(1000L));
+        final List<TransferCapability> transferCapabilities = ImmutableList.of(
+                new TransferCapability(DataType.FOUR_B_FL, 1_000_000, 1000L));
+
         final ArrayList<ArchitectureComponent> inIn =
                 new ArrayList<>(Collections.singletonList(memory));
         final ArrayList<ArchitectureComponent> inOut =
                 new ArrayList<>(Arrays.asList(coreOne, coreTwo, coreThree, coreFour));
 
         final DataLink bus =
-                new DataLink("bus", new DataLinkTransferCapabilities(inDataType, inDataCapacity,
-                        inDataTransferSpeed, 4000L), inIn, inOut);
+                new DataLink("bus", new TransferCapabilities(transferCapabilities, 4000L),
+                        inIn, inOut);
 
         return new Computer(Collections.singletonList(bus));
     }
@@ -115,24 +111,19 @@ public final class ArchitectureBuilder implements Serializable {
      */
     @Nonnull
     public static Computer buildTwoCore() {
-        final ArithmeticNode coreOne = new ArithmeticNode("Core1", speed);
-        final ArithmeticNode coreTwo = new ArithmeticNode("Core2", speed);
+        final CalculationNode coreOne = new CalculationNode("Core1", speed);
+        final CalculationNode coreTwo = new CalculationNode("Core2", speed);
 
 
-        final ArrayList<DataType> inDataType =
-                new ArrayList<>(Collections.singletonList(DataType.FOUR_B_FL));
-        final ArrayList<Integer> inDataCapacity =
-                new ArrayList<>(Collections.singletonList(1_000_000));
-        final ArrayList<Long> inDataTransferSpeed =
-                new ArrayList<>(Collections.singletonList(1000L));
+        final List<TransferCapability> transferCapabilities = ImmutableList.of(
+                new TransferCapability(DataType.FOUR_B_FL, 1_000_000, 1000L));
         final ArrayList<ArchitectureComponent> inIn =
                 new ArrayList<>(Collections.singletonList(memory));
         final ArrayList<ArchitectureComponent> inOut =
                 new ArrayList<>(Arrays.asList(coreOne, coreTwo));
 
         final DataLink bus = new DataLink("bus",
-                new DataLinkTransferCapabilities(inDataType, inDataCapacity,
-                        inDataTransferSpeed, 4000L), inIn, inOut);
+                new TransferCapabilities(transferCapabilities, 4000L), inIn, inOut);
 
         return new Computer(Collections.singletonList(bus));
     }
@@ -142,22 +133,17 @@ public final class ArchitectureBuilder implements Serializable {
      */
     @Nonnull
     public static Computer buildOneCore() {
-        final ArithmeticNode coreOne = new ArithmeticNode("Core1", speed);
+        final CalculationNode coreOne = new CalculationNode("Core1", speed);
 
-        final ArrayList<DataType> inDataType =
-                new ArrayList<>(Collections.singletonList(DataType.FOUR_B_FL));
-        final ArrayList<Integer> inDataCapacity =
-                new ArrayList<>(Collections.singletonList(1000 * 1000));
-        final ArrayList<Long> inDataTransferSpeed =
-                new ArrayList<>(Collections.singletonList(1000L));
+        final List<TransferCapability> transferCapabilities = ImmutableList.of(
+                new TransferCapability(DataType.FOUR_B_FL, 1_000_000, 1000L));
         final ArrayList<ArchitectureComponent> inIn =
                 new ArrayList<>(Collections.singletonList(memory));
         final ArrayList<ArchitectureComponent> inOut =
                 new ArrayList<>(Collections.singletonList(coreOne));
 
         final DataLink bus = new DataLink("bus",
-                new DataLinkTransferCapabilities(inDataType, inDataCapacity,
-                        inDataTransferSpeed, 4000L), inIn, inOut);
+                new TransferCapabilities(transferCapabilities, 4000L), inIn, inOut);
 
         return new Computer(Collections.singletonList(bus));
     }

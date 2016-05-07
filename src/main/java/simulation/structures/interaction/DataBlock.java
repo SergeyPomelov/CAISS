@@ -24,7 +24,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import util.Restrictions;
+import static util.Restrictions.ifNegativeFail;
+import static util.Restrictions.ifNullFail;
 
 /**
  * Data representation.
@@ -55,10 +56,8 @@ public final class DataBlock extends ComputingObject {
      */
     public DataBlock(String name, DataType type, @Nonnegative Long size) {
         super(name);
-        Restrictions.ifContainsNullFastFail(name, type);
-        Restrictions.ifNotOnlyPositivesFastFail(size);
-        this.type = type;
-        this.size = size;
+        this.type = ifNullFail(type);
+        this.size = ifNegativeFail(size);
     }
 
     @Nonnull
@@ -81,6 +80,11 @@ public final class DataBlock extends ComputingObject {
     @Override
     public int hashCode() {
         return type.ordinal() + size.intValue();
+    }
+
+    @Override
+    public String toString() {
+        return info();
     }
 
     @Override

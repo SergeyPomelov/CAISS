@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 
 import simulation.structures.interaction.SerializableElement;
 
+import static util.Restrictions.ifNullFail;
+
 /**
  * Main computational process controller.
  * @author Sergey Pomelov on 11.11.14.
@@ -30,11 +32,12 @@ import simulation.structures.interaction.SerializableElement;
 public abstract class StructureElement implements SerializableElement, ComponentTyped {
 
     private static final long serialVersionUID = 6086798332605789768L;
+
     @Nonnull
     private String name = "";
 
-    protected StructureElement(@Nonnull String name) {
-        this.name = name;
+    protected StructureElement(String name) {
+        this.name = ifNullFail(name);
     }
 
     @Nonnull

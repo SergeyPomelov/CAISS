@@ -30,7 +30,7 @@ import javax.annotation.concurrent.Immutable;
 import simulation.structures.algorithm.Algorithm;
 import simulation.structures.algorithm.AlgorithmBuilder;
 import simulation.structures.architecture.ArchitectureBuilder;
-import simulation.structures.architecture.ArithmeticNode;
+import simulation.structures.architecture.CalculationNode;
 import simulation.structures.architecture.Computer;
 import simulation.structures.architecture.DataLink;
 import simulation.structures.commons.StructureElement;
@@ -111,21 +111,24 @@ public final class SimulationController implements ISimulationController {
         out.append(timeManager.getLog()).append(timeManager.printTimings());
     }
 
-    private boolean doOperation(TasksPlanner timeManager, Computer comp) {
+    private void doOperation(TasksPlanner timeManager, Computer comp) {
         DataLink busDataLink = null;
         for (final DataLink dataLink : comp.getArchitecture()) {
             busDataLink = dataLink;
         }
 
-        final Optional<ArithmeticNode> core = timeManager.getFreeArNode(comp.getArchNodes());
-        if (core.isPresent()) {
-            timeManager.transfer(comp.getMemoryNodes().get(0),
-                    busDataLink, core.get(), transferSmall);
-            timeManager.calculate(core.get(), subInverse);
-            return true;
+        if (busDataLink != null) {
+            final Optional<CalculationNode> core =
+                    timeManager.getFreeCalculationNode(comp.getCalculationNodes());
+            if (core.isPresent()) {
+                timeManager.transfer(comp.getMemoryNodes().get(0),
+                        busDataLink, core.get(), transferSmall);
+                timeManager.calculate(core.get(), subInverse);
+            } else {
+                log.error("Can't find a free node in {}!", comp);
+            }
         } else {
-            log.error("Can't find a free node in {}.", comp);
-            return false;
+            log.error("No data link {}!", comp);
         }
     }
 }
