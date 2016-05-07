@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import javax.annotation.concurrent.Immutable;
 import simulation.structures.algorithm.Algorithm;
 import simulation.structures.algorithm.AlgorithmBuilder;
 import simulation.structures.architecture.ArchitectureBuilder;
-import simulation.structures.architecture.ArithmeticNode;
+import simulation.structures.architecture.CalculationNode;
 import simulation.structures.architecture.Computer;
 import simulation.structures.architecture.DataLink;
 import simulation.structures.commons.StructureElement;
@@ -42,7 +42,8 @@ import simulation.structures.interaction.OperationWithData;
 import static util.Constants.LS;
 
 /**
- * @author Sergei Pomelov on 22.2.14. Class for control simulation process. Contains it logics.
+ * Class for control simulation process. Contains its logic.
+ * @author Sergey Pomelov on 22/2/14.
  * @see TasksPlanner
  */
 @Immutable
@@ -58,9 +59,6 @@ public final class SimulationController implements ISimulationController {
             new OperationWithData("inverse", OperationType.INVERSE, subMatrix);
     private final OperationWithData transferSmall =
             new OperationWithData("inverse", OperationType.TRANSFER, subMatrix);
-
-    public SimulationController() {
-    }
 
     @Nonnull
     @Override
@@ -90,7 +88,7 @@ public final class SimulationController implements ISimulationController {
     private static void addElementsListInfo(Iterable<? extends StructureElement> elements,
                                             StringBuilder out, String label) {
         addDivider(out, label);
-        for (StructureElement element : elements) {
+        for (final StructureElement element : elements) {
             out.append(element.info());
         }
     }
@@ -113,21 +111,24 @@ public final class SimulationController implements ISimulationController {
         out.append(timeManager.getLog()).append(timeManager.printTimings());
     }
 
-    private boolean doOperation(TasksPlanner timeManager, Computer comp) {
+    private void doOperation(TasksPlanner timeManager, Computer comp) {
         DataLink busDataLink = null;
         for (final DataLink dataLink : comp.getArchitecture()) {
             busDataLink = dataLink;
         }
 
-        final Optional<ArithmeticNode> core = timeManager.getFreeArNode(comp.getArchNodes());
-        if (core.isPresent()) {
-            timeManager.transfer(comp.getMemoryNodes().get(0),
-                    busDataLink, core.get(), transferSmall);
-            timeManager.calculate(core.get(), subInverse);
-            return true;
+        if (busDataLink != null) {
+            final Optional<CalculationNode> core =
+                    timeManager.getFreeCalculationNode(comp.getCalculationNodes());
+            if (core.isPresent()) {
+                timeManager.transfer(comp.getMemoryNodes().get(0),
+                        busDataLink, core.get(), transferSmall);
+                timeManager.calculate(core.get(), subInverse);
+            } else {
+                log.error("Can't find a free node in {}!", comp);
+            }
         } else {
-            log.error("Can't find a free node in {}.", comp);
-            return false;
+            log.error("No data link {}!", comp);
         }
     }
 }

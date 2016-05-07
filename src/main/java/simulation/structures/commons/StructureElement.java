@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,17 +23,21 @@ import javax.annotation.Nonnull;
 
 import simulation.structures.interaction.SerializableElement;
 
+import static util.Restrictions.ifNullFail;
+
 /**
- * @author Sergei Pomelov on 11.11.14. Main computational process controller
+ * Main computational process controller.
+ * @author Sergey Pomelov on 11.11.14.
  */
 public abstract class StructureElement implements SerializableElement, ComponentTyped {
 
     private static final long serialVersionUID = 6086798332605789768L;
+
     @Nonnull
     private String name = "";
 
-    protected StructureElement(@Nonnull final String inName) {
-        name = inName;
+    protected StructureElement(String name) {
+        this.name = ifNullFail(name);
     }
 
     @Nonnull

@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -18,9 +18,14 @@
 
 package simulation.structures.interaction;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
- * @author Sergey Pomelov on 2.10.14. computational operations types
+ * Computational operations types.
+ *
+ * @author Sergey Pomelov on 2/10/14.
  */
+@Immutable
 public enum OperationType {
     INVERSE, ADDITION, TRANSPOSE, TRANSFER, NONE
 }

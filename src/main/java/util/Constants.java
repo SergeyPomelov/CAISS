@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -18,17 +18,24 @@
 
 package util;
 
+import java.io.File;
+
 /**
+ * Project wide constants container.
+ *
  * @author Sergey Pomelov on 12.03.15.
  */
 public final class Constants {
     public static final String LS = System.lineSeparator().intern();
-    public static final String GNU_COPYRIGHT_MSG =
+    public static final String FS = File.separator;
+    static final String GNU_COPYRIGHT_MSG =
             "    Computer and algorithm interaction simulation software (CAISS)." + LS +
-                    "    Copyright (C) " + TimeUtil.getCurrentYear() + " Pomelov Sergey Valer'evich." + LS +
+                    "    Copyright (C) " + TimeUtil.getCurrentYear()
+                    + " Pomelov Sergey Valer'evich." + LS +
                     "    This program comes with ABSOLUTELY NO WARRANTY." + LS +
                     "    This is free software, and you are welcome to redistribute it" + LS +
-                    "    under certain conditions. For details go to <http://www.gnu.org/licenses/>.";
+                    "    under certain conditions. " +
+                    "For details go to <http://www.gnu.org/licenses/>.";
 
     private Constants() { /*utility class*/ }
 }

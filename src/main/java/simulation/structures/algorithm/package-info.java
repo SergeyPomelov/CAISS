@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  */
 
 /**
- * @author Sergei Pomelov on 18.03.15. Abstract algorith representation.
+ * Abstract algorithm representation.
+ * @author Sergey Pomelov on 18.03.15.
  */
 package simulation.structures.algorithm;

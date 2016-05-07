@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ import javax.annotation.concurrent.Immutable;
 import static util.ConversionUtil.nullFilter;
 
 /**
- * @author Sergei Pomelov on 12.2.14. Computation node or core
+ * Computation node or core.
+ * @author Sergey Pomelov on 12/2/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
@@ -40,29 +41,25 @@ public final class Computer implements Serializable {
     @Nonnull
     private final List<DataLink> architecture;         // architecture graph
     @Nonnull
-    private final List<ArithmeticNode> cores;      // arithmetic nodes list
+    private final List<CalculationNode> calculationNodes;      // arithmetic nodes list
     @Nonnull
-    private final List<MemoryNode> memory;         // memory nodes list
+    private final List<MemoryNode> memoryNodes;         // memoryNodes nodes list
 
     /** architecture graph */
-    public Computer(@Nonnull final Collection<DataLink> structure) {
+    public Computer(Collection<DataLink> structure) {
         architecture = ImmutableList.copyOf(nullFilter(structure));
 
-        final Collection<ArithmeticNode> tempArchNodes = new ArrayList<>(5);
+        final Collection<CalculationNode> tempArchNodes = new ArrayList<>(5);
         final Collection<MemoryNode> tempMemoryNodes = new ArrayList<>(1);
         for (final DataLink dataLink : architecture) {
-            final Collection<ArithmeticNode> linkArNodes = dataLink.getArithmeticNodes();
+            final Collection<CalculationNode> linkArNodes = dataLink.getCalculationNodes();
             final Collection<MemoryNode> linkMemNodes = dataLink.getMemoryNodes();
-            if (linkArNodes != null) {
-                tempArchNodes.addAll(linkArNodes);
-            }
-            if (linkMemNodes != null) {
-                tempMemoryNodes.addAll(linkMemNodes);
-            }
+            tempArchNodes.addAll(linkArNodes);
+            tempMemoryNodes.addAll(linkMemNodes);
         }
 
-        cores = ImmutableList.copyOf(tempArchNodes);
-        memory = ImmutableList.copyOf(tempMemoryNodes);
+        calculationNodes = ImmutableList.copyOf(tempArchNodes);
+        memoryNodes = ImmutableList.copyOf(tempMemoryNodes);
     }
 
     @Nonnull
@@ -72,11 +69,11 @@ public final class Computer implements Serializable {
 
     @Nonnull
     public List<MemoryNode> getMemoryNodes() {
-        return memory;
+        return memoryNodes;
     }
 
     @Nonnull
-    public Collection<ArithmeticNode> getArchNodes() {
-        return cores;
+    public Collection<CalculationNode> getCalculationNodes() {
+        return calculationNodes;
     }
 }

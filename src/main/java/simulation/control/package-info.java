@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
  */
 
 /**
- * @author Sergei Pomelov on 18.03.15. Objects wich contains logic of controlling computations
- * processes and actors Additionally it represents journal of a computational process mailstones.
+ * Objects which contains logic of controlling computations
+ * processes and actors Additionally it represents journal of a computational process mail stones.
+ * @author Sergey Pomelov on 18.03.15.
  */
 package simulation.control;

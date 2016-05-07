@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,8 +24,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import static util.Restrictions.ifNegativeFail;
+import static util.Restrictions.ifNullFail;
+
 /**
- * @author Sergei Pomelov on 2.5.14. Data representation
+ * Data representation.
+ * @author Sergey Pomelov on 2/5/14.
  */
 @Immutable
 @ParametersAreNonnullByDefault
@@ -40,27 +44,20 @@ public final class DataBlock extends ComputingObject {
     @Nonnegative
     private final Long size;
 
-    private DataBlock() {
-        this("ZeroMemory", DataType.EIGHT_B_FL, 0L);
-    }
-
-    /** @param init DataBlock for copying */
-    public DataBlock(final DataBlock init) {
-        this(init.getName(), init.type, init.size);
+    /** @param toCopy DataBlock for copying */
+    DataBlock(DataBlock toCopy) {
+        this(toCopy.getName(), toCopy.type, toCopy.size);
     }
 
     /**
-     * @param inName ordinary human-friendly name of the object
-     * @param inType type of contained data
-     * @param inSize how many data objects of this type are contained here
+     * @param name ordinary human-friendly name of the object
+     * @param type type of contained data
+     * @param size how many data objects of this type are contained here
      */
-    public DataBlock(final String inName, final DataType inType, @Nonnegative final Long inSize) {
-        super(inName);
-        if (inSize <= 0L) {
-            throw new IllegalArgumentException("Wrong inSize for createAlgorithm DataBlock");
-        }
-        type = DataType.valueOf(inType.name());
-        size = inSize;
+    public DataBlock(String name, DataType type, @Nonnegative Long size) {
+        super(name);
+        this.type = ifNullFail(type);
+        this.size = ifNegativeFail(size);
     }
 
     @Nonnull
@@ -75,7 +72,7 @@ public final class DataBlock extends ComputingObject {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         return (obj instanceof DataBlock) && ((((DataBlock) obj).type == type)
                 && (((DataBlock) obj).size.equals(size)));
     }
@@ -83,6 +80,11 @@ public final class DataBlock extends ComputingObject {
     @Override
     public int hashCode() {
         return type.ordinal() + size.intValue();
+    }
+
+    @Override
+    public String toString() {
+        return info();
     }
 
     @Override

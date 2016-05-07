@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,15 +24,24 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Sergey Pomelov on 15/04/2016.
  */
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class TimeUtil {
 
     private TimeUtil() { /* utility class */ }
 
-    public static int getCurrentYear() {
-        return Calendar.getInstance().get(Calendar.YEAR);
-    }
-
     public static long nanoToMls(long nano) {
         return TimeUnit.NANOSECONDS.toMillis(nano);
+    }
+
+    public static long secToNano(int seconds) {
+        return TimeUnit.SECONDS.toNanos(seconds);
+    }
+
+    public static long mlsToNano(int milliseconds) {
+        return TimeUnit.SECONDS.toNanos(milliseconds);
+    }
+
+    static int getCurrentYear() {
+        return Calendar.getInstance().get(Calendar.YEAR);
     }
 }

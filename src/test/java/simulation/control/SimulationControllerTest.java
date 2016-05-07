@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,19 +23,12 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 
 /**
- * ControllerImpl Tester.
- *
- * @author <Authors name>
- * @version 1.0
- * @since <pre>Apr 17, 2015</pre>
+ * @author Sergey Pomelov on 05/05/2016.
  */
 public class SimulationControllerTest {
 
-    /**
-     * Method: simulate()
-     */
     @Test
-    public void testSimulate() {
+    public void testSimulateSmoke() {
         assertFalse(new SimulationController().simulate().isEmpty());
     }
 } 

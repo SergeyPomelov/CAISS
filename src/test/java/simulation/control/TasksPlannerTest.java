@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ package simulation.control;
 import org.junit.Test;
 
 import simulation.structures.architecture.ArchitectureBuilder;
-import simulation.structures.architecture.ArithmeticNode;
+import simulation.structures.architecture.CalculationNode;
 import simulation.structures.architecture.Computer;
 import simulation.structures.architecture.DataLink;
 import simulation.structures.interaction.DataBlock;
@@ -35,11 +35,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Gunt Tester.
- *
- * @author <Authors name>
- * @version 1.0
- * @since <pre>Apr 17, 2015</pre>
+ * @author Sergey Pomelov on 05/05/2016.
  */
 @SuppressWarnings({"ConstantConditions", "OptionalGetWithoutIsPresent"})
 public class TasksPlannerTest {
@@ -72,7 +68,7 @@ public class TasksPlannerTest {
     public void testGetLog() {
         final TasksPlanner tasksPlanner = new TasksPlanner(ArchitectureBuilder.buildOneCore());
         final Computer comp = ArchitectureBuilder.buildOneCore();
-        final ArithmeticNode core = tasksPlanner.getFreeArNode(comp.getArchNodes()).get();
+        final CalculationNode core = tasksPlanner.getFreeCalculationNode(comp.getCalculationNodes()).get();
         final DataBlock subMatrix = new DataBlock("subArray", DataType.FOUR_B_FL, 500L * 500L);
         final OperationWithData subInverse =
                 new OperationWithData("inverse", OperationType.INVERSE, subMatrix);
@@ -83,7 +79,7 @@ public class TasksPlannerTest {
         tasksPlanner.load(comp);
         tasksPlanner.transfer(comp.getMemoryNodes().get(0), dataLink, core, transferSmall);
         tasksPlanner.calculate(core, subInverse);
-        assertNotNull(tasksPlanner.getFreeArNode(comp.getArchNodes()));
+        assertNotNull(tasksPlanner.getFreeCalculationNode(comp.getCalculationNodes()));
         assertFalse(tasksPlanner.getLog().isEmpty());
     }
 
@@ -91,6 +87,6 @@ public class TasksPlannerTest {
     public void testFreeArNode() {
         final TasksPlanner tasksPlanner = new TasksPlanner(ArchitectureBuilder.buildOneCore());
         final Computer comp = ArchitectureBuilder.buildOneCore();
-        assertNotNull(tasksPlanner.getFreeArNode(comp.getArchNodes()));
+        assertNotNull(tasksPlanner.getFreeCalculationNode(comp.getCalculationNodes()));
     }
 } 

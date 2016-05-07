@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,11 @@
 
 package simulation.structures.commons;
 
-/* Created by Sergei Pomelov on 11.11.14. */
+/**
+ * The upper level entities classification.
+ *
+ * @author Sergey Pomelov on 2/5/14.
+ */
 public enum ComponentType {
     ARCHITECTURE, ALGORITHM
 }

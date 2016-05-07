@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
+ * Class for conversion methods.
  * @author Sergey Pomelov on 15/04/2016.
  */
 public final class ConversionUtil {
@@ -34,6 +35,7 @@ public final class ConversionUtil {
         return bytes / BYTES_IN_MEGABYTES;
     }
 
+    // by design throws NPE if the collection pointer is null
     public static <T> Collection<T> nullFilter(Collection<T> collection) {
         return collection.stream().filter(obj -> obj != null).collect(Collectors.toList());
     }

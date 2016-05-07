@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,13 +24,15 @@ import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import static util.ConversionUtil.nullFilter;
+
 /**
- * @author Sergei Pomelov on 12.2.14 Graph like structure represents algorithm
+ * Graph like structure represents algorithm.
+ * @author Sergey Pomelov on 12/2/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
@@ -42,9 +44,8 @@ public final class Algorithm implements Serializable {
     @Nonnull
     private final List<DataDependency> structure;
 
-    public Algorithm(@Nonnull Collection<DataDependency> structure) {
-        this.structure = ImmutableList.copyOf(structure.stream().filter(obj -> obj != null)
-                .collect(Collectors.toList()));
+    Algorithm(@Nonnull Collection<DataDependency> structure) {
+        this.structure = ImmutableList.copyOf(nullFilter(structure));
     }
 
     @Nonnull

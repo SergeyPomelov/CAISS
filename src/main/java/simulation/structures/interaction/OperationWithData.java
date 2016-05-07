@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,8 +23,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import util.Restrictions;
+
 /**
- * @author Sergei Pomelov on 2.5.14.
+ * @author Sergey Pomelov on 2/5/14.
  */
 @Immutable
 @ParametersAreNonnullByDefault
@@ -36,28 +38,19 @@ public final class OperationWithData extends ComputingObject {
     @Nonnull
     private final DataBlock data;                      // with what
 
-
-    OperationWithData() {
-        this("ZeroOperation",
-                OperationType.ADDITION,
-                new DataBlock("ZeroDataBlock", DataType.BOOL, 0L));
-    }
-
-    public OperationWithData(OperationWithData init) {
-        this(init.getName(), init.type, init.data);
+    public OperationWithData(OperationWithData toCopy) {
+        this(toCopy.getName(), toCopy.type, toCopy.data);
     }
 
     /**
-     * @param inType which operation
-     * @param inData how fast we can do it
+     * @param type which operation
+     * @param data how fast we can do it
      */
-    public OperationWithData(String inName, OperationType inType, DataBlock inData) {
-        super(inName);
-        if (inData.getSize() <= 0) {
-            throw new IllegalArgumentException("Wrong inData for createAlgorithm Operation");
-        }
-        type = OperationType.valueOf(inType.name());
-        data = new DataBlock(inData);
+    public OperationWithData(String name, OperationType type, DataBlock data) {
+        super(name);
+        Restrictions.ifContainsNullFastFail(type, data);
+        this.type = type;
+        this.data = data;
     }
 
     @Nonnull

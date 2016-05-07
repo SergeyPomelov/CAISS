@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
@@ -36,9 +36,12 @@ import simulation.structures.interaction.OperationWithData;
 
 import static util.Constants.LS;
 import static util.ConversionUtil.nullFilter;
+import static util.Restrictions.ifNullFail;
 
 /**
- * @author Sergei Pomelov on 2.5.14. Link between components
+ * Link between components.
+ *
+ * @author Sergey Pomelov on 2/5/14.
  */
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
@@ -46,98 +49,46 @@ import static util.ConversionUtil.nullFilter;
 public final class DataLink extends ArchitectureComponent {
 
     private static final long serialVersionUID = -4090489770450876487L;
-    private static final String LINK_CAP_OVERWHELMED = "Link cap overwhelmed";
+    private static final String ILLEGAL_IDX = "Illegal idx.";
 
     @Nonnull
-    private final DataLinkTransferCapabilities dataLinkTransferCapabilities;
+    private final TransferCapabilities transferCapabilities;
     @Nonnull
     private final List<ArchitectureComponent> in;
     @Nonnull
     private final List<ArchitectureComponent> out;
 
-    public DataLink(DataLink init) {
-        this(init.getName(), init.dataLinkTransferCapabilities, init.in, init.out);
+    public DataLink(DataLink toCopy) {
+        this(toCopy.getName(), toCopy.transferCapabilities, toCopy.in, toCopy.out);
     }
 
     /**
-     * @param inName name of physical link
-     * @param inIn   from where link can transfer
-     * @param inOut  to where link can transfer
+     * @param name name of physical link
+     * @param in   from where link can transfer
+     * @param out  to where link can transfer
      */
-    public DataLink(String inName,
-                    DataLinkTransferCapabilities dataLinkTransferCapabilities,
-                    Collection<ArchitectureComponent> inIn,
-                    Collection<ArchitectureComponent> inOut) {
-        super(inName);
-        this.dataLinkTransferCapabilities = dataLinkTransferCapabilities;
-        in = ImmutableList.copyOf(nullFilter(inIn));
-        out = ImmutableList.copyOf(nullFilter(inOut));
+    DataLink(String name, TransferCapabilities transferCapabilities,
+             Collection<ArchitectureComponent> in, Collection<ArchitectureComponent> out) {
+        super(name);
+        this.transferCapabilities = ifNullFail(transferCapabilities);
+        this.in = ImmutableList.copyOf(nullFilter(in));
+        this.out = ImmutableList.copyOf(nullFilter(out));
     }
 
-    @Nullable
-    public Long getTransferTime(OperationWithData operationWithData) {
-        if ((operationWithData.getType() == OperationType.TRANSFER)
-                && getDataType().contains(operationWithData.getData().getType())) {
-            final int i = getDataType().indexOf(operationWithData.getData().getType());
-            return (long) (getDataTransferSpeed(i) *
-                    ((float) operationWithData.getData().getSize() / getDataCapacity(i)));
+    @Nonnull
+    public Optional<Float> getTransferTime(OperationWithData operationWithData) {
+        final Optional<TransferCapability> capability = findTransferCapability(operationWithData);
+        if (capability.isPresent()) {
+            return Optional.of((capability.get().getDataTransferSpeed() *
+                    ((float) operationWithData.getData().getSize()
+                            / capability.get().getDataCapacity())));
         }
-        return null;
+        return Optional.empty();
     }
 
     @Nonnull
     public List<ArchitectureComponent> getIn() {
         return in;
-    }
-
-    @Nonnull
-    public ArchitectureComponent getIn(int i) {
-        if (i >= in.size()) {
-            throw new IllegalArgumentException(LINK_CAP_OVERWHELMED);
-        }
-        return in.get(i);
-    }
-
-    @Nonnull
-    public List<ArchitectureComponent> getOut() {
-        return out;
-    }
-
-    @Nonnull
-    public ArchitectureComponent getOut(int i) {
-        if (i >= out.size()) {
-            throw new IllegalArgumentException(LINK_CAP_OVERWHELMED);
-        }
-        return out.get(i);
-    }
-
-    @Nullable
-    public Collection<ArithmeticNode> getArithmeticNodes() {
-        final Collection<ArithmeticNode> cores = new ArrayList<>(5);
-        final Collection<ArchitectureComponent> all = new ArrayList<>(in);
-        all.addAll(out);
-        all.stream().filter(el ->
-                el.getArchitectureComponentType() == ArchitectureComponentType.ARITHMETIC_NODE)
-                .forEach(el -> {
-                    final ArithmeticNode node = (ArithmeticNode) el;
-                    cores.add(node);
-                });
-        return ImmutableList.copyOf(cores);
-    }
-
-    @Nullable
-    public Collection<MemoryNode> getMemoryNodes() {
-        final Collection<MemoryNode> memory = new ArrayList<>(1);
-        final Collection<ArchitectureComponent> all = new ArrayList<>(in);
-        all.addAll(out);
-
-        all.stream().filter(el ->
-                el.getArchitectureComponentType() == ArchitectureComponentType.MEMORY_NODE)
-                .forEach(el -> {
-                    final MemoryNode node = (MemoryNode) el;
-                    memory.add(node);
-                });
-        return ImmutableList.copyOf(memory);
     }
 
     @Nonnull
@@ -154,10 +105,9 @@ public final class DataLink extends ArchitectureComponent {
                 .append(getDataByteCapacity())
                 .append("b: ");
 
-        for (final Long speed : getDataTransferSpeed()) {
-            final int i = getDataTransferSpeed().indexOf(speed);
-            output.append(String.format("| %s*%s - %smc ", getDataType(i).name(),
-                    getDataCapacity(i).toString(), speed));
+        for (final TransferCapability capability : getTransferCapabilities()) {
+            output.append(String.format("| %s*%s - %smc ", capability.getDataType().name(),
+                    capability.getDataCapacity(), capability.getDataTransferSpeed()));
         }
         output.append(LS);
 
@@ -174,49 +124,99 @@ public final class DataLink extends ArchitectureComponent {
         return output.toString();
     }
 
-    @Nonnull
-    private List<DataType> getDataType() {
-        return dataLinkTransferCapabilities.getDataType();
+    private Optional<TransferCapability> findTransferCapability(OperationWithData operation) {
+        if ((operation.getType() == OperationType.TRANSFER)) {
+            for (TransferCapability capability : getTransferCapabilities()) {
+                if (capability.getDataType() == operation.getData().getType()) {
+                    return Optional.of(capability);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Nonnull
-    private List<Integer> getDataCapacity() {
-        return dataLinkTransferCapabilities.getDataCapacity();
+    ArchitectureComponent getIn(int i) {
+        if ((i < 0) || (i >= in.size())) {
+            throw new IllegalArgumentException(ILLEGAL_IDX);
+        }
+        return in.get(i);
     }
 
     @Nonnull
+    List<ArchitectureComponent> getOut() {
+        return out;
+    }
+
+    @Nonnull
+    ArchitectureComponent getOut(int i) {
+        if ((i < 0) || (i >= out.size())) {
+            throw new IllegalArgumentException(ILLEGAL_IDX);
+        }
+        return out.get(i);
+    }
+
+    @Nonnull
+    Collection<CalculationNode> getCalculationNodes() {
+        final Collection<CalculationNode> calculationNodes = new ArrayList<>(5);
+        final Collection<ArchitectureComponent> all = new ArrayList<>(in);
+        all.addAll(out);
+        all.stream().filter(el ->
+                el.getArchitectureComponentType() == ArchitectureComponentType.CALCULATION_NODE)
+                .forEach(el -> {
+                    final CalculationNode node = (CalculationNode) el;
+                    calculationNodes.add(node);
+                });
+        return ImmutableList.copyOf(calculationNodes);
+    }
+
+    @Nonnull
+    Collection<MemoryNode> getMemoryNodes() {
+        final Collection<MemoryNode> memory = new ArrayList<>(1);
+        final Collection<ArchitectureComponent> all = new ArrayList<>(in);
+        all.addAll(out);
+
+        all.stream().filter(el ->
+                el.getArchitectureComponentType() == ArchitectureComponentType.MEMORY_NODE)
+                .forEach(el -> {
+                    final MemoryNode node = (MemoryNode) el;
+                    memory.add(node);
+                });
+        return ImmutableList.copyOf(memory);
+    }
+
     @Nonnegative
-    private Integer getDataCapacity(int i) {
-        if (i >= getDataCapacity().size()) {
-            throw new IllegalArgumentException(LINK_CAP_OVERWHELMED);
+    private int getDataCapacity(int i) {
+        if (i >= transferCapabilities.getTransferCapabilities().size()) {
+            throw new IllegalArgumentException(ILLEGAL_IDX);
         }
-        return getDataCapacity().get(i);
+        return getTransferCapabilities().get(i).getDataCapacity();
     }
 
-    @Nonnull
-    private List<Long> getDataTransferSpeed() {
-        return dataLinkTransferCapabilities.getDataTransferSpeed();
+
+    private long getDataTransferSpeed(int i) {
+        if (i > getTransferCapabilities().size()) {
+            throw new IllegalArgumentException(ILLEGAL_IDX);
+        }
+        return getTransferCapabilities().get(i).getDataTransferSpeed();
     }
 
-    @Nonnull
-    private Long getDataTransferSpeed(int i) {
-        if (i > getDataTransferSpeed().size()) {
-            throw new IllegalArgumentException(LINK_CAP_OVERWHELMED);
-        }
-        return getDataTransferSpeed().get(i);
+    private List<TransferCapability> getTransferCapabilities() {
+        return transferCapabilities.getTransferCapabilities();
     }
+
 
     @Nonnull
     private Long getDataByteCapacity() {
-        return dataLinkTransferCapabilities.getByteCapacity();
+        return transferCapabilities.getByteCapacity();
     }
 
     @Nonnull
     private DataType getDataType(int i) {
-        if (i >= getDataType().size()) {
-            throw new IllegalArgumentException(LINK_CAP_OVERWHELMED);
+        if (i >= getTransferCapabilities().size()) {
+            throw new IllegalArgumentException(ILLEGAL_IDX);
         }
-        return getDataType().get(i);
+        return getTransferCapabilities().get(i).getDataType();
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -21,9 +21,14 @@ package simulation.structures.interaction;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
+import static util.Restrictions.ifNullFail;
+
 /**
- * @author Sergei Pomelov on 2.5.14. Computational abstract actor
+ * Computational abstract actor.
+ *
+ * @author Sergey Pomelov on 2/5/14.
  */
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
 abstract class ComputingObject implements SerializableElement {
 
     private static final long serialVersionUID = 6086798332605789768L;
@@ -35,9 +40,9 @@ abstract class ComputingObject implements SerializableElement {
     @Nonnull
     private final String name;
 
-    /** @param inName ordinary human-friendly name of the object */
-    ComputingObject(@Nonnull final String inName) {
-        name = inName;
+    /** @param name ordinary human-friendly name of the object */
+    ComputingObject(String name) {
+        this.name = ifNullFail(name);
     }
 
     @Nonnull

@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -21,55 +21,107 @@ package simulation.structures.interaction;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static testutil.TestUtil.passedIfException;
 
 /**
  * DataBlock Tester.
  *
- * @author created by Sergei Pomelov on 12.03.15.
+ * @author Sergey Pomelov on 12.03.15.
  */
+@SuppressWarnings({"ConstantConditions", "NonBooleanMethodNameMayNotStartWithQuestion"})
 public class DataBlockTest {
 
-    private final DataBlock data1 = new DataBlock("1", DataType.B_DEC, 2L);
+    private static final String NAME = "data";
+    private static final DataType TYPE = DataType.B_DEC;
+    private static final long SIZE = 2L;
+    private static final DataBlock DATA = new DataBlock(NAME, TYPE, SIZE);
 
     @Test
-    public void testBadSize() {
-        boolean thrown = false;
-        try {
-            new DataBlock("1", DataType.B_DEC, -1L);
-        } catch (IllegalArgumentException ignored) {
-            thrown = true;
-        }
-        assertTrue(thrown);
+    public void nullName() {
+        passedIfException(() -> new DataBlock(null, TYPE, SIZE));
     }
 
     @Test
-    public void testEquals() {
-        DataBlock data2 = new DataBlock("1", DataType.B_DEC, 2L);
-        assertEquals(data1, data2);
+    public void nullType() {
+        passedIfException(() -> new DataBlock(NAME, null, SIZE));
     }
 
     @Test
-    public void testEqualsBack() {
-        DataBlock data2 = new DataBlock("1", DataType.B_DEC, 2L);
-        assertEquals(data2, data1);
+    public void negativeSize() {
+        passedIfException(() -> new DataBlock(NAME, TYPE, -1L));
     }
 
     @Test
-    public void testEqualsReflective() {
-        assertEquals(data1, data1);
+    public void equals() {
+        final DataBlock data2 = new DataBlock(NAME, TYPE, SIZE);
+        assertEquals(DATA, data2);
+        assertEquals(DATA.hashCode(), data2.hashCode());
     }
 
     @Test
-    public void testEqualsCopy() {
-        DataBlock data2 = new DataBlock(data1);
-        assertEquals(data1, data2);
+    public void equalsDespiteName() {
+        final DataBlock data2 = new DataBlock("2", TYPE, SIZE);
+        assertEquals(DATA, data2);
+        assertEquals(DATA.hashCode(), data2.hashCode());
     }
 
     @Test
-    public void testNotReferenceCopy() {
-        DataBlock data2 = new DataBlock(data1);
-        assertNotSame(data1, data2);
+    public void notEquals() {
+        final DataBlock data2 = new DataBlock(NAME, TYPE, 1L);
+        assertNotEquals(DATA, data2);
+        assertNotEquals(DATA.hashCode(), data2.hashCode());
+    }
+
+    @Test
+    public void equalsBack() {
+        final DataBlock data2 = new DataBlock(NAME, TYPE, SIZE);
+        assertEquals(DATA, data2);
+    }
+
+    @Test
+    public void equalsReflective() {
+        assertEquals(DATA, DATA);
+    }
+
+    @Test
+    public void equalsCopy() {
+        final DataBlock data2 = new DataBlock(DATA);
+        assertEquals(DATA, data2);
+    }
+
+    @Test
+    public void notReferenceCopy() {
+        final DataBlock data2 = new DataBlock(DATA);
+        assertNotSame(DATA, data2);
+    }
+
+    @Test
+    public void getType() {
+        final DataBlock data2 = new DataBlock(NAME, TYPE, SIZE);
+        assertEquals(TYPE, data2.getType());
+    }
+
+    @Test
+    public void getSize() {
+        final DataBlock data2 = new DataBlock(NAME, TYPE, SIZE);
+        assertEquals(SIZE, data2.getSize().longValue());
+    }
+
+    @Test
+    public void info() {
+        assertNotNull(DATA.info());
+    }
+
+    @Test
+    public void getId() {
+        assertNotNull(DATA.getId());
+    }
+
+    @Test
+    public void getName() {
+        assertEquals(NAME, DATA.getName());
     }
 }

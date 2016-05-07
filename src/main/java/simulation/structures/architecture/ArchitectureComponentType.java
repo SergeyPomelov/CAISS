@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,10 @@
 package simulation.structures.architecture;
 
 /**
- * @author Sergei Pomelov on 11.11.14. global computer components typing
+ * Global computer components typing.
+ * @author Sergey Pomelov on 11.11.14.
  */
+@SuppressWarnings("WeakerAccess")
 public enum ArchitectureComponentType {
-    ARITHMETIC_NODE, MEMORY_NODE, LINK
+    CALCULATION_NODE, MEMORY_NODE, LINK
 }

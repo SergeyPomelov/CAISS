@@ -1,6 +1,6 @@
 /*
  *     Computer and algorithm interaction simulation software (CAISS).
- *     Copyright (C) 2016 Sergei Pomelov
+ *     Copyright (C) 2016 Sergey Pomelov.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -32,10 +32,9 @@ import java.util.Optional;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import simulation.structures.architecture.ArchitectureComponent;
-import simulation.structures.architecture.ArithmeticNode;
+import simulation.structures.architecture.CalculationNode;
 import simulation.structures.architecture.Computer;
 import simulation.structures.architecture.DataLink;
 import simulation.structures.architecture.MemoryNode;
@@ -45,14 +44,15 @@ import static util.Constants.LS;
 import static util.Restrictions.containsNull;
 
 /**
- * @author Sergei Pomelov on 9.3.14. Utility class wich plans computational process by finding
- *         operarion executors. Second puropose is writing a computationsl process journal.
+ * Utility class which plans computational process by finding operation executors. Second purpose
+ * is writing a computations process journal.
+ * @author Sergey Pomelov on 9/3/14.
  */
 final class TasksPlanner {
     private static final Logger log = LoggerFactory.getLogger(TasksPlanner.class);
     /** temporary list of current computer arithmetic nodes */
     @Nonnull
-    private final Collection<ArithmeticNode> cores = new ArrayList<>(8);
+    private final Collection<CalculationNode> cores = new ArrayList<>(8);
     /** temporary list of current computer memory nodes */
     @Nonnull
     private final Collection<MemoryNode> memory = new ArrayList<>(4);
@@ -81,7 +81,7 @@ final class TasksPlanner {
         timeTable = new HashMap<>(16);
         cores.clear();
         memory.clear();
-        cores.addAll(computer.getArchNodes());
+        cores.addAll(computer.getCalculationNodes());
         memory.addAll(computer.getMemoryNodes());
         journal = new StringBuilder("");
     }
@@ -94,32 +94,31 @@ final class TasksPlanner {
         return journal.toString();
     }
 
-    @Nullable
-    Collection<ArithmeticNode> getArchNodes() {
+    @Nonnull
+    Collection<CalculationNode> getArchNodes() {
         return ImmutableList.copyOf(cores);
     }
 
-    @Nullable
+    @Nonnull
     Collection<MemoryNode> getMemoryNodes() {
         return ImmutableList.copyOf(memory);
     }
 
-    private boolean addTask(ArchitectureComponent actor, Long startTime, Long time) {
+    private void addTask(ArchitectureComponent actor, Long startTime, Long time) {
         if (containsNull(actor, startTime, time)) {
-            return false;
+            return;
         }
         final Long newTime = ((startTime < getTime(actor)) ? getTime(actor) : startTime) + time;
         timeTable.put(actor, newTime);
-        return true;
     }
 
     /**
      * @param operationWithData operation should be done
      * @return assign node for operationWithData and return it.
      */
-    @Nullable
-    private ArrayList<ArithmeticNode> getSuccessArNode(OperationWithData operationWithData) {
-        final ArrayList<ArithmeticNode> readyCores = new ArrayList<>(8);
+    @Nonnull
+    private ArrayList<CalculationNode> getSuccessArNode(OperationWithData operationWithData) {
+        final ArrayList<CalculationNode> readyCores = new ArrayList<>(8);
         cores.stream().forEach(core -> core.getAllowedOperations().stream()
                 .filter(oper -> oper.getOperation().equals(operationWithData))
                 .forEach(oper -> readyCores.add(core)));
@@ -149,7 +148,7 @@ final class TasksPlanner {
         //noinspection MethodCallInLoopCondition, by design
         for (Entry<ArchitectureComponent, Long> actor = componentIterator.next();
              componentIterator.hasNext() && (actor != null); actor = componentIterator.next()) {
-            Long endTime = timeTable.get(actor.getKey());
+            final Long endTime = timeTable.get(actor.getKey());
             if (maxTime < endTime) {
                 maxTime = endTime;
             }
@@ -162,25 +161,25 @@ final class TasksPlanner {
      * @return find first finishing node for planning.
      */
     @Nonnull
-    Optional<ArithmeticNode> getFreeArNode(Iterable<ArithmeticNode> nodes) {
-        ArithmeticNode readyCore = null;
-        for (final ArithmeticNode core : nodes) {
-            if (core != null) {
-                final Long timeCore;
-                timeCore = timeTable.containsKey(core) ? getTime(core) : 0L;
-                final Long timeReadyCore;
+    Optional<CalculationNode> getFreeCalculationNode(Iterable<CalculationNode> nodes) {
+        CalculationNode readyNode = null;
+        for (final CalculationNode node : nodes) {
+            if (node != null) {
+                final Long timeNode;
+                timeNode = timeTable.containsKey(node) ? getTime(node) : 0L;
+                final Long timeReadyNode;
                 //noinspection IfMayBeConditional, nope, this is better
-                if ((readyCore != null) && timeTable.containsKey(readyCore)) {
-                    timeReadyCore = getTime(readyCore);
+                if ((readyNode != null) && timeTable.containsKey(readyNode)) {
+                    timeReadyNode = getTime(readyNode);
                 } else {
-                    timeReadyCore = 0L;
+                    timeReadyNode = 0L;
                 }
-                if ((readyCore == null) || (timeCore < timeReadyCore)) {
-                    readyCore = core;
+                if ((readyNode == null) || (timeNode < timeReadyNode)) {
+                    readyNode = node;
                 }
             }
         }
-        return Optional.of(readyCore);
+        return Optional.ofNullable(readyNode);
     }
 
     /**
@@ -188,18 +187,18 @@ final class TasksPlanner {
      * @param dataLink          who should transfer data
      * @param core              destination of the data
      * @param operationWithData what shall be done
-     * @return success.
      */
-    boolean transfer(MemoryNode inMemory, DataLink dataLink, ArithmeticNode core,
-                     OperationWithData operationWithData) {
+    void transfer(MemoryNode inMemory, DataLink dataLink, CalculationNode core,
+                  OperationWithData operationWithData) {
         if (containsNull(inMemory, dataLink, core, operationWithData)) {
             log.error("wrong input transfer({},{},{},{}), transfer failed!",
                     inMemory, dataLink.getName(), core, operationWithData);
-            return false;
+            return;
         }
 
-        final Long time = dataLink.getTransferTime(operationWithData);
-        if (time != null) {
+        final Optional<Float> optionalTime = dataLink.getTransferTime(operationWithData);
+        if (optionalTime.isPresent()) {
+            final long time = Math.round(optionalTime.get());
             final Long start = findPossibleStart(inMemory, core, dataLink);
             addTask(inMemory, start, time);
             addTask(dataLink, start, time);
@@ -208,14 +207,12 @@ final class TasksPlanner {
                     .append(dataLink.getName()).append("->").append(core.getName())
                     .append(" : ").append(operationWithData.getData().info()).append(' ')
                     .append(start).append("ms->").append(start + time).append("ms").append(LS);
-            return true;
         } else {
             log.error("wrong operation or wrong node, transfer failed!");
-            return false;
         }
     }
 
-    private long findPossibleStart(MemoryNode inMemory, ArithmeticNode core, DataLink dataLink) {
+    private long findPossibleStart(MemoryNode inMemory, CalculationNode core, DataLink dataLink) {
         return Math.max(Math.max((timeTable.get(inMemory) != null) ? timeTable.get(inMemory) : 0L,
                 (timeTable.get(core) != null) ? timeTable.get(core) : 0L),
                 (timeTable.get(dataLink) != null) ? timeTable.get(dataLink) : 0L);
@@ -234,25 +231,22 @@ final class TasksPlanner {
     /**
      * @param core              who should work
      * @param operationWithData what shall be done
-     * @return success.
      */
-    boolean calculate(ArithmeticNode core, OperationWithData operationWithData) {
+    void calculate(CalculationNode core, OperationWithData operationWithData) {
         if (containsNull(operationWithData, core)) {
             log.error("wrong input calculate({},{}), calculation failed!", core, operationWithData);
-            return false;
+            return;
         }
 
-        final Long time = core.getOperationTime(operationWithData);
-        if (time != null) {
+        final Optional<Long> time = core.getOperationTime(operationWithData);
+        if (time.isPresent()) {
             final Long start = getTime(core);
-            addTask(core, start, time);
+            addTask(core, start, time.get());
             journal.append("comp: ").append(core.getName()).append(" : ")
                     .append(operationWithData.info()).append(start).append("ms->")
-                    .append(start + time).append("ms").append(LS);
-            return true;
+                    .append(start + time.get()).append("ms").append(LS);
         } else {
             log.error("wrong operation or wrong node, calculate failed!");
-            return false;
         }
     }
 }
