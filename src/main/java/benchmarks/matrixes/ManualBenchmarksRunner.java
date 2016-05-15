@@ -26,7 +26,7 @@ import java.lang.management.ManagementFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import benchmarks.matrixes.metrics.Measurer;
+import benchmarks.matrixes.metrics.PerformanceMeasurer;
 import benchmarks.matrixes.metrics.PerformanceRecord;
 import util.GNUCopyright;
 
@@ -101,7 +101,7 @@ final class ManualBenchmarksRunner {
 
     private static void rampUp(Runnable task, int iterations, String label) {
         log.debug("measuring start {}", label);
-        final PerformanceRecord info = new Measurer().measurePerformance(() ->
+        final PerformanceRecord info = new PerformanceMeasurer(true).measurePerformance(() ->
                 runSeveralTimes(task, iterations), label);
         log.info("{}. Time avg: {}ms. Cpu total: {}ms. User total: {}ms.",
                 label,

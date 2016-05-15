@@ -18,17 +18,25 @@
 
 package benchmarks.matrixes.metrics;
 
+import com.google.common.base.MoreObjects;
+
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import util.Restrictions;
+
 /**
  * @author Sergey Pomelov on 06/04/16.
- * @see Measurer
+ * @see PerformanceMeasurer
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public final class PerformanceRecord {
+public final class PerformanceRecord implements Serializable {
+
+    private static final long serialVersionUID = -6427374776255656092L;
 
     @Nonnull
     private final String label;
@@ -36,7 +44,8 @@ public final class PerformanceRecord {
     private final long cpuTime;
     private final long userTime;
 
-    public PerformanceRecord(String label, long time, long cpuTime, long userTime) {
+    PerformanceRecord(String label, long time, long cpuTime, long userTime) {
+        Restrictions.ifContainsNullFastFail(label, time, cpuTime, userTime);
         this.label = label;
         this.time = time;
         this.cpuTime = cpuTime;
@@ -58,5 +67,15 @@ public final class PerformanceRecord {
 
     public long getUserTime() {
         return userTime;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("label", label)
+                .add("time", time)
+                .add("cpuTime", cpuTime)
+                .add("userTime", userTime)
+                .toString();
     }
 }
