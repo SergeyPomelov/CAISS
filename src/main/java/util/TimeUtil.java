@@ -38,7 +38,7 @@ public final class TimeUtil {
     }
 
     public static long mlsToNano(int milliseconds) {
-        return TimeUnit.SECONDS.toNanos(milliseconds);
+        return TimeUnit.MILLISECONDS.toNanos(milliseconds);
     }
 
     static int getCurrentYear() {
