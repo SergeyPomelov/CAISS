@@ -25,7 +25,9 @@
         </encoder>
     </appender>
 
-    <logger name="benchmarks.ants" level="INFO"/>
+    <logger name="benchmarks.ants.AntsColony" level="OFF"/>
+    <logger name="benchmarks.ants.AntColonyInteraction" level="INFO"/>
+    <logger name="benchmarks.ants.AntsRunner" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
