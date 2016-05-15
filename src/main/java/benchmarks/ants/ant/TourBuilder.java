@@ -18,15 +18,15 @@
 
 package benchmarks.ants.ant;
 
-import java.security.SecureRandom;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.NotThreadSafe;
 
+import benchmarks.ants.CachedRawEdgeQualities;
 import benchmarks.ants.data.IDistancesData;
 
 import static benchmarks.ants.ant.RouteFinder.findNextVertex;
@@ -39,8 +39,6 @@ import static benchmarks.ants.ant.RouteFinder.findNextVertex;
 @ParametersAreNonnullByDefault
 final class TourBuilder {
 
-    private static final Random rand = new SecureRandom();
-
     @Nonnull
     private final IDistancesData graphMatrix;
     @Nonnull
@@ -51,6 +49,8 @@ final class TourBuilder {
     private final boolean[] visited;
     @Nonnull
     private final float[][] edgesQualities;
+    @Nonnull
+    private final CachedRawEdgeQualities cachedRawEdgeQualities;
     @Nonnegative
     private final int size;
 
@@ -62,7 +62,7 @@ final class TourBuilder {
         allowedVertexes = new int[size];
         visited = new boolean[size];
         edgesQualities = new float[size][size];
-
+        cachedRawEdgeQualities = CachedRawEdgeQualities.getInstance(graphMatrix);
         initPheromones(trail);
     }
 
@@ -70,35 +70,41 @@ final class TourBuilder {
         for (int i = 0; i < size; i++) {
             visited[i] = false;
             for (int j = 0; j < size; j++) {
-                //noinspection NumericCastThatLosesPrecision, used like pow(float, float)
-                edgesQualities[i][j] = (float) StrictMath.pow(graphMatrix.getDist(i, j), -1.0D)
-                        * trail[i][j];
+                edgesQualities[i][j] = cachedRawEdgeQualities.getDist(i, j) * trail[i][j];
             }
         }
     }
 
     TourData buildUncycledTour() {
+        int currentVertex = selectStartVertex();
         long tourLength = 0L;
-        int startVertex = rand.nextInt(tour.length);
-
-        tour[0] = startVertex;
-        visited[startVertex] = true;
-
         boolean success = true;
         for (int i = 1; (i < size) && success; i++) {
-            final Optional<Integer> destinationIndex = findNextVertex(startVertex, size,
+            final Optional<Integer> destinationIndex = findNextVertex(currentVertex, size,
                     edgesQualities, visited, allowedVertexes);
             if (destinationIndex.isPresent()) {
-                final int dst = allowedVertexes[destinationIndex.get()];
-                visited[dst] = true;
-                tourLength += graphMatrix.getDist(startVertex, dst);
-                tour[i] = dst;
-                startVertex = dst;
+                final int dst = goToDestination(destinationIndex.get(), i);
+                tourLength += graphMatrix.getDist(currentVertex, dst);
+                currentVertex = dst;
             } else {
                 tourLength = Integer.MAX_VALUE;
                 success = false;
             }
         }
         return new TourData(success, tour, tourLength);
+    }
+
+    private int goToDestination(int destinationIdx, int tourStep) {
+        final int destination = allowedVertexes[destinationIdx];
+        visited[destination] = true;
+        tour[tourStep] = destination;
+        return destination;
+    }
+
+    private int selectStartVertex() {
+        final int startVertex = ThreadLocalRandom.current().nextInt(tour.length);
+        tour[0] = startVertex;
+        visited[startVertex] = true;
+        return startVertex;
     }
 }

@@ -18,9 +18,8 @@
 
 package benchmarks.ants.ant;
 
-import java.security.SecureRandom;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -35,8 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 final class RouteFinder {
 
-    private static final Random rand = new SecureRandom();
-    private static final float COMP_MAX_ERR = Float.MIN_VALUE * 10.0E3F;
+    private static final float COMP_MAX_ERR = Float.MIN_VALUE * 10.0E1F;
 
     private RouteFinder() { /* utility package-local class */ }
 
@@ -50,12 +48,8 @@ final class RouteFinder {
         float totalWeight = 0;
         final float[] weights = new float[size];
         for (int j = 0; j < size; j++) {
-            boolean success = true;
             final float vertexQuality = vertexQualities[startVertex][j];
-            if (visited[j] || (vertexQuality < COMP_MAX_ERR)) {
-                success = false;
-            }
-            if (success) {
+            if (isVertexPossibleToGo(visited[j], vertexQuality)) {
                 totalWeight += vertexQuality;
                 weights[possibleVertexesToGo] = totalWeight;
                 allowedVertexes[possibleVertexesToGo] = j;
@@ -67,18 +61,27 @@ final class RouteFinder {
                 null : calculateDestination(totalWeight, possibleVertexesToGo, weights));
     }
 
+    private static boolean isVertexPossibleToGo(boolean visited, float vertexQuality) {
+        return !visited && (vertexQuality > COMP_MAX_ERR);
+    }
+
     @SuppressWarnings("MethodCanBeVariableArityMethod") // by design
     private static int calculateDestination(float totalWeight, int possibleVertexesToGo,
                                             float[] weights) {
-        int result = 0;
-        final double val = totalWeight * rand.nextDouble();
+        final float pointer = generatePointer(totalWeight);
         for (int i = 0; i < possibleVertexesToGo; i++) {
-            if (weights[i] > val) {
+            if (isLessOrEqual(pointer, weights[i])) {
                 return i;
-            } else {
-                result = possibleVertexesToGo;
             }
         }
-        return result;
+        return possibleVertexesToGo;
+    }
+
+    private static float generatePointer(float totalWeight) {
+        return totalWeight * ThreadLocalRandom.current().nextFloat();
+    }
+
+    private static boolean isLessOrEqual(float pointer, float weight) {
+        return pointer <= weight;
     }
 }

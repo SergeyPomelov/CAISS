@@ -39,7 +39,7 @@ final class TourData {
 
     TourData(boolean success, int[] tour, @Nonnegative long length) {
         this.success = success;
-        this.tour = tour.clone();
+        this.tour = tour;
         this.length = length;
     }
 
@@ -49,7 +49,7 @@ final class TourData {
 
     @Nonnull
     int[] getTour() {
-        return tour.clone();
+        return tour;
     }
 
     @Nonnegative

@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
+import benchmarks.matrixes.metrics.PerformanceMeasurer;
+
 /**
  * Class for storing data about finished ant's run.
  *
@@ -37,11 +39,16 @@ public final class AntRunResult {
     @Nonnull
     private final float[][] pheromonesDelta;
     @Nonnull
+    private final PerformanceMeasurer performanceMeasurer;
+    @Nonnull
     private final String journal;
 
-    AntRunResult(TourData tourData, float[][] pheromonesDelta, String journal) {
+
+    AntRunResult(TourData tourData, float[][] pheromonesDelta, PerformanceMeasurer
+            performanceMeasurer, String journal) {
         this.tourData = tourData;
         this.pheromonesDelta = pheromonesDelta;
+        this.performanceMeasurer = performanceMeasurer;
         this.journal = journal;
     }
 
@@ -68,5 +75,9 @@ public final class AntRunResult {
     @Nonnull
     public String getJournal() {
         return journal;
+    }
+
+    public PerformanceMeasurer getPerformanceMeasurer() {
+        return performanceMeasurer;
     }
 }

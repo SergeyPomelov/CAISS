@@ -25,6 +25,7 @@ import javax.annotation.concurrent.Immutable;
 
 import benchmarks.ants.AntsColony;
 import benchmarks.ants.data.IDistancesData;
+import benchmarks.matrixes.metrics.PerformanceMeasurer;
 
 import static benchmarks.ants.OutputFormat.printTour;
 
@@ -46,6 +47,8 @@ public final class RunningAnt {
     private final TourBuilder tourBuilder;      // tour generation delegate
     @Nonnull
     private final PheromonesTrail trailSpray;   // trail data and generation delegate
+    @Nonnull
+    private final PerformanceMeasurer performanceMeasurer = new PerformanceMeasurer();
 
     @Nonnegative
     private final long startMls = System.currentTimeMillis();
@@ -54,7 +57,7 @@ public final class RunningAnt {
         this.graph = graph;
         trailSpray = new PheromonesTrail(graph.getSize());
         tourBuilder = new TourBuilder(graph, trails);
-        runResult = runAnt();
+        runResult = performanceMeasurer.measurePerformanceCallable(this::runAnt, "runAnt");
     }
 
     @Nonnull
@@ -83,7 +86,7 @@ public final class RunningAnt {
         }
 
         final TourData finalTourData = new TourData(finalSuccess, tour, finalTourLength);
-        return new AntRunResult(finalTourData, trailSpray.getTrailsDelta(),
+        return new AntRunResult(finalTourData, trailSpray.getTrailsDelta(), performanceMeasurer,
                 resultToString(finalTourData));
     }
 
