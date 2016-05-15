@@ -18,6 +18,9 @@
 
 package benchmarks.ants;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,6 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import benchmarks.ants.ant.AntRunResult;
 import benchmarks.ants.ant.RunningAnt;
+import benchmarks.matrixes.metrics.PerformanceMeasurer;
 
 import static benchmarks.ants.PheromonesApplier.applyPheromones;
 
@@ -36,19 +40,27 @@ import static benchmarks.ants.PheromonesApplier.applyPheromones;
 @ParametersAreNonnullByDefault
 final class AntColonyInteraction {
 
+    private static final Logger log = LoggerFactory.getLogger(AntColonyInteraction.class);
+
     private AntColonyInteraction() { /* package local utility class*/ }
 
-    static Callable<Long> interactionProcedure(
-            AntsSettings settings, float[][] trails, AntsStatistics statistics,
-            Collection<Integer> bestRunVertexes, AtomicBoolean gotNewSolution) {
+    static Callable<Long> interactionProcedure(String colonyId,
+                                               AntsSettings settings,
+                                               float[][] trails,
+                                               AntsStatistics statistics,
+                                               Collection<Integer> bestRunVertexes,
+                                               AtomicBoolean gotNewSolution,
+                                               Collection<PerformanceMeasurer>
+                                                       antsPerformanceMeasurers) {
 
         return () -> {
             final AntRunResult runResult =
                     new RunningAnt(settings.getGraph(), trails).getRunResult();
             final String runJournal = runResult.getJournal();
             final long runLength = runResult.getLength();
-            //log.debug("Colony {}, ant run {} {}.", id, runJournal, statistics.getBestRunLength());
+            log.debug("Colony {}, ant run {} {}.", colonyId, runJournal, statistics.getBestRunLength());
             statistics.addFinishedRun(runLength);
+            antsPerformanceMeasurers.add(runResult.getPerformanceMeasurer());
             takeActionsIfSolutionTheBest(runResult, runLength, statistics, bestRunVertexes,
                     gotNewSolution, false, runJournal, settings, trails);
             return runLength;

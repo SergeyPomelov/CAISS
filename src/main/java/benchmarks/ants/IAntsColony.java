@@ -37,7 +37,7 @@ interface IAntsColony extends Serializable {
      * @return the best solution length
      */
     @Nonnegative
-    long run(@Nonnegative long periodNanos);
+    ColonyRunResult run(@Nonnegative long periodNanos);
 
     /**
      * @param neighbours - Colonies to send them the best solution. The "time to time" defined

@@ -39,6 +39,7 @@ import benchmarks.ants.ant.AntRunResult;
 import benchmarks.ants.ant.RunningAnt;
 import benchmarks.ants.data.IDistancesData;
 import benchmarks.ants.parallelisation.ContinuousParallelExecutor;
+import benchmarks.matrixes.metrics.PerformanceMeasurer;
 import util.ConversionUtil;
 import util.Restrictions;
 
@@ -50,7 +51,7 @@ import util.Restrictions;
  * @see AntsSettings
  */
 @ThreadSafe
-final class AntsColony implements IAntsColony {
+public final class AntsColony implements IAntsColony {
 
     private static final long serialVersionUID = 1858529504894436119L;
     private static final Logger log = LoggerFactory.getLogger(AntsColony.class);
@@ -60,11 +61,15 @@ final class AntsColony implements IAntsColony {
     @Nonnull
     private final AntsSettings settings;
     @Nonnull
+    private final PerformanceMeasurer colonyPerformanceMeasurer = new PerformanceMeasurer();
+    @Nonnull
     private final float[][] trails;
     @Nonnull
     private final Collection<Integer> bestRunVertexes = new CopyOnWriteArrayList<>();
     @Nonnull
     private final AntsStatistics statistics = new AntsStatistics();
+    @Nonnull
+    private final List<PerformanceMeasurer> antsPerformanceMeasurers = new CopyOnWriteArrayList<>();
     @Nonnegative
     private final int parallelAnts;
     @Nonnull
@@ -83,16 +88,18 @@ final class AntsColony implements IAntsColony {
         trails = new float[getData().getSize()][getData().getSize()];
     }
 
-
+    @SuppressWarnings("ClassEscapesDefinedScope")
     @Override
-    public long run(long periodNanos) {
+    public ColonyRunResult run(long periodNanos) {
         Restrictions.ifNotOnlyPositivesFastFail(periodNanos);
         log.debug("Colony {} start!", id);
-        initialTrail();
+        colonyPerformanceMeasurer.measurePerformance(this::initialTrail, "initialTrail");
         final long start = System.currentTimeMillis();
         runAnts(System.nanoTime() + periodNanos);
         logResult(start);
-        return statistics.getBestRunLength();
+        return new ColonyRunResult(statistics.getBestRunLength(), neighbours.size() + 1,
+                parallelAnts, colonyPerformanceMeasurer,
+                PerformanceMeasurer.compileOverall(antsPerformanceMeasurers));
     }
 
     @Override
@@ -104,12 +111,9 @@ final class AntsColony implements IAntsColony {
     @Override
     public void addNeighbours(List<IAntsColony> newNeighbours) {
         if (newNeighbours != null) {
-            synchronized (settings) {
-                //noinspection ObjectEquality, need to comparing exactly the pointers
-                neighbours = ConversionUtil.nullFilter(newNeighbours).stream()
-                        .filter(colony -> colony != this)
-                        .collect(Collectors.toList());
-            }
+            neighbours = ConversionUtil.nullFilter(newNeighbours).stream()
+                    .filter(colony -> colony != this)
+                    .collect(Collectors.toList());
         } else {
             log.warn("Neighbours must not be null!");
         }
@@ -117,14 +121,16 @@ final class AntsColony implements IAntsColony {
 
     @Override
     public void receiveSolution(AntRunResult antRunResult) {
-        if (antRunResult != null) {
-            AntColonyInteraction
-                    .takeActionsIfSolutionTheBest(antRunResult, statistics, bestRunVertexes,
-                            gotNewSolution, true, settings, trails);
-            log.debug("Colony {} received a solution {}.", id, antRunResult.getLength());
-        } else {
-            log.warn("Sent AntRunResult must not be null!");
-        }
+        colonyPerformanceMeasurer.measurePerformance(() -> {
+            if (antRunResult != null) {
+                AntColonyInteraction
+                        .takeActionsIfSolutionTheBest(antRunResult, statistics, bestRunVertexes,
+                                gotNewSolution, true, settings, trails);
+                log.debug("Colony {} received a solution {}.", id, antRunResult.getLength());
+            } else {
+                log.warn("Sent AntRunResult must not be null!");
+            }
+        }, "exchange");
     }
 
     private void initialTrail() {
@@ -147,23 +153,22 @@ final class AntsColony implements IAntsColony {
 
     private void runAnts(@Nonnegative long stopNanos) {
         final Callable<Long> antRun =
-                AntColonyInteraction.interactionProcedure(settings, trails, statistics,
-                bestRunVertexes, gotNewSolution);
+                AntColonyInteraction.interactionProcedure(id, settings, trails, statistics,
+                        bestRunVertexes, gotNewSolution,
+                        antsPerformanceMeasurers);
         //noinspection MethodCallInLoopCondition - the nanoTime need be called each time
         ContinuousParallelExecutor.run(antRun, parallelAnts,
                 () -> System.nanoTime() >= stopNanos,
-                () -> sendSolutionIfNeed(System.nanoTime()),
+                this::sendSolutionIfNeed,
                 "colony" + id,
                 "ant");
     }
 
-    private void sendSolutionIfNeed(@Nonnegative long currentNanos) {
-        if (isTimeToSendSolution(currentNanos)) {
+    private void sendSolutionIfNeed() {
+        if (isTimeToSendSolution(System.nanoTime())) {
             final Optional<AntRunResult> bestRun = statistics.getBestRun();
             if (bestRun.isPresent()) {
-                synchronized (settings) {
-                    neighbours.forEach(neighbour -> neighbour.receiveSolution(bestRun.get()));
-                }
+                neighbours.forEach(neighbour -> neighbour.receiveSolution(bestRun.get()));
                 gotNewSolution.compareAndSet(true, false);
                 lastSendDataNanos.set(System.nanoTime());
             }
@@ -172,7 +177,7 @@ final class AntsColony implements IAntsColony {
 
     private boolean isTimeToSendSolution(@Nonnegative long currentNanos) {
         return gotNewSolution.get() &&
-                ((lastSendDataNanos.longValue() + getExchangeNanos()) >= currentNanos);
+                ((lastSendDataNanos.longValue() + getExchangeNanos()) < currentNanos);
     }
 
     @Nonnull
