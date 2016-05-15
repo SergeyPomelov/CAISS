@@ -57,6 +57,7 @@ public final class ParallelExecutor {
                 log.warn(INTERRUPTED_EX, e);
             }
         }
+        executor.shutdownNow();
     }
 
     private static ThreadPoolExecutor buildBarrierExecutor(int size, String poolName,

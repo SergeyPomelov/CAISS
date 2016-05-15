@@ -28,7 +28,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -43,8 +42,10 @@ public final class ContinuousParallelExecutor {
 
     private static final Logger log = LoggerFactory.getLogger(ContinuousParallelExecutor.class);
     private static final String INTERRUPTED_EX = "Got an interrupted exception!";
-    private static final int TASKS_RESERVE_MULTIPLIER = 20;
     private static final long AWAIT_TERMINATION_NANOS = 10L;
+    private static final int BASE_MULTIPLIER = 2000;
+
+    private static int tasksReserve = BASE_MULTIPLIER;
 
     private ContinuousParallelExecutor() { /* utility class*/ }
 
@@ -76,31 +77,36 @@ public final class ContinuousParallelExecutor {
                                   ExecutorService executor) throws InterruptedException {
         final List<Future<Long>> runFutureResults = executor.
                 invokeAll(Collections.nCopies(parallelAgents, agent));
+        boolean isFirstCycle = true;
         //noinspection MethodCallInLoopCondition, by design
         while (!terminationCondition.get()) {
             //log.debug("s {}/{}", runFutureResults.size(), finished.size());
-            addTasksIfNeed(runFutureResults, executor, agent, parallelAgents);
+            addTasksIfNeed(runFutureResults, executor, agent, isFirstCycle);
             agentsRunAdditionalOperation.run();
-            Thread.sleep(100);
+            Thread.sleep(1);
+            isFirstCycle = false;
             //log.debug("e {}/{}", runFutureResults.size(), finished.size());
         }
     }
 
     private static void addTasksIfNeed(List<Future<Long>> runFutureResults,
                                        ExecutorService executor, Callable<Long> agent,
-                                       int parallelAgents) {
+                                       boolean firstCycle) {
         final List<Future<Long>> finished = getFinished(runFutureResults);
         runFutureResults.removeAll(finished);
-        if (runFutureResults.size() < (parallelAgents * TASKS_RESERVE_MULTIPLIER)) {
-            for (int i = 0; i < (parallelAgents * TASKS_RESERVE_MULTIPLIER); i++) {
+        if (runFutureResults.size() < tasksReserve) {
+            if (!firstCycle && runFutureResults.isEmpty()) {
+                tasksReserve *= 2;
+                log.info("Zero tasks, new queue size {}.", tasksReserve);
+            }
+            for (int i = 0; i < tasksReserve; i++) {
                 runFutureResults.add(executor.submit(agent));
             }
         }
     }
 
-    private static void terminate(ExecutorService executor) throws InterruptedException {
-        executor.shutdown();
-        executor.awaitTermination(AWAIT_TERMINATION_NANOS, TimeUnit.NANOSECONDS);
+    private static void terminate(ExecutorService executor) {
+        executor.shutdownNow();
     }
 
     private static List<Future<Long>> getFinished(Collection<Future<Long>> runResults) {
