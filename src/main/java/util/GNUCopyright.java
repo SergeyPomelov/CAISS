@@ -21,6 +21,10 @@ package util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static util.Constants.GNU_COPYRIGHT_MSG;
+import static util.Constants.LS;
+
+@SuppressWarnings("ClassUnconnectedToPackage")
 public final class GNUCopyright {
 
     private static final Logger log = LoggerFactory.getLogger(GNUCopyright.class);
@@ -28,6 +32,6 @@ public final class GNUCopyright {
     private GNUCopyright() { /* utility class */ }
 
     public static void printLicence() {
-        //log.info("{}{}", LS, GNU_COPYRIGHT_MSG);
+        log.info("{}{}", LS, GNU_COPYRIGHT_MSG);
     }
 }
