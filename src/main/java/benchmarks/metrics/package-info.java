@@ -21,4 +21,4 @@
  *
  * @author Sergey Pomelov on 02/05/2016.
  */
-package benchmarks.matrixes.metrics;
+package benchmarks.metrics;

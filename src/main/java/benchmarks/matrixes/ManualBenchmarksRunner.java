@@ -26,8 +26,8 @@ import java.lang.management.ManagementFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import benchmarks.matrixes.metrics.PerformanceMeasurer;
-import benchmarks.matrixes.metrics.PerformanceRecord;
+import benchmarks.metrics.PerformanceMeasurer;
+import benchmarks.metrics.PerformanceRecord;
 import util.GNUCopyright;
 
 import static util.ConversionUtil.bytesToMb;

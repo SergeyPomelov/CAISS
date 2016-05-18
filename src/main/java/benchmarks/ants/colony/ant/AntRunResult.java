@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
-import benchmarks.matrixes.metrics.PerformanceMeasurer;
+import benchmarks.metrics.PerformanceMeasurer;
 
 /**
  * Class for storing data about finished ant's run.

@@ -31,7 +31,7 @@ import javax.annotation.concurrent.Immutable;
 import benchmarks.ants.colony.AntsColony;
 import benchmarks.ants.colony.CachedRawEdgeQualities;
 import benchmarks.ants.data.IDistancesData;
-import benchmarks.matrixes.metrics.PerformanceMeasurer;
+import benchmarks.metrics.PerformanceMeasurer;
 
 import static benchmarks.ants.colony.OutputFormat.printTour;
 

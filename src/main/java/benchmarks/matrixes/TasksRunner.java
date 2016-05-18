@@ -22,7 +22,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import benchmarks.matrixes.metrics.PerformanceMeasurer;
+import benchmarks.metrics.PerformanceMeasurer;
 
 /**
  * @author Sergey Pomelov on 06/04/16.
