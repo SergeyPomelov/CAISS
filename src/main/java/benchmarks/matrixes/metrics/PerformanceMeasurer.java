@@ -23,8 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +52,7 @@ public final class PerformanceMeasurer implements Serializable {
     private final Map<String, List<PerformanceRecord>> measures = new HashMap<>(1, 0.5f);
     @Nonnull
     private final Map<String, Long> calls = new HashMap<>(1, 0.5f);
-    private final boolean recordMXBeanTimes;
+    private final boolean recordMXBeanTimes; // sometimes you need to off it, performance issue
 
     public PerformanceMeasurer() {
         this(false);
@@ -64,13 +62,7 @@ public final class PerformanceMeasurer implements Serializable {
         this.recordMXBeanTimes = recordMXBeanTimes;
     }
 
-    public static PerformanceMeasurer compileOverall(List<PerformanceMeasurer>
-                                                             performanceMeasurers) {
-        final PerformanceMeasurer overallMeasurer = new PerformanceMeasurer();
-        filOverallMetrics(overallMeasurer, performanceMeasurers);
-        return overallMeasurer;
-    }
-
+    @Nonnull
     public PerformanceRecord measurePerformance(Runnable task, String label) {
         final long startNanoTime = System.nanoTime();
         final long startCpuTime = getCpuTimeNano();
@@ -96,11 +88,13 @@ public final class PerformanceMeasurer implements Serializable {
         } catch (Exception e) {
             log.error("Callable error report while measurements!", e);
         }
+
         final PerformanceRecord performanceRecord =
                 new PerformanceRecord(label,
                         System.nanoTime() - startNanoTime,
                         getCpuTimeNano() - startCpuTime,
                         getUserTimeNano() - startUserTime);
+        checkMeasure(performanceRecord.getTime());
         registerMeasurement(label, performanceRecord);
         return result;
     }
@@ -109,7 +103,7 @@ public final class PerformanceMeasurer implements Serializable {
         return calls.getOrDefault(label, 0L);
     }
 
-    @SuppressWarnings("NumericCastThatLosesPrecision")
+    @SuppressWarnings({"NumericCastThatLosesPrecision", "FeatureEnvy"})
     @Nonnull
     public Optional<PerformanceRecord> getAvgMeasures(String label) {
         final List<PerformanceRecord> records = measures.get(label);
@@ -124,58 +118,45 @@ public final class PerformanceMeasurer implements Serializable {
                 avgUserTime = avg(avgCpuTime, record.getUserTime(), l);
                 l++;
             }
+            checkMeasure(avgTime);
             return Optional.of(new PerformanceRecord(label,
                     (long) avgTime, (long) avgCpuTime, (long) avgUserTime));
         }
         return Optional.empty();
     }
 
-    private static void filOverallMetrics(PerformanceMeasurer avgMeasurer,
-                                          List<PerformanceMeasurer> performanceMeasurers) {
-        final Map<String, List<PerformanceRecord>> allData = new HashMap<>
-                (performanceMeasurers.size(), 0.75F);
-        final Map<String, Long> overallCalls = new HashMap<>(performanceMeasurers.size(), 0.75F);
-        for (PerformanceMeasurer measurer : performanceMeasurers) {
-            mergeInMeasures(allData, measurer.measures);
-            mergeInCalls(overallCalls, measurer.calls);
+    private static void checkMeasure(Number time) {
+        if (time.floatValue() <= 0.0F) {
+            log.warn("Suspicious measure {}!", time);
         }
-        final PerformanceMeasurer allDataMeasurer = new PerformanceMeasurer();
-        allDataMeasurer.measures.putAll(allData);
-        allData.keySet().forEach(key -> {
-            avgMeasurer.calls.put(key, overallCalls.get(key));
-            avgMeasurer.measures.put(key,
-                    Collections.singletonList(allDataMeasurer.getAvgMeasures(key).get()));
-        });
     }
-
-    private static void mergeInMeasures(Map<String, List<PerformanceRecord>> allData,
-                                        Map<String, List<PerformanceRecord>> measures) {
-        measures.keySet()
-                .forEach(key -> {
-                    if (allData.containsKey(key)) {
-                        allData.get(key).addAll(measures.get(key));
-                    } else {
-                        allData.put(key, new ArrayList<>(measures.get(key)));
-                    }
-                });
-    }
-
-    private static void mergeInCalls(Map<String, Long> overallCalls, Map<String, Long> calls) {
-        calls.keySet()
-                .forEach(key -> {
-                    if (overallCalls.containsKey(key)) {
-                        overallCalls.put(key, overallCalls.get(key) + calls.get(key));
-                    } else {
-                        overallCalls.put(key, calls.get(key));
-                    }
-                });
-    }
-
 
     private static double avg(double avgOld, long newValue, long alreadyValuesAdded) {
         return (newValue != 0L) ?
                 (((avgOld * (alreadyValuesAdded - 1)) + newValue) / alreadyValuesAdded)
                 : avgOld;
+    }
+
+    void putAllMeasures(Map<String, List<PerformanceRecord>> allData) {
+        measures.putAll(allData);
+    }
+
+    void putCalls(String key, Long value) {
+        calls.put(key, value);
+    }
+
+    void putMeasure(String label, List<PerformanceRecord> performanceRecords) {
+        measures.put(label, performanceRecords);
+    }
+
+    @Nonnull
+    Map<String, List<PerformanceRecord>> getMeasures() {
+        return measures;
+    }
+
+    @Nonnull
+    Map<String, Long> getCalls() {
+        return calls;
     }
 
     private void registerMeasurement(String label, PerformanceRecord performanceRecord) {
