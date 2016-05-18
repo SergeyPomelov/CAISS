@@ -16,18 +16,24 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.ant;
+package benchmarks.ants.colony.ant;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import benchmarks.ants.AntsColony;
+import benchmarks.ants.colony.AntsColony;
+import benchmarks.ants.colony.CachedRawEdgeQualities;
 import benchmarks.ants.data.IDistancesData;
 import benchmarks.matrixes.metrics.PerformanceMeasurer;
 
-import static benchmarks.ants.OutputFormat.printTour;
+import static benchmarks.ants.colony.OutputFormat.printTour;
 
 /**
  * An agent of the ACO.
@@ -39,9 +45,10 @@ import static benchmarks.ants.OutputFormat.printTour;
 @ParametersAreNonnullByDefault
 public final class RunningAnt {
 
+    private static final Logger log = LoggerFactory.getLogger(RunningAnt.class);
+
     @Nonnull
     private final IDistancesData graph;
-    @Nonnull
     private final AntRunResult runResult;
     @Nonnull
     private final TourBuilder tourBuilder;      // tour generation delegate
@@ -53,16 +60,17 @@ public final class RunningAnt {
     @Nonnegative
     private final long startMls = System.currentTimeMillis();
 
-    public RunningAnt(IDistancesData graph, float[][] trails) {
+    public RunningAnt(IDistancesData graph, CachedRawEdgeQualities cachedRawEdgeQualities,
+                      float[][] trails) {
         this.graph = graph;
-        trailSpray = new PheromonesTrail(graph.getSize());
-        tourBuilder = new TourBuilder(graph, trails);
+        trailSpray = new PheromonesTrail();
+        tourBuilder = new TourBuilder(graph, cachedRawEdgeQualities, trails);
         runResult = performanceMeasurer.measurePerformanceCallable(this::runAnt, "runAnt");
     }
 
     @Nonnull
-    public AntRunResult getRunResult() {
-        return runResult;
+    public Optional<AntRunResult> getRunResult() {
+        return Optional.ofNullable(runResult);
     }
 
     private static boolean checkFinishedTourLength(long finalTourLength) {
@@ -83,6 +91,8 @@ public final class RunningAnt {
         if (finalSuccess) {
             finalTourLength = tryToFinishCycle(tour, tourData.getLength());
             finalSuccess = checkFinishedTourLength(finalTourLength);
+        } else {
+            log.info("Ant not succeed. Result: {}. Tour: {}.", tourData.getLength(), tour);
         }
 
         final TourData finalTourData = new TourData(finalSuccess, tour, finalTourLength);

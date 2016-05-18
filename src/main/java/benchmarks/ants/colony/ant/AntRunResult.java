@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.ant;
+package benchmarks.ants.colony.ant;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -37,15 +37,15 @@ public final class AntRunResult {
     @Nonnull
     private final TourData tourData;
     @Nonnull
-    private final float[][] pheromonesDelta;
+    private final Array2DFloatDelta pheromonesDelta;
     @Nonnull
     private final PerformanceMeasurer performanceMeasurer;
     @Nonnull
     private final String journal;
 
 
-    AntRunResult(TourData tourData, float[][] pheromonesDelta, PerformanceMeasurer
-            performanceMeasurer, String journal) {
+    AntRunResult(TourData tourData, Array2DFloatDelta pheromonesDelta,
+                 PerformanceMeasurer performanceMeasurer, String journal) {
         this.tourData = tourData;
         this.pheromonesDelta = pheromonesDelta;
         this.performanceMeasurer = performanceMeasurer;
@@ -68,7 +68,7 @@ public final class AntRunResult {
 
     @SuppressWarnings("ReturnOfCollectionOrArrayField") // huge arrays, coping is worse case.
     @Nonnull
-    public float[][] getPheromonesDelta() {
+    public Array2DFloatDelta getPheromonesDelta() {
         return pheromonesDelta;
     }
 

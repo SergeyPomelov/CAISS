@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.ant;
+package benchmarks.ants.colony.ant;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -47,6 +47,8 @@ final class TourData {
         return success;
     }
 
+    // memory & performance issue, additional guaranties omitted.
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     @Nonnull
     int[] getTour() {
         return tour;

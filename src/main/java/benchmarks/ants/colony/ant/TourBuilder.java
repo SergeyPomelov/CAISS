@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.ant;
+package benchmarks.ants.colony.ant;
 
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,10 +26,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.NotThreadSafe;
 
-import benchmarks.ants.CachedRawEdgeQualities;
+import benchmarks.ants.colony.CachedRawEdgeQualities;
 import benchmarks.ants.data.IDistancesData;
-
-import static benchmarks.ants.ant.RouteFinder.findNextVertex;
 
 /**
  * @author Sergey Pomelov on 29/04/2016.
@@ -42,36 +40,34 @@ final class TourBuilder {
     @Nonnull
     private final IDistancesData graphMatrix;
     @Nonnull
+    private final CachedRawEdgeQualities cachedRawEdgeQualities;
+    @Nonnull
     private final int[] tour;
     @Nonnull
     private final int[] allowedVertexes;
     @Nonnull
     private final boolean[] visited;
     @Nonnull
-    private final float[][] edgesQualities;
-    @Nonnull
-    private final CachedRawEdgeQualities cachedRawEdgeQualities;
+    private final float[][] trail;
+
     @Nonnegative
     private final int size;
 
-    TourBuilder(IDistancesData graphMatrix, float[][] trail) {
+    TourBuilder(IDistancesData graphMatrix, CachedRawEdgeQualities cachedRawEdgeQualities,
+                float[][] trail) {
         this.graphMatrix = graphMatrix;
-
+        this.cachedRawEdgeQualities = cachedRawEdgeQualities;
+        this.trail = trail;
         size = graphMatrix.getSize();
         tour = new int[size];
         allowedVertexes = new int[size];
         visited = new boolean[size];
-        edgesQualities = new float[size][size];
-        cachedRawEdgeQualities = CachedRawEdgeQualities.getInstance(graphMatrix);
-        initPheromones(trail);
+        initPheromones();
     }
 
-    private void initPheromones(float[][] trail) {
+    private void initPheromones() {
         for (int i = 0; i < size; i++) {
             visited[i] = false;
-            for (int j = 0; j < size; j++) {
-                edgesQualities[i][j] = cachedRawEdgeQualities.getDist(i, j) * trail[i][j];
-            }
         }
     }
 
@@ -80,8 +76,8 @@ final class TourBuilder {
         long tourLength = 0L;
         boolean success = true;
         for (int i = 1; (i < size) && success; i++) {
-            final Optional<Integer> destinationIndex = findNextVertex(currentVertex, size,
-                    edgesQualities, visited, allowedVertexes);
+            final Optional<Integer> destinationIndex = RouteFinder.findNextVertex(currentVertex,
+                    trail, visited, allowedVertexes, graphMatrix, cachedRawEdgeQualities);
             if (destinationIndex.isPresent()) {
                 final int dst = goToDestination(destinationIndex.get(), i);
                 tourLength += graphMatrix.getDist(currentVertex, dst);
