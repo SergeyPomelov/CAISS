@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants;
+package benchmarks.ants.colony;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +35,13 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
-import benchmarks.ants.ant.AntRunResult;
-import benchmarks.ants.ant.RunningAnt;
+import benchmarks.ants.AntsSettings;
+import benchmarks.ants.colony.ant.AntRunResult;
+import benchmarks.ants.colony.ant.RunningAnt;
 import benchmarks.ants.data.IDistancesData;
 import benchmarks.ants.parallelisation.ContinuousParallelExecutor;
 import benchmarks.matrixes.metrics.PerformanceMeasurer;
+import benchmarks.matrixes.metrics.PerformanceMeasuresCompiler;
 import util.ConversionUtil;
 import util.Restrictions;
 
@@ -56,22 +58,19 @@ public final class AntsColony implements IAntsColony {
     private static final long serialVersionUID = 1858529504894436119L;
     private static final Logger log = LoggerFactory.getLogger(AntsColony.class);
 
+    // immutable properties
     @Nonnull
     private final String id;
     @Nonnull
     private final AntsSettings settings;
-    @Nonnull
-    private final PerformanceMeasurer colonyPerformanceMeasurer = new PerformanceMeasurer();
-    @Nonnull
-    private final float[][] trails;
-    @Nonnull
-    private final Collection<Integer> bestRunVertexes = new CopyOnWriteArrayList<>();
-    @Nonnull
-    private final AntsStatistics statistics = new AntsStatistics();
-    @Nonnull
-    private final List<PerformanceMeasurer> antsPerformanceMeasurers = new CopyOnWriteArrayList<>();
     @Nonnegative
     private final int parallelAnts;
+
+    // calculation process data
+    @Nonnull
+    private final ColonyCalculationData data;
+
+    //  solutions exchanging
     @Nonnull
     private final AtomicBoolean gotNewSolution = new AtomicBoolean(true);
     @Nonnegative
@@ -79,13 +78,20 @@ public final class AntsColony implements IAntsColony {
     @Nonnull
     private List<IAntsColony> neighbours = Collections.emptyList();
 
-    AntsColony(String id, int parallelAnts, AntsSettings settings) {
+    // performance data collection
+    @Nonnull
+    private final PerformanceMeasurer colonyPerformanceMeasurer = new PerformanceMeasurer();
+    @Nonnull
+    private final Collection<PerformanceMeasurer> antsPerformanceMeasurers = new CopyOnWriteArrayList<>();
+
+
+    public AntsColony(String id, int parallelAnts, AntsSettings settings) {
         Restrictions.ifNotOnlyPositivesFastFail(parallelAnts);
         Restrictions.ifContainsNullFastFail(id, settings);
         this.id = id;
         this.settings = settings;
         this.parallelAnts = parallelAnts;
-        trails = new float[getData().getSize()][getData().getSize()];
+        data = new ColonyCalculationData(settings);
     }
 
     @SuppressWarnings("ClassEscapesDefinedScope")
@@ -93,25 +99,25 @@ public final class AntsColony implements IAntsColony {
     public ColonyRunResult run(long periodNanos) {
         Restrictions.ifNotOnlyPositivesFastFail(periodNanos);
         log.debug("Colony {} start!", id);
-        colonyPerformanceMeasurer.measurePerformance(this::initialTrail, "initialTrail");
-        final long start = System.currentTimeMillis();
         runAnts(System.nanoTime() + periodNanos);
-        logResult(start);
-        return new ColonyRunResult(statistics.getBestRunLength(), neighbours.size() + 1,
+        logResult();
+        return new ColonyRunResult(id,
+                getStatistics().getBestRunLength(), neighbours.size() + 1,
                 parallelAnts, colonyPerformanceMeasurer,
-                PerformanceMeasurer.compileOverall(antsPerformanceMeasurers));
+                PerformanceMeasuresCompiler.compileOverall(antsPerformanceMeasurers));
     }
 
     @Override
     @Nonnull
     public String getLog() {
-        return statistics.getJournal();
+        return getStatistics().getJournal();
     }
 
     @Override
-    public void addNeighbours(List<IAntsColony> newNeighbours) {
-        if (newNeighbours != null) {
-            neighbours = ConversionUtil.nullFilter(newNeighbours).stream()
+    public void addNeighbours(List<IAntsColony> neighboursToAdd) {
+        if (neighboursToAdd != null) {
+            //noinspection ObjectEquality, by design
+            neighbours = ConversionUtil.nullFilter(neighboursToAdd).stream()
                     .filter(colony -> colony != this)
                     .collect(Collectors.toList());
         } else {
@@ -123,9 +129,7 @@ public final class AntsColony implements IAntsColony {
     public void receiveSolution(AntRunResult antRunResult) {
         colonyPerformanceMeasurer.measurePerformance(() -> {
             if (antRunResult != null) {
-                AntColonyInteraction
-                        .takeActionsIfSolutionTheBest(antRunResult, statistics, bestRunVertexes,
-                                gotNewSolution, true, settings, trails);
+                AntColonyInteractions.takeActionsIfSolutionTheBest(this, antRunResult, true);
                 log.debug("Colony {} received a solution {}.", id, antRunResult.getLength());
             } else {
                 log.warn("Sent AntRunResult must not be null!");
@@ -133,40 +137,30 @@ public final class AntsColony implements IAntsColony {
         }, "exchange");
     }
 
-    private void initialTrail() {
-        final int size = getData().getSize();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                trails[i][j] = getInitialTrail();
-            }
-        }
+    void replaceBestRunVertexes(int... currentRunTour) {
+        data.replaceBestRunVertexes(currentRunTour);
     }
 
-    private void logResult(@Nonnegative long startMilis) {
-        if (log.isInfoEnabled()) {
-            log.info("Colony {}, Best tour: |{}" + '|' + "{}. Total: {} ms", id,
-                    statistics.getBestRunLength(),
-                    OutputFormat.printIterableTour(bestRunVertexes),
-                    System.currentTimeMillis() - startMilis);
+    private void logResult() {
+        if (log.isDebugEnabled()) {
+            log.debug("Colony {}, Best tour: |{}" + '|' + "{}.", id,
+                    getStatistics().getBestRunLength(),
+                    OutputFormat.printIterableTour(data.getBestRunVertexes()));
         }
     }
 
     private void runAnts(@Nonnegative long stopNanos) {
         final Callable<Long> antRun =
-                AntColonyInteraction.interactionProcedure(id, settings, trails, statistics,
-                        bestRunVertexes, gotNewSolution,
-                        antsPerformanceMeasurers);
+                AntColonyInteractions.interactionProcedure(this);
         //noinspection MethodCallInLoopCondition - the nanoTime need be called each time
         ContinuousParallelExecutor.run(antRun, parallelAnts,
                 () -> System.nanoTime() >= stopNanos,
-                this::sendSolutionIfNeed,
-                "colony" + id,
-                "ant");
+                this::sendSolutionIfNeed, "colony" + id, "ant");
     }
 
     private void sendSolutionIfNeed() {
         if (isTimeToSendSolution(System.nanoTime())) {
-            final Optional<AntRunResult> bestRun = statistics.getBestRun();
+            final Optional<AntRunResult> bestRun = getStatistics().getBestRun();
             if (bestRun.isPresent()) {
                 neighbours.forEach(neighbour -> neighbour.receiveSolution(bestRun.get()));
                 gotNewSolution.compareAndSet(true, false);
@@ -181,13 +175,43 @@ public final class AntsColony implements IAntsColony {
     }
 
     @Nonnull
-    private IDistancesData getData() {
-        return settings.getGraph();
+    String getId() {
+        return id;
     }
 
-    @Nonnegative
-    private float getInitialTrail() {
-        return settings.getInitialTrail();
+    @Nonnull
+    AntsSettings getSettings() {
+        return settings;
+    }
+
+    @Nonnull
+    float[][] getTrails() {
+        return data.getTrails();
+    }
+
+    @Nonnull
+    CachedRawEdgeQualities getQualities() {
+        return data.getQualities();
+    }
+
+    @Nonnull
+    AntsStatistics getStatistics() {
+        return data.getStatistics();
+    }
+
+    @Nonnull
+    Collection<Integer> getBestRunVertexes() {
+        return data.getBestRunVertexes();
+    }
+
+    @Nonnull
+    void gotNewSolution() {
+        gotNewSolution.set(true);
+    }
+
+    @Nonnull
+    IDistancesData getDistanceData() {
+        return settings.getGraph();
     }
 
     @Nonnegative
@@ -195,4 +219,13 @@ public final class AntsColony implements IAntsColony {
         return settings.getExchangeNanos();
     }
 
+    static String getRunJournal() {
+        return ColonyCalculationData.getRunJournal();
+    }
+
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
+        // accessible by design
+    Collection<PerformanceMeasurer> getAntsPerformanceMeasurers() {
+        return antsPerformanceMeasurers;
+    }
 }

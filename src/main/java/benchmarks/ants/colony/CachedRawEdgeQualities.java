@@ -16,7 +16,9 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants;
+package benchmarks.ants.colony;
+
+import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 
@@ -25,15 +27,13 @@ import benchmarks.ants.data.IDistancesData;
 /**
  * @author Sergey Pomelov on 11/05/2016.
  */
-@SuppressWarnings({"StaticNonFinalField", "FieldRepeatedlyAccessedInMethod"})
-// this double-checked singleton pattern is ok
-public final class CachedRawEdgeQualities {
+public final class CachedRawEdgeQualities implements Serializable {
 
-    private static volatile CachedRawEdgeQualities instance = null;
+    private static final long serialVersionUID = 3487732853804434640L;
     @Nonnull
     private final float[][] edgesQualities;
 
-    private CachedRawEdgeQualities(IDistancesData data) {
+    CachedRawEdgeQualities(IDistancesData data) {
         final int size = data.getSize();
         edgesQualities = new float[size][size];
         for (int i = 0; i < size; i++) {
@@ -42,19 +42,6 @@ public final class CachedRawEdgeQualities {
                 edgesQualities[i][j] = (float) StrictMath.pow(data.getDist(i, j), -1.0D);
             }
         }
-    }
-
-    public static CachedRawEdgeQualities getInstance(IDistancesData data) {
-        CachedRawEdgeQualities localInstance = instance;
-        if (localInstance == null) {
-            synchronized (CachedRawEdgeQualities.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new CachedRawEdgeQualities(data);
-                }
-            }
-        }
-        return localInstance;
     }
 
     public float getDist(int i, int j) {

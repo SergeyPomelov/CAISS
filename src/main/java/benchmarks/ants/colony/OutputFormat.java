@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants;
+package benchmarks.ants.colony;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 /**
  * @author Sergey Pomelov on 28/04/2016.
  */
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class OutputFormat {
 
     private OutputFormat() { /* utility class */ }
@@ -36,7 +37,7 @@ public final class OutputFormat {
     }
 
     @Nonnull
-    static String printIterableTour(final Iterable<Integer> iterable) {
+    public static String printIterableTour(final Iterable<Integer> iterable) {
         final StringBuilder out = new StringBuilder(64);
         for (final int element : iterable) {
             out.append(element + 1).append('>');

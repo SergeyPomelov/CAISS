@@ -16,11 +16,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants;
+package benchmarks.ants.colony;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import benchmarks.ants.ant.AntRunResult;
+import benchmarks.ants.AntsSettings;
+import benchmarks.ants.colony.ant.AntRunResult;
 
 /**
  * @author Sergey Pomelov on 04/05/2016.
@@ -31,15 +32,15 @@ final class PheromonesApplier {
 
     private PheromonesApplier() { /* package local utility class*/ }
 
-    static void applyPheromones(AntRunResult runResult, AntsSettings settings, float[][]
-            trailsToChange) {
+    static void applyPheromones(AntRunResult runResult, AntsSettings settings,
+                                float[][] trailsToChange) {
         final int trailLength = trailsToChange.length;
         for (int i = 0; i < trailLength; i++) {
             for (int j = 0; j < i; j++) {
                 final float t = ((1.0F - settings.getEvaporationCoefficient())
                         * trailsToChange[i][j])
-                        + runResult.getPheromonesDelta()[i][j]
-                        + runResult.getPheromonesDelta()[j][i];
+                        + runResult.getPheromonesDelta().get(i, j)
+                        + runResult.getPheromonesDelta().get(j, i);
                 trailsToChange[i][j] = t;
                 trailsToChange[j][i] = t;
             }
