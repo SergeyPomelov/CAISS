@@ -17,7 +17,8 @@
  */
 
 /**
- * Package of different distanced between vertexes data generation implementations.
+ * This package intended for one colony task solving logic.
+ *
  * @author Sergey Pomelov on 29/04/2016.
  */
-package benchmarks.ants.data;
+package benchmarks.ants.colony;

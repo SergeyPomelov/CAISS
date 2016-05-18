@@ -17,7 +17,8 @@
  */
 
 /**
- * Package of different distanced between vertexes data generation implementations.
+ * Runnable, run logic, experiment logic, reporting.
+ *
  * @author Sergey Pomelov on 29/04/2016.
  */
-package benchmarks.ants.data;
+package benchmarks.ants.run;
