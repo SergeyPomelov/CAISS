@@ -40,17 +40,9 @@ import static util.Constants.FS;
  */
 @SuppressWarnings("MagicNumber") // this is a settings like stub class
 @Immutable
-final class AntsSettings implements Serializable {
+public final class AntsSettings implements Serializable {
 
     private static final long serialVersionUID = -345544272953782575L;
-
-    // private static final Pair<Integer, String> data = new Pair<>(27603, "wi29");
-    // private static final Pair<Integer, String> data = new Pair<>(6656, "dj38");
-    // private static final Pair<Integer, String> data = new Pair<>(564, "xqf131");
-    // private static final Pair<Integer, String> data = new Pair<>(9352, "qa194");
-    private static final Pair<Integer, String> data = new Pair<>(1019, "xqg237");
-    // private static final Pair<Integer, String> data = new Pair<>(79114, "uy734");
-
 
     @Nonnegative
     private final int optimum;
@@ -65,11 +57,11 @@ final class AntsSettings implements Serializable {
     @Nonnull
     private final IDistancesData graph;
 
-    AntsSettings() {
-        //this(data.getKey(), data.getValue(), TimeUtil.secToNano(60),
-        //       TimeUtil.mlsToNano(100), 0.01F, 1.0F);
-        this(data.getKey(), data.getValue(), TimeUtil.secToNano(30),
-                TimeUtil.mlsToNano(100), 0.01F, 1.0F);
+    public AntsSettings(Pair<Integer, String> data, int secondsToRun) {
+        this(data.getKey(), data.getValue(), TimeUtil.secToNano(secondsToRun),
+                TimeUtil.mlsToNano(100), 0.001F, 1.0F);
+        //this(data.getKey(), data.getValue(), TimeUtil.secToNano(30),
+        //        TimeUtil.mlsToNano(100), 0.1F, 1.0F);
     }
 
     @VisibleForTesting
@@ -86,7 +78,7 @@ final class AntsSettings implements Serializable {
     }
 
     @Nonnegative
-    int getOptimum() {
+    public int getOptimum() {
         return optimum;
     }
 
@@ -96,22 +88,22 @@ final class AntsSettings implements Serializable {
     }
 
     @Nonnegative
-    long getExchangeNanos() {
+    public long getExchangeNanos() {
         return exchangeNanos;
     }
 
     @Nonnegative
-    float getEvaporationCoefficient() {
+    public float getEvaporationCoefficient() {
         return evaporationCoefficient;
     }
 
     @Nonnegative
-    float getInitialTrail() {
+    public float getInitialTrail() {
         return initialTrail;
     }
 
     @Nonnull
-    IDistancesData getGraph() {
+    public IDistancesData getGraph() {
         return graph;
     }
 }

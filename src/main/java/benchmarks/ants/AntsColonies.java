@@ -18,9 +18,6 @@
 
 package benchmarks.ants;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,39 +26,40 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import benchmarks.ants.parallelisation.ParallelExecutor;
+import benchmarks.ants.colony.AntsColony;
+import benchmarks.ants.colony.ColonyRunResult;
+import benchmarks.ants.colony.IAntsColony;
+import benchmarks.ants.parallelisation.ParallelBarrierExecutor;
 import util.Restrictions;
 
-import static benchmarks.ants.ColonyRunResult.compileOverallResults;
+import static benchmarks.ants.run.ColonyResultsCompiler.compileOverallResults;
+
 
 /**
  * @author Sergey Pomelov on 02/05/2016.
  */
 @ParametersAreNonnullByDefault
-final class AntsColonies {
-
-    private static final Logger log = LoggerFactory.getLogger(AntsColonies.class);
+public final class AntsColonies {
 
     private AntsColonies() { /* utility class */ }
 
-    static ColonyRunResult runCalculations(int coloniesAmount, int antsPerColony,
-                                           AntsSettings settings) {
+    public static ColonyRunResult runCalculations(int coloniesAmount, int antsPerColony,
+                                                  AntsSettings settings) {
         Restrictions.ifContainsNullFastFail(settings);
         Restrictions.ifNotOnlyPositivesFastFail(coloniesAmount, antsPerColony);
         return compileOverallResults(generateSolutions(coloniesAmount, antsPerColony, settings),
                 coloniesAmount, antsPerColony);
     }
 
-    private static List<ColonyRunResult> generateSolutions(@Nonnegative int coloniesAmount,
-                                                           @Nonnegative int antsPerColony,
-                                                           AntsSettings settings) {
+    private static Collection<ColonyRunResult> generateSolutions(@Nonnegative int coloniesAmount,
+                                                                 @Nonnegative int antsPerColony,
+                                                                 AntsSettings settings) {
         final List<ColonyRunResult> solutions = new ArrayList<>(coloniesAmount);
-        ParallelExecutor.runOnce(
+        ParallelBarrierExecutor.runOnce(
                 generateAgents(coloniesAmount, antsPerColony, settings).stream()
                         .map(colony -> (Runnable) () ->
                                 solutions.add(colony.run(settings.getRunPeriodNanos())))
-                        .collect(Collectors.toList()),
-                "start", "colony");
+                        .collect(Collectors.toList()), "start", "colony");
 
         return solutions;
     }
