@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  * Class for conversion methods.
  * @author Sergey Pomelov on 15/04/2016.
  */
+@SuppressWarnings("ClassUnconnectedToPackage")
 public final class ConversionUtil {
 
     private static final int BYTES_IN_MEGABYTES = 1024 * 1024;

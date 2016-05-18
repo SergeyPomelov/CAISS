@@ -20,6 +20,8 @@ package benchmarks.ants;
 
 import org.junit.Test;
 
+import benchmarks.ants.colony.ColonyRunResult;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 public class AntsColoniesTest {
 
     private static final AntsSettings SETTINGS = new AntsSettings(27603, "wi29",
-            60_000_000_000L, 1_000_000_000L, 0.1F, 1.0F);
+            1_000_000L, 100L, 0.01F, 1.0F);
     private static final ColonyRunResult result = AntsColonies.runCalculations(2, 2, SETTINGS);
 
     @Test

@@ -27,7 +27,7 @@ import java.util.Arrays;
  * Conditions checkers collection.
  * @author Sergey Pomelov on 15/04/2016.
  */
-@SuppressWarnings({"StaticMethodOnlyUsedInOneClass", "ClassWithTooManyDependents"})
+@SuppressWarnings({"StaticMethodOnlyUsedInOneClass", "ClassWithTooManyDependents", "ClassUnconnectedToPackage"})
 public final class Restrictions {
 
     private static final Logger log = LoggerFactory.getLogger(Restrictions.class);
