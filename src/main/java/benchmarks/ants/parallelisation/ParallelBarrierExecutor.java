@@ -28,18 +28,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 
 /**
- * Class for executing n parallel ants.
+ * Class for executing n parallel agents, started at the same time and gracefully waiting for
+ * finishing them all.
  *
  * @author Sergey Pomelov on 29/04/2016.
  */
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 @ParametersAreNonnullByDefault
-public final class ParallelExecutor {
+public final class ParallelBarrierExecutor {
 
-    private static final Logger log = LoggerFactory.getLogger(ParallelExecutor.class);
+    private static final Logger log = LoggerFactory.getLogger(ParallelBarrierExecutor.class);
     private static final String INTERRUPTED_EX = "Got an interrupted exception!";
 
-    private ParallelExecutor() { /* utility class */ }
+    private ParallelBarrierExecutor() { /* utility class */ }
 
     public static void runOnce(Collection<Runnable> agents, String poolName, String agentName) {
         final ThreadPoolExecutor executor =
@@ -52,7 +53,7 @@ public final class ParallelExecutor {
         //noinspection MethodCallInLoopCondition - ok, the condition must be checked every time.
         while (executor.getCompletedTaskCount() < parallelAgents) {
             try {
-                Thread.sleep(1);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 log.warn(INTERRUPTED_EX, e);
             }

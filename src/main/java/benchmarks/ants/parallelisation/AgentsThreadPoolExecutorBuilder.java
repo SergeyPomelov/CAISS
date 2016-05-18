@@ -27,6 +27,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author Sergey Pomelov on 28/04/2016.
+ * Adds to the standart implementation pool and agents names to the threads names for buisness
+ * model view-point readability.
  */
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 @ParametersAreNonnullByDefault
