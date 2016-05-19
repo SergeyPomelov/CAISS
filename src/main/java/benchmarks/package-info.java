@@ -17,8 +17,8 @@
  */
 
 /**
- * Wheel implemented in code elapsed time measurers for flexible approach.
+ * The package contains a set of computational benchmarks.
  *
- * @author Sergey Pomelov on 02/05/2016.
+ * @author Sergey Pomelov on 18.03.15.
  */
-package benchmarks.matrixes.metrics;
+package benchmarks;

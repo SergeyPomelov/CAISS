@@ -103,6 +103,9 @@ public final class TSPDistanceData implements IDistancesData {
                 nodesReadStart = true;
             }
         }
+        if (tempNodes.size() <= 0) {
+            throw new IllegalStateException("No nodes obtained from file !");
+        }
         return convertToDistArray(tempNodes);
     }
 

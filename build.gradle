@@ -40,7 +40,7 @@ jmh.jmhVersion = "1.12"
 // the main class where other test classes should be registered.
 tasks.jmh.main = "benchmarks.control.JMHBenchmarksRunner"
 
-//noinspection GroovyAssignabilityCheck - false, while it works don"t touch it
+//noinspection GroovyAssignabilityCheck - false, while it works don't touch it
 sourceSets {
     main {
         java {
@@ -63,13 +63,14 @@ dependencies {
     apt "org.openjdk.jmh:jmh-generator-annprocess:${jmh.jmhVersion}" // jmh benchmarking
 
     compile "org.openjdk.jmh:jmh-core:${jmh.jmhVersion}"// jmh
+
     compile "org.slf4j:slf4j-api:1.7.+"                 // logging-api
-    compile "org.slf4j:slf4j-ext:1.7.+"                 // manual performance measures
+    // compile "org.slf4j:slf4j-ext:1.7.+"              // manual performance measures
     compile "ch.qos.logback:logback-classic:1.1.+"      // logger
 
     compile "com.google.code.findbugs:jsr305:3.0.+"     // QA annotations
     compile "com.google.guava:guava:19.+"               // commons lib
 
-    testCompile "junit:junit:4.+"                   // main tests lib
+    testCompile "junit:junit:4.+"                       // main tests lib
     // testCompile "org.mockito:mockito-core:1.10.+"    // mocks
 }

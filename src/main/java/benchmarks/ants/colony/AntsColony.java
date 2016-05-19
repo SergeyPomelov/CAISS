@@ -40,8 +40,8 @@ import benchmarks.ants.colony.ant.AntRunResult;
 import benchmarks.ants.colony.ant.RunningAnt;
 import benchmarks.ants.data.IDistancesData;
 import benchmarks.ants.parallelisation.ContinuousParallelExecutor;
-import benchmarks.matrixes.metrics.PerformanceMeasurer;
-import benchmarks.matrixes.metrics.PerformanceMeasuresCompiler;
+import benchmarks.metrics.PerformanceMeasurer;
+import benchmarks.metrics.PerformanceMeasuresCompiler;
 import util.ConversionUtil;
 import util.Restrictions;
 

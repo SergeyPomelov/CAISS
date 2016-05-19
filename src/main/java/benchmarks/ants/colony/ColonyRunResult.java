@@ -30,8 +30,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import benchmarks.matrixes.metrics.PerformanceMeasurer;
-import benchmarks.matrixes.metrics.PerformanceRecord;
+import benchmarks.metrics.PerformanceMeasurer;
+import benchmarks.metrics.PerformanceRecord;
 
 /**
  * @author Sergey Pomelov on 10/05/2016.

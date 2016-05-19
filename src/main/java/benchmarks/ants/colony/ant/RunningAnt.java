@@ -31,7 +31,7 @@ import javax.annotation.concurrent.Immutable;
 import benchmarks.ants.colony.AntsColony;
 import benchmarks.ants.colony.CachedRawEdgeQualities;
 import benchmarks.ants.data.IDistancesData;
-import benchmarks.matrixes.metrics.PerformanceMeasurer;
+import benchmarks.metrics.PerformanceMeasurer;
 
 import static benchmarks.ants.colony.OutputFormat.printTour;
 
@@ -65,7 +65,14 @@ public final class RunningAnt {
         this.graph = graph;
         trailSpray = new PheromonesTrail();
         tourBuilder = new TourBuilder(graph, cachedRawEdgeQualities, trails);
-        runResult = performanceMeasurer.measurePerformanceCallable(this::runAnt, "runAnt");
+
+        AntRunResult result = null;
+        try {
+            result = performanceMeasurer.measurePerformanceCallable(this::runAnt, "runAnt");
+        } catch (Exception e) {
+            log.error("Error while obtaining run result!", e);
+        }
+        runResult = result;
     }
 
     @Nonnull

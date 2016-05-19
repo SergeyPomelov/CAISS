@@ -17,9 +17,8 @@
  */
 
 /**
- * Objects which contains logic of controlling computations
- * processes and actors Additionally it represents journal of a computational process mail stones.
+ * Wheel implemented in code elapsed time measurers for flexible approach.
  *
- * @author Sergey Pomelov on 18.03.15.
+ * @author Sergey Pomelov on 02/05/2016.
  */
-package simulation.control;
+package benchmarks.metrics;

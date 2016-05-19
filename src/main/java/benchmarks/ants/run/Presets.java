@@ -52,14 +52,23 @@ enum Presets {
     RW1621_2X2_2_3M(new AntsExperimentPreset(new Pair<>(26051, "rw1621"),
             Arrays.asList(1, 2), Arrays.asList(1, 2), 2, 3)),
 
-    XQQ237_6X6_3_2H(new AntsExperimentPreset(new Pair<>(1019, "xqg237"),
+    XQG237_6X6_3_2H(new AntsExperimentPreset(new Pair<>(1019, "xqg237"),
             Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 120)),
     UY734_6X6_3_2H(new AntsExperimentPreset(new Pair<>(79114, "uy734"),
             Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 120)),
     XIT1083_6X6_3_2H(new AntsExperimentPreset(new Pair<>(3558, "xit1083"),
             Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 120)),
     RW1621_6X6_3_2H(new AntsExperimentPreset(new Pair<>(26051, "rw1621"),
-            Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 120));
+            Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 120)),
+
+    LU980_6X6_3_2H30M(new AntsExperimentPreset(new Pair<>(11340, "lu980"),
+            Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 150)),
+    XQL662_6X6_3_2H30M(new AntsExperimentPreset(new Pair<>(2513, "xql662"),
+            Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 150)),
+    DCC911_6X6_3_2H30M(new AntsExperimentPreset(new Pair<>(6396, "dcc1911"),
+            Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 150)),
+    MU1979_6X6_3_2H30M(new AntsExperimentPreset(new Pair<>(86891, "mu1979"),
+            Arrays.asList(1, 2, 3, 4, 5, 6), Arrays.asList(1, 2, 3, 4, 5, 6), 3, 150));
 
     private final AntsExperimentPreset preset;
 
