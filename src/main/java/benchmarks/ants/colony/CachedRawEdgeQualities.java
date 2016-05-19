@@ -16,31 +16,35 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants;
+package benchmarks.ants.colony;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 
+import benchmarks.ants.data.IDistancesData;
+
 /**
- * @author Sergey Pomelov on 28/04/2016.
+ * @author Sergey Pomelov on 11/05/2016.
  */
-public final class OutputFormat {
+public final class CachedRawEdgeQualities implements Serializable {
 
-    private OutputFormat() { /* utility class */ }
-
+    private static final long serialVersionUID = 3487732853804434640L;
     @Nonnull
-    public static String printTour(int... iterable) {
-        return printIterableTour(Arrays.stream(iterable).boxed().collect(Collectors.toList()));
+    private final float[][] edgesQualities;
+
+    CachedRawEdgeQualities(IDistancesData data) {
+        final int size = data.getSize();
+        edgesQualities = new float[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                //noinspection NumericCastThatLosesPrecision, used like pow(float, float)
+                edgesQualities[i][j] = (float) StrictMath.pow(data.getDist(i, j), -1.0D);
+            }
+        }
     }
 
-    @Nonnull
-    static String printIterableTour(final Iterable<Integer> iterable) {
-        final StringBuilder out = new StringBuilder(64);
-        for (final int element : iterable) {
-            out.append(element + 1).append('>');
-        }
-        return out.toString();
+    public float getDist(int i, int j) {
+        return edgesQualities[i][j];
     }
 }

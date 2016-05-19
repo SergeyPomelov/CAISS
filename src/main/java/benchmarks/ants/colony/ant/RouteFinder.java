@@ -16,15 +16,17 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.ant;
+package benchmarks.ants.colony.ant;
 
-import java.security.SecureRandom;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import benchmarks.ants.colony.CachedRawEdgeQualities;
+import benchmarks.ants.data.IDistancesData;
 
 /**
  * Implements the ant's decision about the next vertex to go.
@@ -35,27 +37,26 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 final class RouteFinder {
 
-    private static final Random rand = new SecureRandom();
-    private static final float COMP_MAX_ERR = Float.MIN_VALUE * 10.0E3F;
+    private static final float MIN_VERTEX_QUALITY = Float.MIN_VALUE * 10.0E2F;
 
     private RouteFinder() { /* utility package-local class */ }
 
     @SuppressWarnings("MethodCanBeVariableArityMethod") // by design
     @Nonnull
     @Nonnegative
-    static Optional<Integer> findNextVertex(@Nonnegative int startVertex, @Nonnegative int size,
-                                            float[][] vertexQualities, boolean[] visited,
-                                            int[] allowedVertexes) {
+    static Optional<Integer> findNextVertex(@Nonnegative int startVertex,
+                                            float[][] trail, boolean[] visited,
+                                            int[] allowedVertexes, IDistancesData data,
+                                            CachedRawEdgeQualities cachedRawEdgeQualities) {
+        final int size = data.getSize();
         int possibleVertexesToGo = 0;
         float totalWeight = 0;
         final float[] weights = new float[size];
         for (int j = 0; j < size; j++) {
-            boolean success = true;
-            final float vertexQuality = vertexQualities[startVertex][j];
-            if (visited[j] || (vertexQuality < COMP_MAX_ERR)) {
-                success = false;
-            }
-            if (success) {
+            if (!visited[j]) {
+                final float vertexQuality =
+                        getTrail(cachedRawEdgeQualities.getDist(startVertex, j) *
+                                trail[startVertex][j]);
                 totalWeight += vertexQuality;
                 weights[possibleVertexesToGo] = totalWeight;
                 allowedVertexes[possibleVertexesToGo] = j;
@@ -63,22 +64,35 @@ final class RouteFinder {
             }
         }
 
+        if (totalWeight == 0) {
+            totalWeight = 0;
+        }
+
         return Optional.ofNullable((totalWeight == 0) ?
                 null : calculateDestination(totalWeight, possibleVertexesToGo, weights));
+    }
+
+    private static float getTrail(float value) {
+        return (value == 0.0F) ? MIN_VERTEX_QUALITY : value;
     }
 
     @SuppressWarnings("MethodCanBeVariableArityMethod") // by design
     private static int calculateDestination(float totalWeight, int possibleVertexesToGo,
                                             float[] weights) {
-        int result = 0;
-        final double val = totalWeight * rand.nextDouble();
+        final float pointer = generatePointer(totalWeight);
         for (int i = 0; i < possibleVertexesToGo; i++) {
-            if (weights[i] > val) {
+            if (isLessOrEqual(pointer, weights[i])) {
                 return i;
-            } else {
-                result = possibleVertexesToGo;
             }
         }
-        return result;
+        return possibleVertexesToGo;
+    }
+
+    private static float generatePointer(float totalWeight) {
+        return totalWeight * ThreadLocalRandom.current().nextFloat();
+    }
+
+    private static boolean isLessOrEqual(float pointer, float weight) {
+        return pointer <= weight;
     }
 }

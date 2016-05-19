@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants;
+package benchmarks.ants.colony;
 
 import com.sun.istack.internal.NotNull;
 
@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
-import benchmarks.ants.ant.AntRunResult;
+import benchmarks.ants.colony.ant.AntRunResult;
 
 /**
  * Package local statistics for AntsColony work.
@@ -61,6 +61,7 @@ final class AntsStatistics implements Serializable {
     @Nonnull
     private final StringBuilder journal = new StringBuilder(0);
 
+
     @Nonnull
     Optional<AntRunResult> getBestRun() {
         return Optional.ofNullable(bestRun.get());
@@ -77,21 +78,17 @@ final class AntsStatistics implements Serializable {
         bestRunLength.set(runResult.getLength());
         if (log.isDebugEnabled()) {
             journal.append(runJournal);
+            log.debug("ant find better: {}/{} avg:|{}|, solution:{}",
+                    antsGoodRuns.incrementAndGet(),
+                    antsRuns.get(),
+                    avgRunLength.get(),
+                    runJournal);
         }
-        log.debug("ant find better: {}/{} avg:|{}|, solution:{}",
-                antsGoodRuns.incrementAndGet(),
-                antsRuns.get(),
-                avgRunLength.get(),
-                runJournal);
     }
 
     @Nonnegative
     long getBestRunLength() {
         return bestRunLength.get();
-    }
-
-    void setBestRunLength(@Nonnegative long bestRunLength) {
-        this.bestRunLength.set(bestRunLength);
     }
 
     @Nonnull

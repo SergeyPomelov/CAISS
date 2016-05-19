@@ -16,32 +16,9 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package util;
-
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
-
 /**
- * @author Sergey Pomelov on 15/04/2016.
+ * Runnable, run logic, experiment logic, reporting.
+ *
+ * @author Sergey Pomelov on 29/04/2016.
  */
-@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
-public final class TimeUtil {
-
-    private TimeUtil() { /* utility class */ }
-
-    public static long nanoToMls(long nano) {
-        return TimeUnit.NANOSECONDS.toMillis(nano);
-    }
-
-    public static long secToNano(int seconds) {
-        return TimeUnit.SECONDS.toNanos(seconds);
-    }
-
-    public static long mlsToNano(int milliseconds) {
-        return TimeUnit.MILLISECONDS.toNanos(milliseconds);
-    }
-
-    static int getCurrentYear() {
-        return Calendar.getInstance().get(Calendar.YEAR);
-    }
-}
+package benchmarks.ants.run;

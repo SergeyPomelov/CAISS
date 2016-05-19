@@ -20,16 +20,42 @@ package benchmarks.ants;
 
 import org.junit.Test;
 
+import benchmarks.ants.colony.ColonyRunResult;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author Sergey Pomelov on 06/05/2016.
  */
 public class AntsColoniesTest {
 
-    private static final AntsSettings SETTINGS = new AntsSettings(27603, 1000, 100, 0.1F,
-            1.0F, "wi29");
+    private static final AntsSettings SETTINGS = new AntsSettings(27603, "wi29",
+            1_000_000L, 100L, 0.01F, 1.0F);
+    private static final ColonyRunResult result = AntsColonies.runCalculations(2, 2, SETTINGS);
+
+    @Test
+    public void paramsPassedToEnd() {
+        assertEquals(2L, result.getAnts());
+        assertEquals(2L, result.getColonies());
+    }
+
+    @Test
+    public void existsResult() {
+        assertNotNull(result);
+        assertTrue(result.getResult() < Long.MAX_VALUE);
+    }
 
     @Test
     public void antsSmoke() {
-        AntsColonies.runCalculations(2, 2, SETTINGS);
+        assertTrue(result.getAntRuns() > 0L);
+        assertTrue(result.getAvgAntsRunNs() > 0L);
+    }
+
+    @Test
+    public void exchangesSmoke() {
+        assertTrue(result.getExchanges() > 0L);
+        assertTrue(result.getAvgExchangeNs() > 0L);
     }
 }

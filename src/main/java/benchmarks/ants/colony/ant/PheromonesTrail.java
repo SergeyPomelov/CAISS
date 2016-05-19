@@ -16,12 +16,16 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.ant;
+package benchmarks.ants.colony.ant;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.NotThreadSafe;
+
+import benchmarks.ants.colony.ant.Array2DFloatDelta.Builder;
+
+import static util.Restrictions.ifNullFail;
 
 /**
  * Class for spray pheromones trail along the route.
@@ -32,32 +36,26 @@ import javax.annotation.concurrent.NotThreadSafe;
 @ParametersAreNonnullByDefault
 final class PheromonesTrail {
 
-    @Nonnull
-    private final float[][] trailsDelta;
+    private Array2DFloatDelta trailsDelta = null;
 
-    PheromonesTrail(@Nonnegative int size) {
-        trailsDelta = new float[size][size];
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                trailsDelta[i][j] = 0;
-            }
-        }
+    PheromonesTrail() {
     }
 
     @Nonnull
     void generateTrail(int[] tour, @Nonnegative float amount) {
+        final Builder builder = new Builder(tour.length);
         int from = tour[0];
         for (final int vertex : tour) { // iterates through the tour
             final int destination = from;
             from = vertex;
-            trailsDelta[from][destination] += amount; // spraying the trail delta
+            builder.add(from, destination, amount); // spraying the trail delta
         }
+        trailsDelta = builder.build();
     }
 
     @Nonnull
-    float[][] getTrailsDelta() {
+    Array2DFloatDelta getTrailsDelta() {
         //noinspection ReturnOfCollectionOrArrayField, while it used package-local it's ok.
-        return trailsDelta;
+        return ifNullFail(trailsDelta);
     }
 }

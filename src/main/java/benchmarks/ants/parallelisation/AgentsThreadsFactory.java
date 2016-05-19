@@ -46,8 +46,8 @@ final class AgentsThreadsFactory implements ThreadFactory {
     public Thread newThread(Runnable run) {
         final Thread thread = new Thread(group, run,
                 namePrefix + threadNumber.getAndIncrement(), 0);
-        if (thread.isDaemon()) {
-            thread.setDaemon(false);
+        if (!thread.isDaemon()) {
+            thread.setDaemon(true);
         }
         return thread;
     }

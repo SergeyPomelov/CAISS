@@ -16,44 +16,32 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.ant;
+package benchmarks.ants.colony;
 
-import javax.annotation.Nonnegative;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.concurrent.Immutable;
 
 /**
- * Class for saving the tour results.
- * @author Sergey Pomelov on 29/04/2016.
- * @see AntRunResult
+ * @author Sergey Pomelov on 28/04/2016.
  */
-@Immutable
-@ParametersAreNonnullByDefault
-final class TourData {
-    private final boolean success;
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
+public final class OutputFormat {
+
+    private OutputFormat() { /* utility class */ }
+
     @Nonnull
-    private final int[] tour;
-    @Nonnegative
-    private final long length;
-
-    TourData(boolean success, int[] tour, @Nonnegative long length) {
-        this.success = success;
-        this.tour = tour.clone();
-        this.length = length;
-    }
-
-    boolean isSuccess() {
-        return success;
+    public static String printTour(int... iterable) {
+        return printIterableTour(Arrays.stream(iterable).boxed().collect(Collectors.toList()));
     }
 
     @Nonnull
-    int[] getTour() {
-        return tour.clone();
-    }
-
-    @Nonnegative
-    long getLength() {
-        return length;
+    public static String printIterableTour(final Iterable<Integer> iterable) {
+        final StringBuilder out = new StringBuilder(64);
+        for (final int element : iterable) {
+            out.append(element + 1).append('>');
+        }
+        return out.toString();
     }
 }

@@ -48,7 +48,7 @@ import static util.Constants.LS;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public final class SimulationController implements ISimulationController {
+final class SimulationController implements ISimulationController {
 
     private static final Logger log = LoggerFactory.getLogger(SimulationController.class);
 

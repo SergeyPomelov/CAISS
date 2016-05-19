@@ -28,6 +28,7 @@ import javax.annotation.concurrent.Immutable;
 
 import benchmarks.ants.data.IDistancesData;
 import benchmarks.ants.data.TSPDistanceData;
+import javafx.util.Pair;
 import util.TimeUtil;
 
 import static util.Constants.FS;
@@ -37,7 +38,7 @@ import static util.Constants.FS;
  *
  * @author Sergey Pomelov on 28/04/2016.
  */
-@SuppressWarnings("MagicNumber")
+@SuppressWarnings("MagicNumber") // this is a settings like stub class
 @Immutable
 public final class AntsSettings implements Serializable {
 
@@ -54,24 +55,24 @@ public final class AntsSettings implements Serializable {
     @Nonnegative
     private final float initialTrail;
     @Nonnull
-    private final String file; // wi29
-    @Nonnull
     private final IDistancesData graph;
 
-    public AntsSettings() {
-        this(9352, TimeUtil.secToNano(600), TimeUtil.mlsToNano(1000), 0.1F, 1.0F, "qa194");
+    public AntsSettings(Pair<Integer, String> data, int secondsToRun) {
+        this(data.getKey(), data.getValue(), TimeUtil.secToNano(secondsToRun),
+                TimeUtil.mlsToNano(100), 0.001F, 1.0F);
+        //this(data.getKey(), data.getValue(), TimeUtil.secToNano(30),
+        //        TimeUtil.mlsToNano(100), 0.1F, 1.0F);
     }
 
     @VisibleForTesting
-    public AntsSettings(@Nonnegative int optimum, @Nonnegative long runPeriodNanos,
-                        @Nonnegative long exchangeNanos, @Nonnegative float evaporationCoefficient,
-                        @Nonnegative float initialTrail, @Nonnull String file) {
+    AntsSettings(@Nonnegative int optimum, @Nonnull String file, @Nonnegative long runPeriodNanos,
+                 @Nonnegative long exchangeNanos, @Nonnegative float evaporationCoefficient,
+                 @Nonnegative float initialTrail) {
         this.optimum = optimum;
         this.runPeriodNanos = runPeriodNanos;
         this.exchangeNanos = exchangeNanos;
         this.evaporationCoefficient = evaporationCoefficient;
         this.initialTrail = initialTrail;
-        this.file = file;
         graph = new TSPDistanceData(FS + "build" + FS + "resources" + FS + "main"
                 + FS + "tsp_data" + FS + file + ".tsp");
     }
@@ -82,7 +83,7 @@ public final class AntsSettings implements Serializable {
     }
 
     @Nonnegative
-    public long getRunPeriodNanos() {
+    long getRunPeriodNanos() {
         return runPeriodNanos;
     }
 

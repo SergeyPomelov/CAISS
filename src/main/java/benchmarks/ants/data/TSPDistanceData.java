@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.concurrent.ThreadSafe;
 
 import javafx.util.Pair;
@@ -70,11 +71,13 @@ public final class TSPDistanceData implements IDistancesData {
         }
     }
 
+    @Nonnegative
     @Override
     public int getDist(int start, int destiny) {
         return distances[start][destiny];
     }
 
+    @Nonnegative
     @Override
     public int getSize() {
         return size;
@@ -90,7 +93,7 @@ public final class TSPDistanceData implements IDistancesData {
 
     private static int[][] readData(BufferedReader br) throws IOException {
         boolean nodesReadStart = false;
-        final List<Pair<Float, Float>> tempNodes = new ArrayList<>();
+        final List<Pair<Float, Float>> tempNodes = new ArrayList<>(0);
         // All right, lines from reader are finite.
         //noinspection ForLoopWithMissingComponent,MethodCallInLoopCondition
         for (String line; (((line = br.readLine())) != null) && !"EOF".equals(line); ) {
@@ -116,6 +119,7 @@ public final class TSPDistanceData implements IDistancesData {
 
     //Rounding distance as in TSPLib for optimal solution from there matching.
     @SuppressWarnings("NumericCastThatLosesPrecision")
+    @Nonnegative
     private static int getDistInner(int start, int destiny, List<Pair<Float, Float>> tempNodes) {
         if (start == destiny) {
             return Integer.MAX_VALUE;
