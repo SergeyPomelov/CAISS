@@ -56,10 +56,10 @@ final class AntsRunner {
     public static void main(String... args) {
         GNUCopyright.printLicence();
         warmUp(Presets.WARM_UP.getPreset());
-        runExperiment(Presets.XQQ237_6X6_3_2H.getPreset());
-        runExperiment(Presets.UY734_6X6_3_2H.getPreset());
-        runExperiment(Presets.XIT1083_6X6_3_2H.getPreset());
-        runExperiment(Presets.RW1621_6X6_3_2H.getPreset());
+        runExperiment(Presets.LU980_6X6_3_2H30M.getPreset());
+        runExperiment(Presets.XQL662_6X6_3_2H30M.getPreset());
+        runExperiment(Presets.DCC911_6X6_3_2H30M.getPreset());
+        runExperiment(Presets.MU1979_6X6_3_2H30M.getPreset());
         System.exit(0);
     }
 
