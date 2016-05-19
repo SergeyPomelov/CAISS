@@ -17,7 +17,8 @@
  */
 
 /**
- * @author Sergey Pomelov on 18.03.15.
  * Computational experiment with ants.
+ *
+ * @author Sergey Pomelov on 18.03.15.
  */
 package benchmarks.ants;

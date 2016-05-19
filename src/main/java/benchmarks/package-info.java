@@ -17,9 +17,8 @@
  */
 
 /**
- * Objects which contains logic of controlling computations
- * processes and actors Additionally it represents journal of a computational process mail stones.
+ * The package contains a set of computational benchmarks.
  *
  * @author Sergey Pomelov on 18.03.15.
  */
-package simulation.control;
+package benchmarks;

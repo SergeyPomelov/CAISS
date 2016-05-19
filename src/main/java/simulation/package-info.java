@@ -17,7 +17,9 @@
  */
 
 /**
- * @author Sergey Pomelov on 18.03.15. Computational process core. Contains representation of
- * architecture and algorithm. Contains controllers of the process and it's actors.
+ * Computational process core. Contains representation of architecture and algorithm.
+ * Contains controllers of the process and it's actors.
+ *
+ * @author Sergey Pomelov on 18.03.15.
  */
 package simulation;
