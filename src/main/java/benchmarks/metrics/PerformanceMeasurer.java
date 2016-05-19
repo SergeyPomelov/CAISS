@@ -77,18 +77,13 @@ public final class PerformanceMeasurer implements Serializable {
         return performanceRecord;
     }
 
+    @SuppressWarnings("ProhibitedExceptionDeclared") // just rethrowing
     @Nullable
-    public <T> T measurePerformanceCallable(Callable<T> task, String label) {
+    public <T> T measurePerformanceCallable(Callable<T> task, String label) throws Exception {
         final long startNanoTime = System.nanoTime();
         final long startCpuTime = getCpuTimeNano();
         final long startUserTime = getUserTimeNano();
-        T result = null;
-        try {
-            result = task.call();
-        } catch (Exception e) {
-            log.error("Callable error report while measurements!", e);
-        }
-
+        T result = task.call();
         final PerformanceRecord performanceRecord =
                 new PerformanceRecord(label,
                         System.nanoTime() - startNanoTime,
