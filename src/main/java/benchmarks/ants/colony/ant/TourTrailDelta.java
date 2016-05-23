@@ -18,53 +18,56 @@
 
 package benchmarks.ants.colony.ant;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * @author Sergey Pomelov on 15/05/2016. Class represents float[][] array deltas for memory saving
- *         purposes.
+ * Class represents Hamiltonian path through 2D array graph form's
+ * ant trail deltas in memory saving format.
+ * @author Sergey Pomelov on 15/05/2016.
  */
 @SuppressWarnings("WeakerAccess") // false-positive claim, it used outside
 @Immutable
-public final class Array2DFloatDelta {
+public final class TourTrailDelta {
 
-    private final Map<Integer, Map<Integer, Float>> deltas;
+    private final float[] deltas;
+    private final int[] columnIdx;
 
-    private Array2DFloatDelta(Map<Integer, Map<Integer, Float>> deltas) {
+    @SuppressWarnings("MethodCanBeVariableArityMethod")
+    public TourTrailDelta(float[] deltas, int[] columnIdx) {
         this.deltas = deltas;
+        this.columnIdx = columnIdx;
     }
 
-    public float get(int i, int j) {
-        final Map<Integer, Float> deltasJ = deltas.get(i);
-        return (deltasJ != null) ? deltasJ.getOrDefault(j, 0.0F) : 0.0F;
+    @Nonnull
+    public float getDelta(int row) {
+        return deltas[row];
     }
 
-    @SuppressWarnings("PackageVisibleInnerClass") // builder pattern is ok
+    public int getDeltaColumnIdx(int row) {
+        return columnIdx[row];
+    }
+
+    @SuppressWarnings("PackageVisibleInnerClass") // inner builder pattern is ok
     static class Builder {
-        private Map<Integer, Map<Integer, Float>> temporaryDeltas = new HashMap<>(0);
+
+        private final float[] deltas;
+        private final int[] columnIdx;
 
         Builder(int size) {
-            temporaryDeltas = new HashMap<>(size, 0.5F);
+            deltas = new float[size];
+            columnIdx = new int[size];
         }
 
         @SuppressWarnings("UnusedReturnValue") // builder pattern still is ok
         public Builder add(int row, int column, float delta) {
-            final Map<Integer, Float> rowEntry = temporaryDeltas.get(row);
-            if (rowEntry != null) {
-                rowEntry.put(column, delta);
-            } else {
-                final Map<Integer, Float> newRowEntry = new HashMap<>();
-                newRowEntry.put(column, delta);
-                temporaryDeltas.put(row, newRowEntry);
-            }
+            deltas[row] = delta;
+            columnIdx[row] = column;
             return this;
         }
 
-        Array2DFloatDelta build() {
-            return new Array2DFloatDelta(temporaryDeltas);
+        TourTrailDelta build() {
+            return new TourTrailDelta(deltas, columnIdx);
         }
     }
 }
