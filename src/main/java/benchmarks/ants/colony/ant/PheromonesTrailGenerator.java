@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.NotThreadSafe;
 
-import benchmarks.ants.colony.ant.Array2DFloatDelta.Builder;
+import benchmarks.ants.colony.ant.TourTrailDelta.Builder;
 
 import static util.Restrictions.ifNullFail;
 
@@ -34,15 +34,14 @@ import static util.Restrictions.ifNullFail;
  */
 @NotThreadSafe
 @ParametersAreNonnullByDefault
-final class PheromonesTrail {
+final class PheromonesTrailGenerator {
 
-    private Array2DFloatDelta trailsDelta = null;
+    private TourTrailDelta trailsPheromonesDelta = null;
 
-    PheromonesTrail() {
-    }
+    PheromonesTrailGenerator() { /* package-local utility class */ }
 
     @Nonnull
-    void generateTrail(int[] tour, @Nonnegative float amount) {
+    void generateTrailPheromonesDelta(int[] tour, @Nonnegative float amount) {
         final Builder builder = new Builder(tour.length);
         int from = tour[0];
         for (final int vertex : tour) { // iterates through the tour
@@ -50,12 +49,12 @@ final class PheromonesTrail {
             from = vertex;
             builder.add(from, destination, amount); // spraying the trail delta
         }
-        trailsDelta = builder.build();
+        trailsPheromonesDelta = builder.build();
     }
 
     @Nonnull
-    Array2DFloatDelta getTrailsDelta() {
+    TourTrailDelta getTrailsPheromonesDelta() {
         //noinspection ReturnOfCollectionOrArrayField, while it used package-local it's ok.
-        return ifNullFail(trailsDelta);
+        return ifNullFail(trailsPheromonesDelta);
     }
 }

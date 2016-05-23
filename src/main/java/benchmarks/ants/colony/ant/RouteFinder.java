@@ -49,14 +49,17 @@ final class RouteFinder {
                                             int[] allowedVertexes, IDistancesData data,
                                             CachedRawEdgeQualities cachedRawEdgeQualities) {
         final int size = data.getSize();
+        final float[] weights = new float[size];
+        final float[][] edgeQualities = cachedRawEdgeQualities.getEdgesQualities();
+
         int possibleVertexesToGo = 0;
         float totalWeight = 0;
-        final float[] weights = new float[size];
         for (int j = 0; j < size; j++) {
             if (!visited[j]) {
                 final float vertexQuality =
-                        getTrail(cachedRawEdgeQualities.getDist(startVertex, j) *
-                                trail[startVertex][j]);
+                        Math.max(edgeQualities[startVertex][j] * trail[startVertex][j],
+                                MIN_VERTEX_QUALITY);
+
                 totalWeight += vertexQuality;
                 weights[possibleVertexesToGo] = totalWeight;
                 allowedVertexes[possibleVertexesToGo] = j;
@@ -67,13 +70,8 @@ final class RouteFinder {
         if (totalWeight == 0) {
             totalWeight = 0;
         }
-
         return Optional.ofNullable((totalWeight == 0) ?
                 null : calculateDestination(totalWeight, possibleVertexesToGo, weights));
-    }
-
-    private static float getTrail(float value) {
-        return (value == 0.0F) ? MIN_VERTEX_QUALITY : value;
     }
 
     @SuppressWarnings("MethodCanBeVariableArityMethod") // by design
@@ -81,7 +79,7 @@ final class RouteFinder {
                                             float[] weights) {
         final float pointer = generatePointer(totalWeight);
         for (int i = 0; i < possibleVertexesToGo; i++) {
-            if (isLessOrEqual(pointer, weights[i])) {
+            if (pointer <= weights[i]) {
                 return i;
             }
         }
@@ -90,9 +88,5 @@ final class RouteFinder {
 
     private static float generatePointer(float totalWeight) {
         return totalWeight * ThreadLocalRandom.current().nextFloat();
-    }
-
-    private static boolean isLessOrEqual(float pointer, float weight) {
-        return pointer <= weight;
     }
 }

@@ -37,14 +37,13 @@ public final class AntRunResult {
     @Nonnull
     private final TourData tourData;
     @Nonnull
-    private final Array2DFloatDelta pheromonesDelta;
+    private final TourTrailDelta pheromonesDelta;
     @Nonnull
     private final PerformanceMeasurer performanceMeasurer;
     @Nonnull
     private final String journal;
 
-
-    AntRunResult(TourData tourData, Array2DFloatDelta pheromonesDelta,
+    AntRunResult(TourData tourData, TourTrailDelta pheromonesDelta,
                  PerformanceMeasurer performanceMeasurer, String journal) {
         this.tourData = tourData;
         this.pheromonesDelta = pheromonesDelta;
@@ -66,9 +65,10 @@ public final class AntRunResult {
         return tourData.getLength();
     }
 
-    @SuppressWarnings("ReturnOfCollectionOrArrayField") // huge arrays, coping is worse case.
+    // huge arrays, coping or wrapping is  worse  case.
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     @Nonnull
-    public Array2DFloatDelta getPheromonesDelta() {
+    public TourTrailDelta getPheromonesDelta() {
         return pheromonesDelta;
     }
 

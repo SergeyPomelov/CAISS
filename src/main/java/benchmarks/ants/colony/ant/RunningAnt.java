@@ -49,13 +49,13 @@ public final class RunningAnt {
 
     @Nonnull
     private final IDistancesData graph;
-    private final AntRunResult runResult;
     @Nonnull
     private final TourBuilder tourBuilder;      // tour generation delegate
     @Nonnull
-    private final PheromonesTrail trailSpray;   // trail data and generation delegate
+    private final PheromonesTrailGenerator trailSpray;   // trail data and generation delegate
     @Nonnull
     private final PerformanceMeasurer performanceMeasurer = new PerformanceMeasurer();
+    private final AntRunResult runResult;
 
     @Nonnegative
     private final long startMls = System.currentTimeMillis();
@@ -63,7 +63,7 @@ public final class RunningAnt {
     public RunningAnt(IDistancesData graph, CachedRawEdgeQualities cachedRawEdgeQualities,
                       float[][] trails) {
         this.graph = graph;
-        trailSpray = new PheromonesTrail();
+        trailSpray = new PheromonesTrailGenerator();
         tourBuilder = new TourBuilder(graph, cachedRawEdgeQualities, trails);
 
         AntRunResult result = null;
@@ -103,8 +103,8 @@ public final class RunningAnt {
         }
 
         final TourData finalTourData = new TourData(finalSuccess, tour, finalTourLength);
-        return new AntRunResult(finalTourData, trailSpray.getTrailsDelta(), performanceMeasurer,
-                resultToString(finalTourData));
+        return new AntRunResult(finalTourData, trailSpray.getTrailsPheromonesDelta(),
+                performanceMeasurer, resultToString(finalTourData));
     }
 
     @SuppressWarnings("FeatureEnvy")
@@ -122,7 +122,7 @@ public final class RunningAnt {
         final int lastPathLength = graph.getDist(end, start);
         if (lastPathLength < Integer.MAX_VALUE) {
             final float chg = 1.0F / tourLength;
-            trailSpray.generateTrail(tour, chg);
+            trailSpray.generateTrailPheromonesDelta(tour, chg);
             return tourLength + lastPathLength; // returning to the start point length addition
         } else {
             return Integer.MAX_VALUE;
