@@ -31,6 +31,7 @@ import benchmarks.ants.colony.ant.AntRunResult;
  *
  * @author Sergey Pomelov 20.01.15.
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface IAntsColony extends Serializable {
     /**
      * @param periodNanos - The time stop criteria.
@@ -40,11 +41,11 @@ public interface IAntsColony extends Serializable {
     ColonyRunResult run(@Nonnegative long periodNanos);
 
     /**
-     * @param neighbours - Colonies to send them the best solution. The "time to time" defined
+     * @param neighboursToAdd - Colonies to send them the best solution. The "time to time" defined
      *                   inside the
      *                   {@code benchmarks.tasks.ants.AntsColoniesSettings#EXCHANGE_NANOS}.
      */
-    void addNeighbours(List<IAntsColony> neibhoursToAdd);
+    void addNeighbours(List<IAntsColony> neighboursToAdd);
 
     /**
      * @param antRunResult - method implementing obtaining the information about other colony's best
@@ -55,6 +56,7 @@ public interface IAntsColony extends Serializable {
     /**
      * @return the additional computation logs
      */
+    @SuppressWarnings("unused")
     @Nonnull
     String getLog();
 }

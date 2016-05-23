@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
-import benchmarks.ants.AntsSettings;
+import benchmarks.ants.colonies.AntsSettings;
 
 /**
  * @author Sergey Pomelov on 17/05/2016.
@@ -48,13 +48,14 @@ final class ColonyCalculationData implements Serializable {
     @Nonnull
     private final AntsStatistics statistics = new AntsStatistics();
 
-    ColonyCalculationData(AntsSettings settings) {
+    ColonyCalculationData(AntsSettings settings, CachedRawEdgeQualities qualities) {
         final int size = settings.getGraph().getSize();
-        qualities = new CachedRawEdgeQualities(settings.getGraph());
+        this.qualities = qualities;
         trails = new float[size][size];
         initialTrail(size, settings);
     }
 
+    @SuppressWarnings("MethodCanBeVariableArityMethod")
     void replaceBestRunVertexes(int[] currentRunTour) {
         bestRunVertexes.clear();
         bestRunVertexes.addAll(Arrays.stream(currentRunTour).boxed().collect(Collectors.toList()));
@@ -81,7 +82,7 @@ final class ColonyCalculationData implements Serializable {
     }
 
     @Nonnull
-    Collection<Integer> getBestRunVertexes() {
+    Iterable<Integer> getBestRunVertexes() {
         return ImmutableList.copyOf(bestRunVertexes);
     }
 
@@ -90,7 +91,7 @@ final class ColonyCalculationData implements Serializable {
         return statistics;
     }
 
-    @SuppressWarnings("MethodReturnAlwaysConstant") // stub
+    @SuppressWarnings({"MethodReturnAlwaysConstant", "SameReturnValue"}) // stub
     @Nonnull
     static String getRunJournal() {
         return "";

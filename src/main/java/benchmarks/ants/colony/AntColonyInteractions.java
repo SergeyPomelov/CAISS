@@ -30,27 +30,29 @@ import benchmarks.ants.colony.ant.AntRunResult;
 import benchmarks.ants.colony.ant.RunningAnt;
 
 /**
+ * This is an AntColony's method for running ant and register it results delegate.
  * @author Sergey Pomelov on 04/05/2016.
+ * @see AntsColony
  */
-// this is an utility AntColony methods delegate
 @SuppressWarnings({"StaticMethodOnlyUsedInOneClass", "FeatureEnvy"})
 @ParametersAreNonnullByDefault
 final class AntColonyInteractions {
 
     private static final Logger log = LoggerFactory.getLogger(AntColonyInteractions.class);
 
-    private AntColonyInteractions() { /* package local utility class*/ }
+    private AntColonyInteractions() { /* package-local utility class*/ }
 
-    static Callable<Long> interactionProcedure(AntsColony antsColony) {
+    static Callable<Long> antRunProcedure(AntsColony antsColony) {
         return () -> {
             final Optional<AntRunResult> runResult = new RunningAnt(antsColony.getDistanceData(),
                     antsColony.getQualities(), antsColony.getTrails()).getRunResult();
 
             if (runResult.isPresent()) {
                 return processResult(runResult.get(), antsColony);
+            } else {
+                log.warn("No ant's result obtained for {}!", antsColony);
+                return Long.MAX_VALUE;
             }
-            log.warn("No ant's result obtained!");
-            return Long.MAX_VALUE;
         };
     }
 
@@ -58,8 +60,8 @@ final class AntColonyInteractions {
         final String runJournal = runResult.getJournal();
         final long runLength = runResult.getLength();
         final AntsStatistics statistics = antsColony.getStatistics();
-        log.debug("Colony {}, ant run {} {}.",
-                antsColony.getId(), runJournal, statistics.getBestRunLength());
+        // log.debug("Colony {}, ant run {} {}.",
+        //        antsColony.getId(), runJournal, statistics.getBestRunLength());
 
         statistics.addFinishedRun(runLength);
         antsColony.getAntsPerformanceMeasurers().add(runResult.getPerformanceMeasurer());
@@ -67,8 +69,7 @@ final class AntColonyInteractions {
         return runLength;
     }
 
-    static void takeActionsIfSolutionTheBest(AntsColony antsColony,
-                                             AntRunResult runResult,
+    static void takeActionsIfSolutionTheBest(AntsColony antsColony, AntRunResult runResult,
                                              boolean gotOutside) {
         if (runResult.isSuccess()) {
             if (runResult.getLength() < antsColony.getStatistics().getBestRunLength()) {
@@ -79,15 +80,16 @@ final class AntColonyInteractions {
         }
     }
 
-    private static void changeTheBestSolution(AntsColony antsColony,
-                                              AntRunResult runResult,
+    private static void changeTheBestSolution(AntsColony antsColony, AntRunResult runResult,
                                               boolean gotOutside) {
-
         antsColony.replaceBestRunVertexes(runResult.getTour());
         if (!gotOutside) {
             antsColony.gotNewSolution();
         }
-        antsColony.getStatistics().setNewBestRun(runResult, AntsColony.getRunJournal());
+        antsColony.getStatistics().setNewBestRun(runResult, getRunJournal());
     }
 
+    private static String getRunJournal() {
+        return ColonyCalculationData.getRunJournal();
+    }
 }

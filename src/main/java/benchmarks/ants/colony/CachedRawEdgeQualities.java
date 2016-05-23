@@ -25,6 +25,8 @@ import javax.annotation.Nonnull;
 import benchmarks.ants.data.IDistancesData;
 
 /**
+ * Precalculated (in assumption that the graph while ants colony runs immutable)
+ * part of the trail equation. Performance issue.
  * @author Sergey Pomelov on 11/05/2016.
  */
 public final class CachedRawEdgeQualities implements Serializable {
@@ -33,7 +35,7 @@ public final class CachedRawEdgeQualities implements Serializable {
     @Nonnull
     private final float[][] edgesQualities;
 
-    CachedRawEdgeQualities(IDistancesData data) {
+    public CachedRawEdgeQualities(IDistancesData data) {
         final int size = data.getSize();
         edgesQualities = new float[size][size];
         for (int i = 0; i < size; i++) {
@@ -44,7 +46,9 @@ public final class CachedRawEdgeQualities implements Serializable {
         }
     }
 
-    public float getDist(int i, int j) {
-        return edgesQualities[i][j];
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // performance issue
+    @Nonnull
+    public float[][] getEdgesQualities() {
+        return edgesQualities;
     }
 }

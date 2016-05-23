@@ -20,10 +20,11 @@ package benchmarks.ants.colony;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import benchmarks.ants.AntsSettings;
+import benchmarks.ants.colonies.AntsSettings;
 import benchmarks.ants.colony.ant.AntRunResult;
 
 /**
+ * Class apply pheromone trails changes according to the ant's run results.
  * @author Sergey Pomelov on 04/05/2016.
  */
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
@@ -35,14 +36,16 @@ final class PheromonesApplier {
     static void applyPheromones(AntRunResult runResult, AntsSettings settings,
                                 float[][] trailsToChange) {
         final int trailLength = trailsToChange.length;
+        final float evaporationMultiplier = (1.0F - settings.getEvaporationCoefficient());
         for (int i = 0; i < trailLength; i++) {
-            for (int j = 0; j < i; j++) {
-                final float t = ((1.0F - settings.getEvaporationCoefficient())
-                        * trailsToChange[i][j])
-                        + runResult.getPheromonesDelta().get(i, j)
-                        + runResult.getPheromonesDelta().get(j, i);
-                trailsToChange[i][j] = t;
-                trailsToChange[j][i] = t;
+            final float passedVertexPheromonesDelta = runResult.getPheromonesDelta().getDelta(i);
+            final int passedVertexPheromonesRowIdx =
+                    runResult.getPheromonesDelta().getDeltaColumnIdx(i);
+            for (int j = 0; j < trailLength; j++) {
+                trailsToChange[i][j] *= evaporationMultiplier;
+                if (passedVertexPheromonesRowIdx == j) {
+                    trailsToChange[i][j] += passedVertexPheromonesDelta;
+                }
             }
         }
     }

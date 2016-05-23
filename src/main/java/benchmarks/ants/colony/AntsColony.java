@@ -22,27 +22,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
-import benchmarks.ants.AntsSettings;
+import benchmarks.ants.colonies.AntsSettings;
 import benchmarks.ants.colony.ant.AntRunResult;
 import benchmarks.ants.colony.ant.RunningAnt;
 import benchmarks.ants.data.IDistancesData;
 import benchmarks.ants.parallelisation.ContinuousParallelExecutor;
 import benchmarks.metrics.PerformanceMeasurer;
 import benchmarks.metrics.PerformanceMeasuresCompiler;
-import util.ConversionUtil;
 import util.Restrictions;
 
 /**
@@ -58,43 +52,33 @@ public final class AntsColony implements IAntsColony {
     private static final long serialVersionUID = 1858529504894436119L;
     private static final Logger log = LoggerFactory.getLogger(AntsColony.class);
 
-    // immutable properties
     @Nonnull
     private final String id;
     @Nonnull
     private final AntsSettings settings;
     @Nonnegative
     private final int parallelAnts;
-
-    // calculation process data
     @Nonnull
     private final ColonyCalculationData data;
-
-    //  solutions exchanging
     @Nonnull
-    private final AtomicBoolean gotNewSolution = new AtomicBoolean(true);
-    @Nonnegative
-    private final AtomicLong lastSendDataNanos = new AtomicLong(System.nanoTime());
-    @Nonnull
-    private List<IAntsColony> neighbours = Collections.emptyList();
-
-    // performance data collection
+    private final SolutionsExchangeModule solutionsExchangeModule;
     @Nonnull
     private final PerformanceMeasurer colonyPerformanceMeasurer = new PerformanceMeasurer();
     @Nonnull
-    private final Collection<PerformanceMeasurer> antsPerformanceMeasurers = new CopyOnWriteArrayList<>();
+    private final Collection<PerformanceMeasurer> antsPerformanceMeasurers =
+            new CopyOnWriteArrayList<>();
 
-
-    public AntsColony(String id, int parallelAnts, AntsSettings settings) {
+    public AntsColony(String id, int parallelAnts, AntsSettings settings,
+                      CachedRawEdgeQualities qualities) {
         Restrictions.ifNotOnlyPositivesFastFail(parallelAnts);
         Restrictions.ifContainsNullFastFail(id, settings);
         this.id = id;
         this.settings = settings;
         this.parallelAnts = parallelAnts;
-        data = new ColonyCalculationData(settings);
+        data = new ColonyCalculationData(settings, qualities);
+        solutionsExchangeModule = new SolutionsExchangeModule();
     }
 
-    @SuppressWarnings("ClassEscapesDefinedScope")
     @Override
     public ColonyRunResult run(long periodNanos) {
         Restrictions.ifNotOnlyPositivesFastFail(periodNanos);
@@ -102,7 +86,8 @@ public final class AntsColony implements IAntsColony {
         runAnts(System.nanoTime() + periodNanos);
         logResult();
         return new ColonyRunResult(id,
-                getStatistics().getBestRunLength(), neighbours.size() + 1,
+                getStatistics().getBestRunLength(),
+                solutionsExchangeModule.neighboursAmount() + 1,
                 parallelAnts, colonyPerformanceMeasurer,
                 PerformanceMeasuresCompiler.compileOverall(antsPerformanceMeasurers));
     }
@@ -116,10 +101,7 @@ public final class AntsColony implements IAntsColony {
     @Override
     public void addNeighbours(List<IAntsColony> neighboursToAdd) {
         if (neighboursToAdd != null) {
-            //noinspection ObjectEquality, by design
-            neighbours = ConversionUtil.nullFilter(neighboursToAdd).stream()
-                    .filter(colony -> colony != this)
-                    .collect(Collectors.toList());
+            solutionsExchangeModule.setNeighbours(this, neighboursToAdd);
         } else {
             log.warn("Neighbours must not be null!");
         }
@@ -151,7 +133,7 @@ public final class AntsColony implements IAntsColony {
 
     private void runAnts(@Nonnegative long stopNanos) {
         final Callable<Long> antRun =
-                AntColonyInteractions.interactionProcedure(this);
+                AntColonyInteractions.antRunProcedure(this);
         //noinspection MethodCallInLoopCondition - the nanoTime need be called each time
         ContinuousParallelExecutor.run(antRun, parallelAnts,
                 () -> System.nanoTime() >= stopNanos,
@@ -159,19 +141,7 @@ public final class AntsColony implements IAntsColony {
     }
 
     private void sendSolutionIfNeed() {
-        if (isTimeToSendSolution(System.nanoTime())) {
-            final Optional<AntRunResult> bestRun = getStatistics().getBestRun();
-            if (bestRun.isPresent()) {
-                neighbours.forEach(neighbour -> neighbour.receiveSolution(bestRun.get()));
-                gotNewSolution.compareAndSet(true, false);
-                lastSendDataNanos.set(System.nanoTime());
-            }
-        }
-    }
-
-    private boolean isTimeToSendSolution(@Nonnegative long currentNanos) {
-        return gotNewSolution.get() &&
-                ((lastSendDataNanos.longValue() + getExchangeNanos()) < currentNanos);
+        solutionsExchangeModule.sendSolutionsIfNeed(getStatistics(), settings);
     }
 
     @Nonnull
@@ -200,13 +170,8 @@ public final class AntsColony implements IAntsColony {
     }
 
     @Nonnull
-    Collection<Integer> getBestRunVertexes() {
-        return data.getBestRunVertexes();
-    }
-
-    @Nonnull
     void gotNewSolution() {
-        gotNewSolution.set(true);
+        solutionsExchangeModule.gotNewSolution();
     }
 
     @Nonnull
@@ -214,17 +179,14 @@ public final class AntsColony implements IAntsColony {
         return settings.getGraph();
     }
 
+    @SuppressWarnings("unused")
     @Nonnegative
     private long getExchangeNanos() {
         return settings.getExchangeNanos();
     }
 
-    static String getRunJournal() {
-        return ColonyCalculationData.getRunJournal();
-    }
-
+    // accessible by design
     @SuppressWarnings("ReturnOfCollectionOrArrayField")
-        // accessible by design
     Collection<PerformanceMeasurer> getAntsPerformanceMeasurers() {
         return antsPerformanceMeasurers;
     }
