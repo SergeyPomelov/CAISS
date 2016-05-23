@@ -26,15 +26,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.OptionalDouble;
 
-import javax.annotation.Nonnegative;
-
-import benchmarks.ants.AntsColonies;
-import benchmarks.ants.AntsSettings;
+import benchmarks.ants.colonies.AntsColonies;
+import benchmarks.ants.colonies.AntsExperimentData;
+import benchmarks.ants.colonies.AntsSettings;
 import benchmarks.ants.colony.ColonyRunResult;
+import benchmarks.ants.presets.AntsExperimentSeriesPreset;
 import javafx.util.Pair;
 import util.GNUCopyright;
 
-import static benchmarks.ants.run.ColonyResultsCompiler.compileOverallResults;
+import static benchmarks.ants.colonies.ColonyResultsCompiler.avgResult;
+import static benchmarks.ants.presets.ExperimentsSeriesPresetsBuilders.QA194_8X8_1_10H;
+import static benchmarks.ants.presets.ExperimentsSeriesPresetsBuilders.WARM_UP;
 import static benchmarks.ants.run.MathematicaFormatter.printData;
 
 /**
@@ -55,51 +57,50 @@ final class AntsRunner {
 
     public static void main(String... args) {
         GNUCopyright.printLicence();
-        warmUp(Presets.WARM_UP.getPreset());
-        runExperiment(Presets.LU980_6X6_3_2H30M.getPreset());
-        runExperiment(Presets.XQL662_6X6_3_2H30M.getPreset());
-        runExperiment(Presets.DCC911_6X6_3_2H30M.getPreset());
-        runExperiment(Presets.MU1979_6X6_3_2H30M.getPreset());
+        warmUp(WARM_UP.createAntsExperimentPreset());
+        runExperiment(QA194_8X8_1_10H.createAntsExperimentPreset());
         System.exit(0);
     }
 
-    private static void runExperiment(AntsExperimentPreset preset) {
+    private static void runExperiment(AntsExperimentSeriesPreset preset) {
         preset.getColonies().forEach(coloniesAmount ->
                 preset.getAnts().forEach(antsAmount ->
-                        runSeveralTimes(preset,
-                                coloniesAmount, antsAmount,
-                                preset.getRunsForAverageResult(), false)));
+                        runSeveralTimes(
+                                generateData(preset, coloniesAmount, antsAmount), false)));
         printData(overallResults);
     }
 
-    private static void warmUp(AntsExperimentPreset preset) {
-        runSeveralTimes(preset, 2, 2, 2, true);
+    private static void warmUp(AntsExperimentSeriesPreset preset) {
+        runSeveralTimes(generateData(preset, 2, 2), true);
         log.info("warm up end.");
     }
 
-    private static void runSeveralTimes(AntsExperimentPreset preset,
-                                        @Nonnegative int coloniesAmount,
-                                        @Nonnegative int antsPerColony,
-                                        @Nonnegative int iterations,
+    private static AntsExperimentData generateData(AntsExperimentSeriesPreset preset,
+                                                   int colonies, int ants) {
+        return new AntsExperimentData(colonies, ants, preset);
+    }
+
+    private static void runSeveralTimes(AntsExperimentData data,
                                         boolean warmUpRan) {
+        final AntsExperimentSeriesPreset preset = data.getPreset();
+        final int iterations = preset.getRunsForAverageResult();
         final Collection<ColonyRunResult> results = new ArrayList<>(iterations);
         final Collection<Long> tourLengths = new ArrayList<>(iterations);
         for (int i = 0; i < iterations; i++) {
-            final ColonyRunResult output = AntsColonies.runCalculations(coloniesAmount,
-                    antsPerColony, preset.getSettings());
+            final ColonyRunResult output = AntsColonies.runCalculations(data);
             results.add(output);
             tourLengths.add(output.getResult());
         }
-        saveAndLogResults(preset, coloniesAmount, antsPerColony, tourLengths, results, warmUpRan);
+        saveAndLogResults(preset, data.getColonies(), data.getAnts(),
+                tourLengths, results, warmUpRan);
     }
 
-    private static void saveAndLogResults(AntsExperimentPreset preset,
+    private static void saveAndLogResults(AntsExperimentSeriesPreset preset,
                                           int coloniesAmount, int antsPerColony,
                                           Collection<Long> tourLengths,
                                           Collection<ColonyRunResult> results,
                                           boolean warmUpRan) {
-        final ColonyRunResult totalResult = compileOverallResults(results,
-                coloniesAmount, antsPerColony);
+        final ColonyRunResult totalResult = avgResult(results, coloniesAmount, antsPerColony);
         final String percentString = formatPercents(preset.getSettings(), tourLengths);
         if (!warmUpRan) {
             overallResults.add(new Pair<>(percentString, totalResult));
@@ -116,28 +117,4 @@ final class AntsRunner {
                         ((settings.getOptimum() * PERCENTS) / result)).average();
         return format.format(optionalAccuracyPercent.orElse(0.0D));
     }
-
-    /*private static void check() {
-        final String[] route = ("10>11>12>15>19>18>17>21>23>22>29>28>26>20>25>27>" +
-                "24>16>14>13>9>7>3>4>8>5>1>2>6>").split(">");
-
-        Double sum = 0.0D;
-        Integer previousNodeNumber = null;
-        for (final String nodeNumberString : route) {
-            final int nodeNumber = Integer.parseInt(nodeNumberString);
-            if (previousNodeNumber != null) {
-                final double dist = SETTINGS.getGraph().getDist(previousNodeNumber - 1,
-                        nodeNumber - 1);
-                sum += dist;
-                log.info("{} -> {} = {}, total {}", previousNodeNumber, nodeNumber, dist, sum);
-            }
-
-            previousNodeNumber = Integer.parseInt(nodeNumberString);
-        }
-        final int length = SETTINGS.getGraph().getDist(Integer.parseInt(route[0]) - 1,
-                Integer.parseInt(route[route.length - 1]) - 1);
-        sum += length;
-        log.info("{} -> {} = {}, total {}", route[0], route[route.length - 1], length, sum);
-        log.info("27616, sum = {}", sum);
-    } */
 }
