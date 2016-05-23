@@ -16,9 +16,32 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package benchmarks.ants.colonies.colony;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
 /**
- * This package intended for one colony task solving logic.
- *
- * @author Sergey Pomelov on 29/04/2016.
+ * @author Sergey Pomelov on 28/04/2016.
  */
-package benchmarks.ants.colony;
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
+public final class OutputFormat {
+
+    private OutputFormat() { /* utility class */ }
+
+    @Nonnull
+    public static String printTour(int... iterable) {
+        return printIterableTour(Arrays.stream(iterable).boxed().collect(Collectors.toList()));
+    }
+
+    @Nonnull
+    public static String printIterableTour(final Iterable<Integer> iterable) {
+        final StringBuilder out = new StringBuilder(64);
+        for (final int element : iterable) {
+            out.append(element + 1).append('>');
+        }
+        return out.toString();
+    }
+}

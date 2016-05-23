@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony;
+package benchmarks.ants.colonies.colony;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +26,8 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import benchmarks.ants.colony.ant.AntRunResult;
-import benchmarks.ants.colony.ant.RunningAnt;
+import benchmarks.ants.colonies.colony.ant.AntRunResult;
+import benchmarks.ants.colonies.colony.ant.RunningAnt;
 
 /**
  * This is an AntColony's method for running ant and register it results delegate.

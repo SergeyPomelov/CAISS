@@ -25,7 +25,7 @@ import java.util.Collections;
 import benchmarks.ants.colonies.AntsColonies;
 import benchmarks.ants.colonies.AntsExperimentData;
 import benchmarks.ants.colonies.AntsSettings;
-import benchmarks.ants.colony.ColonyRunResult;
+import benchmarks.ants.colonies.colony.ColonyRunResult;
 import benchmarks.ants.presets.AntsExperimentSeriesPreset;
 import benchmarks.ants.presets.AntsExperimentSeriesPresetBuilder;
 import javafx.util.Pair;

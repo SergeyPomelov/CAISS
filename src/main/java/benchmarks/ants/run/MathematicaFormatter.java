@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.function.Function;
 
-import benchmarks.ants.colony.ColonyRunResult;
+import benchmarks.ants.colonies.colony.ColonyRunResult;
 import javafx.util.Pair;
 
 import static util.Constants.LS;

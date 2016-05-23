@@ -16,30 +16,46 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.parallelisation;
-
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+package benchmarks.ants.colonies.colony.ant;
 
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 /**
- * @author Sergey Pomelov on 28/04/2016.
- * Adds to the standart implementation pool and agents names to the threads names for buisness
- * model view-point readability.
+ * Class for saving the tour results.
+ * @author Sergey Pomelov on 29/04/2016.
+ * @see AntRunResult
  */
-@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
+@Immutable
 @ParametersAreNonnullByDefault
-final class AgentsThreadPoolExecutorBuilder {
+final class TourData {
+    private final boolean success;
+    @Nonnull
+    private final int[] tour;
+    @Nonnegative
+    private final long length;
 
-    private AgentsThreadPoolExecutorBuilder() { /* package-local utility class */ }
+    TourData(boolean success, int[] tour, @Nonnegative long length) {
+        this.success = success;
+        this.tour = tour;
+        this.length = length;
+    }
 
-    static ThreadPoolExecutor build(@Nonnegative int parallelTasks,
-                                    String poolName, String agentName) {
-        return new ThreadPoolExecutor(parallelTasks, parallelTasks, 1, TimeUnit.SECONDS,
-                new SynchronousQueue<>(),
-                new AgentsThreadsFactory(poolName, agentName));
+    boolean isSuccess() {
+        return success;
+    }
+
+    // memory & performance issue, additional guaranties omitted.
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
+    @Nonnull
+    int[] getTour() {
+        return tour;
+    }
+
+    @Nonnegative
+    long getLength() {
+        return length;
     }
 }

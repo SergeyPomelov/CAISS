@@ -17,8 +17,8 @@
  */
 
 /**
- * Parallel ants' execution stuff.
+ * This package intended for one colony task solving logic.
  *
- * @author Sergey Pomelov on 02/05/2016.
+ * @author Sergey Pomelov on 29/04/2016.
  */
-package benchmarks.ants.parallelisation;
+package benchmarks.ants.colonies.colony;

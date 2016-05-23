@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony;
+package benchmarks.ants.colonies.colony;
 
 import com.google.common.collect.ImmutableList;
 

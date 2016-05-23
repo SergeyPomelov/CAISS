@@ -16,14 +16,14 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony.ant;
+package benchmarks.ants.colonies.colony.ant;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.NotThreadSafe;
 
-import benchmarks.ants.colony.ant.TourTrailDelta.Builder;
+import benchmarks.ants.colonies.colony.ant.TourTrailDelta.Builder;
 
 import static util.Restrictions.ifNullFail;
 

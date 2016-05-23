@@ -22,7 +22,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import benchmarks.ants.colony.CachedRawEdgeQualities;
+import benchmarks.ants.colonies.colony.CachedRawEdgeQualities;
 import benchmarks.ants.presets.AntsExperimentSeriesPreset;
 
 import static util.Restrictions.ifNegativeFail;

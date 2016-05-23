@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import benchmarks.ants.colony.AntsColony;
-import benchmarks.ants.colony.ColonyRunResult;
-import benchmarks.ants.colony.IAntsColony;
-import benchmarks.ants.parallelisation.ParallelBarrierExecutor;
+import benchmarks.ants.colonies.colony.AntsColony;
+import benchmarks.ants.colonies.colony.ColonyRunResult;
+import benchmarks.ants.colonies.colony.IAntsColony;
+import benchmarks.ants.colonies.parallelisation.ParallelBarrierExecutor;
 import util.Restrictions;
 
 import static benchmarks.ants.colonies.ColonyResultsCompiler.compileOverallResult;

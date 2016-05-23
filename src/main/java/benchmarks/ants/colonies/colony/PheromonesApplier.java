@@ -16,12 +16,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony;
+package benchmarks.ants.colonies.colony;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import benchmarks.ants.colonies.AntsSettings;
-import benchmarks.ants.colony.ant.AntRunResult;
+import benchmarks.ants.colonies.colony.ant.AntRunResult;
 
 /**
  * Class apply pheromone trails changes according to the ant's run results.

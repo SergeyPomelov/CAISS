@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony.ant;
+package benchmarks.ants.colonies.colony.ant;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +28,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import benchmarks.ants.colony.AntsColony;
-import benchmarks.ants.colony.CachedRawEdgeQualities;
+import benchmarks.ants.colonies.colony.AntsColony;
+import benchmarks.ants.colonies.colony.CachedRawEdgeQualities;
 import benchmarks.ants.data.IDistancesData;
 import benchmarks.metrics.PerformanceMeasurer;
 
-import static benchmarks.ants.colony.OutputFormat.printTour;
+import static benchmarks.ants.colonies.colony.OutputFormat.printTour;
 
 /**
  * An agent of the ACO.

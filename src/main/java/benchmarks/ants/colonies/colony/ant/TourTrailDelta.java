@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony.ant;
+package benchmarks.ants.colonies.colony.ant;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;

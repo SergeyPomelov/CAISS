@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 import benchmarks.ants.colonies.AntsSettings;
-import benchmarks.ants.colony.CachedRawEdgeQualities;
+import benchmarks.ants.colonies.colony.CachedRawEdgeQualities;
 import javafx.util.Pair;
 import util.Restrictions;
 

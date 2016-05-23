@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony;
+package benchmarks.ants.colonies.colony;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
-import benchmarks.ants.colony.ant.AntRunResult;
+import benchmarks.ants.colonies.colony.ant.AntRunResult;
 
 /**
  * The interface for Ant's optimization.

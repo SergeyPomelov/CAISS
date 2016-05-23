@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
-import benchmarks.ants.colony.ColonyRunResult;
+import benchmarks.ants.colonies.colony.ColonyRunResult;
 
 /**
  * @author Sergey Pomelov on 17/05/2016.

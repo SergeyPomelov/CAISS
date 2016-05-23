@@ -21,4 +21,4 @@
  *
  * @author Sergey Pomelov on 29/04/2016.
  */
-package benchmarks.ants.colony.ant;
+package benchmarks.ants.colonies.colony.ant;

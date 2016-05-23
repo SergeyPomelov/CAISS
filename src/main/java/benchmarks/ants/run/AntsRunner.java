@@ -29,7 +29,7 @@ import java.util.OptionalDouble;
 import benchmarks.ants.colonies.AntsColonies;
 import benchmarks.ants.colonies.AntsExperimentData;
 import benchmarks.ants.colonies.AntsSettings;
-import benchmarks.ants.colony.ColonyRunResult;
+import benchmarks.ants.colonies.colony.ColonyRunResult;
 import benchmarks.ants.presets.AntsExperimentSeriesPreset;
 import javafx.util.Pair;
 import util.GNUCopyright;

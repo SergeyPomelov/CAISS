@@ -16,32 +16,9 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
 /**
- * @author Sergey Pomelov on 28/04/2016.
+ * Parallel ants' execution stuff.
+ *
+ * @author Sergey Pomelov on 02/05/2016.
  */
-@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
-public final class OutputFormat {
-
-    private OutputFormat() { /* utility class */ }
-
-    @Nonnull
-    public static String printTour(int... iterable) {
-        return printIterableTour(Arrays.stream(iterable).boxed().collect(Collectors.toList()));
-    }
-
-    @Nonnull
-    public static String printIterableTour(final Iterable<Integer> iterable) {
-        final StringBuilder out = new StringBuilder(64);
-        for (final int element : iterable) {
-            out.append(element + 1).append('>');
-        }
-        return out.toString();
-    }
-}
+package benchmarks.ants.colonies.parallelisation;

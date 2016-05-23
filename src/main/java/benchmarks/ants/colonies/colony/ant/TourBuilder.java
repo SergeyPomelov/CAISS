@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.colony.ant;
+package benchmarks.ants.colonies.colony.ant;
 
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.NotThreadSafe;
 
-import benchmarks.ants.colony.CachedRawEdgeQualities;
+import benchmarks.ants.colonies.colony.CachedRawEdgeQualities;
 import benchmarks.ants.data.IDistancesData;
 
 /**
