@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.run;
+package benchmarks.ants.colonies;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +28,7 @@ import benchmarks.ants.colony.ColonyRunResult;
 /**
  * @author Sergey Pomelov on 17/05/2016.
  */
+@SuppressWarnings("NumericCastThatLosesPrecision")
 public final class ColonyResultsCompiler {
 
     private static final Logger log = LoggerFactory.getLogger(ColonyResultsCompiler.class);
@@ -35,9 +36,21 @@ public final class ColonyResultsCompiler {
     private ColonyResultsCompiler() { /* utility class */ }
 
     @SuppressWarnings({"NumericCastThatLosesPrecision", "FeatureEnvy"})
-    public static ColonyRunResult compileOverallResults(Collection<ColonyRunResult>
-                                                                colonyRunResults,
-                                                        int colonies, int ants) {
+    static ColonyRunResult compileOverallResult(Collection<ColonyRunResult>
+                                                        colonyRunResults, int colonies, int ants) {
+        return compileResults(colonyRunResults, CompileStrategy.SUM, colonies, ants);
+    }
+
+    public static ColonyRunResult avgResult(Collection<ColonyRunResult>
+                                                    colonyRunResults, int colonies, int ants) {
+        return compileResults(colonyRunResults, CompileStrategy.AVERAGE, colonies, ants);
+    }
+
+
+    @SuppressWarnings("FeatureEnvy")
+    private static ColonyRunResult compileResults(Collection<ColonyRunResult> colonyRunResults,
+                                                  CompileStrategy strategy,
+                                                  int colonies, int ants) {
         final StringBuilder id = new StringBuilder("");
         long result = Long.MAX_VALUE;
         double antRuns = 0L;
@@ -55,8 +68,8 @@ public final class ColonyResultsCompiler {
                     if (runResult.getResult() < result) {
                         result = runResult.getResult();
                     }
-                    antRuns += runResult.getAntRuns();
-                    exchanges += runResult.getExchanges();
+                    antRuns = compile(antRuns, runResult.getAntRuns(), i, strategy);
+                    exchanges = compile(exchanges, runResult.getExchanges(), i, strategy);
                     avgInitialTrailNs = avg(avgInitialTrailNs, runResult.getAvgInitialTrailNs(), i);
                     avgAntsRunNs = avg(avgAntsRunNs, runResult.getAvgAntsRunNs(), i);
                     avgExchangeNs = avg(avgExchangeNs, runResult.getAvgExchangeNs(), i);
@@ -67,6 +80,18 @@ public final class ColonyResultsCompiler {
 
         return new ColonyRunResult(id.toString(), result, colonies, ants, (long) antRuns, (long)
                 exchanges, (long) avgInitialTrailNs, (long) avgAntsRunNs, (long) avgExchangeNs);
+    }
+
+    private static double compile(double oldValue, long valueToAdd, int alreadyCompiledValues,
+                                  CompileStrategy strategy) {
+        if (strategy == CompileStrategy.SUM) {
+            return oldValue + valueToAdd;
+        } else if (strategy == CompileStrategy.AVERAGE) {
+            return avg(oldValue, valueToAdd, alreadyCompiledValues);
+        } else {
+            log.warn("Not supported compile strategy {}. Ignored.", strategy);
+        }
+        return 0;
     }
 
     @SuppressWarnings("FeatureEnvy")
@@ -81,5 +106,10 @@ public final class ColonyResultsCompiler {
 
     private static double avg(double avgOld, double newValue, double alreadyValuesAdded) {
         return ((avgOld * (alreadyValuesAdded - 1)) + newValue) / alreadyValuesAdded;
+    }
+
+    private enum CompileStrategy {
+        AVERAGE,
+        SUM
     }
 }

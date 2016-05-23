@@ -16,14 +16,13 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants;
+package benchmarks.ants.colonies;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import benchmarks.ants.colony.AntsColony;
@@ -32,46 +31,42 @@ import benchmarks.ants.colony.IAntsColony;
 import benchmarks.ants.parallelisation.ParallelBarrierExecutor;
 import util.Restrictions;
 
-import static benchmarks.ants.run.ColonyResultsCompiler.compileOverallResults;
+import static benchmarks.ants.colonies.ColonyResultsCompiler.compileOverallResult;
 
 
 /**
  * @author Sergey Pomelov on 02/05/2016.
  */
+@SuppressWarnings("FeatureEnvy")
 @ParametersAreNonnullByDefault
 public final class AntsColonies {
 
     private AntsColonies() { /* utility class */ }
 
-    public static ColonyRunResult runCalculations(int coloniesAmount, int antsPerColony,
-                                                  AntsSettings settings) {
-        Restrictions.ifContainsNullFastFail(settings);
-        Restrictions.ifNotOnlyPositivesFastFail(coloniesAmount, antsPerColony);
-        return compileOverallResults(generateSolutions(coloniesAmount, antsPerColony, settings),
-                coloniesAmount, antsPerColony);
+    public static ColonyRunResult runCalculations(AntsExperimentData data) {
+        Restrictions.ifContainsNullFastFail(data.getSettings());
+        Restrictions.ifNotOnlyPositivesFastFail(data.getColonies(), data.getAnts());
+        return compileOverallResult(generateSolutions(data),
+                data.getColonies(), data.getAnts());
     }
 
-    private static Collection<ColonyRunResult> generateSolutions(@Nonnegative int coloniesAmount,
-                                                                 @Nonnegative int antsPerColony,
-                                                                 AntsSettings settings) {
-        final List<ColonyRunResult> solutions = new ArrayList<>(coloniesAmount);
+    private static Collection<ColonyRunResult> generateSolutions(AntsExperimentData data) {
+        final List<ColonyRunResult> solutions = new ArrayList<>(data.getColonies());
         ParallelBarrierExecutor.runOnce(
-                generateAgents(coloniesAmount, antsPerColony, settings).stream()
+                generateAgents(data).stream()
                         .map(colony -> (Runnable) () ->
-                                solutions.add(colony.run(settings.getRunPeriodNanos())))
+                                solutions.add(colony.run(data.getSettings().getRunPeriodNanos())))
                         .collect(Collectors.toList()), "start", "colony");
-
         return solutions;
     }
 
-    private static Collection<IAntsColony> generateAgents(@Nonnegative int coloniesAmount,
-                                                          @Nonnegative int antsPerColony,
-                                                          AntsSettings settings) {
+    private static Collection<IAntsColony> generateAgents(AntsExperimentData data) {
+        final int coloniesAmount = data.getColonies();
         final List<IAntsColony> colonies = new ArrayList<>(coloniesAmount);
         for (int i = 0; i < coloniesAmount; i++) {
             //noinspection ObjectAllocationInLoop, by design
-            final IAntsColony colony = new AntsColony(String.valueOf(i + 1), antsPerColony,
-                    settings);
+            final IAntsColony colony = new AntsColony(String.valueOf(i + 1), data.getAnts(),
+                    data.getSettings(), data.getQualities());
             colonies.add(colony);
         }
         colonies.forEach(colony -> colony.addNeighbours(colonies));

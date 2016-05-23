@@ -16,9 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants;
-
-import com.google.common.annotations.VisibleForTesting;
+package benchmarks.ants.colonies;
 
 import java.io.Serializable;
 
@@ -38,7 +36,6 @@ import static util.Constants.FS;
  *
  * @author Sergey Pomelov on 28/04/2016.
  */
-@SuppressWarnings("MagicNumber") // this is a settings like stub class
 @Immutable
 public final class AntsSettings implements Serializable {
 
@@ -57,17 +54,17 @@ public final class AntsSettings implements Serializable {
     @Nonnull
     private final IDistancesData graph;
 
-    public AntsSettings(Pair<Integer, String> data, int secondsToRun) {
+    public AntsSettings(Pair<Integer, String> data, float evaporation, int secondsToRun) {
         this(data.getKey(), data.getValue(), TimeUtil.secToNano(secondsToRun),
-                TimeUtil.mlsToNano(100), 0.001F, 1.0F);
-        //this(data.getKey(), data.getValue(), TimeUtil.secToNano(30),
-        //        TimeUtil.mlsToNano(100), 0.1F, 1.0F);
+                TimeUtil.mlsToNano(1000), evaporation, 1.0F);
     }
 
-    @VisibleForTesting
-    AntsSettings(@Nonnegative int optimum, @Nonnull String file, @Nonnegative long runPeriodNanos,
-                 @Nonnegative long exchangeNanos, @Nonnegative float evaporationCoefficient,
-                 @Nonnegative float initialTrail) {
+    @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
+    public AntsSettings(@Nonnegative int optimum, @Nonnull String file,
+                        @Nonnegative long runPeriodNanos,
+                        @Nonnegative long exchangeNanos,
+                        @Nonnegative float evaporationCoefficient,
+                        @Nonnegative float initialTrail) {
         this.optimum = optimum;
         this.runPeriodNanos = runPeriodNanos;
         this.exchangeNanos = exchangeNanos;
