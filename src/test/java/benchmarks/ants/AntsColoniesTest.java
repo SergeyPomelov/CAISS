@@ -20,7 +20,15 @@ package benchmarks.ants;
 
 import org.junit.Test;
 
+import java.util.Collections;
+
+import benchmarks.ants.colonies.AntsColonies;
+import benchmarks.ants.colonies.AntsExperimentData;
+import benchmarks.ants.colonies.AntsSettings;
 import benchmarks.ants.colony.ColonyRunResult;
+import benchmarks.ants.presets.AntsExperimentSeriesPreset;
+import benchmarks.ants.presets.AntsExperimentSeriesPresetBuilder;
+import javafx.util.Pair;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +41,17 @@ public class AntsColoniesTest {
 
     private static final AntsSettings SETTINGS = new AntsSettings(27603, "wi29",
             1_000_000L, 100L, 0.01F, 1.0F);
-    private static final ColonyRunResult result = AntsColonies.runCalculations(2, 2, SETTINGS);
+
+    private static final AntsExperimentSeriesPreset WI29_2X2_2_3M =
+            new AntsExperimentSeriesPresetBuilder()
+                    .setData(new Pair<>(27603, "wi29"))
+                    .setColonies(Collections.singletonList(2))
+                    .setAnts(Collections.singletonList(2))
+                    .setRunsForAverageResult(2)
+                    .setOverallRunTimeInNanos(1000L).createAntsExperimentPreset();
+
+    private static final ColonyRunResult result = AntsColonies.runCalculations(
+            new AntsExperimentData(2, 2, WI29_2X2_2_3M));
 
     @Test
     public void paramsPassedToEnd() {

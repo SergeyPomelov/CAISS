@@ -16,17 +16,19 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package benchmarks.ants.run;
+package benchmarks.ants.presets;
 
 import com.google.common.collect.ImmutableList;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import benchmarks.ants.AntsSettings;
+import benchmarks.ants.colonies.AntsSettings;
+import benchmarks.ants.colony.CachedRawEdgeQualities;
 import javafx.util.Pair;
 import util.Restrictions;
 
@@ -36,9 +38,8 @@ import util.Restrictions;
 // all collection fields under immutable implementations
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
-final class AntsExperimentPreset implements Serializable {
+public final class AntsExperimentSeriesPreset implements Serializable {
 
-    private static final int SEC_IN_MINUTE = 60;
     private static final long serialVersionUID = -8708406567348424308L;
 
     @Nonnull
@@ -50,56 +51,65 @@ final class AntsExperimentPreset implements Serializable {
     @Nonnull
     private final int runsForAverageResult;
     @Nonnull
-    private final int overallRunTimeInMinutes;
+    private final long overallRunTimeInNanos;
     @Nonnull
     private final AntsSettings settings;
+    @Nonnull
+    private final CachedRawEdgeQualities qualities;
 
-    AntsExperimentPreset(Pair<Integer, String> data, List<Integer> colonies,
-                         List<Integer> ants, int runsForAverageResult,
-                         int overallRunTimeInMinutes) {
+    /**
+     * Use the constructors only in lazy style.
+     *
+     * @see AntsExperimentSeriesPresetBuilder
+     */
+    @SuppressWarnings("SameParameterValue")
+    AntsExperimentSeriesPreset(Pair<Integer, String> data, List<Integer> colonies,
+                               List<Integer> ants, float evaporation, int runsForAverageResult,
+                               long overallRunTimeInNanos) {
         Restrictions.ifContainsNullFastFail(data, colonies, ants);
-        Restrictions.ifNotOnlyPositivesFastFail(runsForAverageResult, overallRunTimeInMinutes);
+        Restrictions.ifNotOnlyPositivesFastFail(runsForAverageResult, overallRunTimeInNanos);
         this.data = data;
         this.colonies = ImmutableList.copyOf(colonies);
         this.ants = ImmutableList.copyOf(ants);
         this.runsForAverageResult = runsForAverageResult;
-        this.overallRunTimeInMinutes = overallRunTimeInMinutes;
-        settings = new AntsSettings(data, calculateSecondsToRun());
+        this.overallRunTimeInNanos = overallRunTimeInNanos;
+        settings = new AntsSettings(data, evaporation, calculateSecondsToRun());
+        qualities = new CachedRawEdgeQualities(settings.getGraph());
     }
 
     @SuppressWarnings("NumericCastThatLosesPrecision")
     private int calculateSecondsToRun() {
-        return (int) (((float) overallRunTimeInMinutes * SEC_IN_MINUTE) /
+        return (int) (((float) TimeUnit.NANOSECONDS.toSeconds(overallRunTimeInNanos)) /
                 (runsForAverageResult * ants.size() * colonies.size()));
     }
 
     @Nonnull
-    Pair<Integer, String> getData() {
+    public Pair<Integer, String> getData() {
         return data;
     }
 
     @Nonnull
-    Iterable<Integer> getColonies() {
+    public Iterable<Integer> getColonies() {
         return colonies;
     }
 
     @Nonnull
-    Iterable<Integer> getAnts() {
+    public Iterable<Integer> getAnts() {
         return ants;
     }
 
     @Nonnull
-    int getRunsForAverageResult() {
+    public int getRunsForAverageResult() {
         return runsForAverageResult;
     }
 
     @Nonnull
-    int getOverallRunTimeInMinutes() {
-        return overallRunTimeInMinutes;
+    public AntsSettings getSettings() {
+        return settings;
     }
 
     @Nonnull
-    AntsSettings getSettings() {
-        return settings;
+    public CachedRawEdgeQualities getQualities() {
+        return qualities;
     }
 }
