@@ -44,10 +44,11 @@ public final class ContinuousParallelExecutor {
 
     private static final Logger log = LoggerFactory.getLogger(ContinuousParallelExecutor.class);
     private static final String INTERRUPTED_EX = "Got an interrupted exception!";
-    private static final int BASE_MULTIPLIER = 20_000;
+    private static final int BASE_MULTIPLIER = 100;
 
     private ContinuousParallelExecutor() { /* utility class*/ }
 
+    @SuppressWarnings("SameParameterValue")
     public static void run(Callable<Long> agent, @Nonnegative int parallelAgents,
                            Supplier<Boolean> terminationCondition,
                            Runnable agentsRunAdditionalOperation,
@@ -61,7 +62,6 @@ public final class ContinuousParallelExecutor {
         try {
             mainCycle(agent, parallelAgents, terminationCondition,
                     agentsRunAdditionalOperation, executor);
-            executor.shutdownNow();
         } catch (InterruptedException e) {
             log.warn(INTERRUPTED_EX, e);
         } finally {
@@ -83,8 +83,8 @@ public final class ContinuousParallelExecutor {
             tasksReserve = addTasksIfNeed(runFutureResults, executor, agent,
                     isFirstCycle, tasksReserve);
             agentsRunAdditionalOperation.run();
-            Thread.sleep(1);
             isFirstCycle = false;
+            Thread.sleep(100);
         }
     }
 
@@ -105,7 +105,7 @@ public final class ContinuousParallelExecutor {
                                           Collection<Future<Long>> runFutureResults) {
         if (!firstCycle && runFutureResults.isEmpty()) {
             final int revisedTasksReserve = tasksReserve * 2;
-            log.info("Zero tasks, new queue size {} -> {}.", tasksReserve, revisedTasksReserve);
+            log.debug("Zero tasks, new queue size {} -> {}.", tasksReserve, revisedTasksReserve);
             return revisedTasksReserve;
         }
         return tasksReserve;
