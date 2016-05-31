@@ -18,8 +18,6 @@
 
 package benchmarks.ants.colonies.colony;
 
-import com.sun.istack.internal.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +46,7 @@ final class AntsStatistics implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(AntsStatistics.class);
     private static final long serialVersionUID = 3702542113880074571L;
 
-    @NotNull
+    @Nonnull
     private final AtomicReference<AntRunResult> bestRun = new AtomicReference<>(null);
     @Nonnegative
     private final AtomicInteger antsGoodRuns = new AtomicInteger(0);

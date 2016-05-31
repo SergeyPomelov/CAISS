@@ -72,9 +72,10 @@ final class SolutionsExchangeModule implements Serializable {
     }
 
     private void sendSolutions(AntRunResult antRunResult) {
-        neighbours.forEach(neighbour -> neighbour.receiveSolution(antRunResult));
-        gotNewSolution.compareAndSet(true, false);
-        lastSendDataNanos.set(System.nanoTime());
+        if (gotNewSolution.compareAndSet(true, false)) {
+            neighbours.forEach(neighbour -> neighbour.receiveSolution(antRunResult));
+            lastSendDataNanos.set(System.nanoTime());
+        }
     }
 
     void gotNewSolution() {

@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Nonnegative;
@@ -71,7 +70,7 @@ public final class AntsColony implements IAntsColony {
     public AntsColony(String id, int parallelAnts, AntsSettings settings,
                       CachedRawEdgeQualities qualities) {
         Restrictions.ifNotOnlyPositivesFastFail(parallelAnts);
-        Restrictions.ifContainsNullFastFail(id, settings);
+        Restrictions.ifContainsNullFastFail(id, settings, qualities);
         this.id = id;
         this.settings = settings;
         this.parallelAnts = parallelAnts;
@@ -132,10 +131,8 @@ public final class AntsColony implements IAntsColony {
     }
 
     private void runAnts(@Nonnegative long stopNanos) {
-        final Callable<Long> antRun =
-                AntColonyInteractions.antRunProcedure(this);
         //noinspection MethodCallInLoopCondition - the nanoTime need be called each time
-        ContinuousParallelExecutor.run(antRun, parallelAnts,
+        ContinuousParallelExecutor.run(AntColonyInteractions.antRunProcedure(this), parallelAnts,
                 () -> System.nanoTime() >= stopNanos,
                 this::sendSolutionIfNeed, "colony" + id, "ant");
     }

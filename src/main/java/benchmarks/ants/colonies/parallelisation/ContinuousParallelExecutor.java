@@ -44,7 +44,8 @@ public final class ContinuousParallelExecutor {
 
     private static final Logger log = LoggerFactory.getLogger(ContinuousParallelExecutor.class);
     private static final String INTERRUPTED_EX = "Got an interrupted exception!";
-    private static final int BASE_MULTIPLIER = 100;
+    private static final int BASE_MULTIPLIER = 1000;
+    private static final int TASKS_QUEUE_CHECK_INTERVAL_MLS = 300;
 
     private ContinuousParallelExecutor() { /* utility class*/ }
 
@@ -84,7 +85,7 @@ public final class ContinuousParallelExecutor {
                     isFirstCycle, tasksReserve);
             agentsRunAdditionalOperation.run();
             isFirstCycle = false;
-            Thread.sleep(100);
+            Thread.sleep(TASKS_QUEUE_CHECK_INTERVAL_MLS);
         }
     }
 

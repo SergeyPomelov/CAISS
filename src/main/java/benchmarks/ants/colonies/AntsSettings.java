@@ -18,6 +18,7 @@
 
 package benchmarks.ants.colonies;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.annotation.Nonnegative;
@@ -54,7 +55,7 @@ public final class AntsSettings implements Serializable {
     @Nonnull
     private final IDistancesData graph;
 
-    public AntsSettings(Pair<Integer, String> data, float evaporation, int secondsToRun) {
+    public AntsSettings(Pair<Integer, String> data, float evaporation, int secondsToRun) throws IOException {
         this(data.getKey(), data.getValue(), TimeUtil.secToNano(secondsToRun),
                 TimeUtil.mlsToNano(1000), evaporation, 1.0F);
     }
@@ -64,7 +65,7 @@ public final class AntsSettings implements Serializable {
                         @Nonnegative long runPeriodNanos,
                         @Nonnegative long exchangeNanos,
                         @Nonnegative float evaporationCoefficient,
-                        @Nonnegative float initialTrail) {
+                        @Nonnegative float initialTrail) throws IOException {
         this.optimum = optimum;
         this.runPeriodNanos = runPeriodNanos;
         this.exchangeNanos = exchangeNanos;
