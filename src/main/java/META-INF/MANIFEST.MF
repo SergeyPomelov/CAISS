@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: slf4j-api-1.7.21.jar logback-core-1.1.7.jar jopt-simple-4.
+ 6.jar logback-classic-1.1.7.jar jmh-core-1.12.jar jsr305-3.0.1.jar gu
+ ava-19.0.jar commons-math3-3.2.jar
+Main-Class: benchmarks.ants.run.AntsRunner
+

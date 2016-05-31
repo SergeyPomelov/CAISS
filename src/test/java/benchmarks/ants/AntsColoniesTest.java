@@ -18,10 +18,21 @@
 
 package benchmarks.ants;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import benchmarks.ants.colony.ColonyRunResult;
+import java.io.IOException;
+import java.util.Collections;
 
+import benchmarks.ants.colonies.AntsColonies;
+import benchmarks.ants.colonies.AntsExperimentData;
+import benchmarks.ants.colonies.AntsSettings;
+import benchmarks.ants.colonies.colony.ColonyRunResult;
+import benchmarks.ants.presets.AntsExperimentSeriesPreset;
+import benchmarks.ants.presets.AntsExperimentSeriesPresetBuilder;
+import javafx.util.Pair;
+
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -31,9 +42,27 @@ import static org.junit.Assert.assertTrue;
  */
 public class AntsColoniesTest {
 
-    private static final AntsSettings SETTINGS = new AntsSettings(27603, "wi29",
-            1_000_000L, 100L, 0.01F, 1.0F);
-    private static final ColonyRunResult result = AntsColonies.runCalculations(2, 2, SETTINGS);
+    private static AntsSettings SETTINGS;
+
+    private static AntsExperimentSeriesPreset WI29_2X2_2_3M;
+
+    static {
+        try {
+            WI29_2X2_2_3M = new AntsExperimentSeriesPresetBuilder()
+                    .setData(new Pair<>(27603, "wi29"))
+                    .setColonies(Collections.singletonList(2))
+                    .setAnts(Collections.singletonList(2))
+                    .setRunsForAverageResult(2)
+                    .setOverallRunTimeInNanos(1000L).createAntsExperimentPreset();
+            SETTINGS = new AntsSettings(27603, "wi29",
+                    1_000_000L, 100L, 0.01F, 1.0F);
+        } catch (IOException e) {
+            fail();
+        }
+    }
+
+    private static final ColonyRunResult result = AntsColonies.runCalculations(
+            new AntsExperimentData(2, 2, WI29_2X2_2_3M));
 
     @Test
     public void paramsPassedToEnd() {
@@ -53,6 +82,7 @@ public class AntsColoniesTest {
         assertTrue(result.getAvgAntsRunNs() > 0L);
     }
 
+    @Ignore
     @Test
     public void exchangesSmoke() {
         assertTrue(result.getExchanges() > 0L);

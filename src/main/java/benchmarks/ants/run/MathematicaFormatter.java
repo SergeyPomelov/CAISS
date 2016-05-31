@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.function.Function;
 
-import benchmarks.ants.colony.ColonyRunResult;
+import benchmarks.ants.colonies.colony.ColonyRunResult;
 import javafx.util.Pair;
 
 import static util.Constants.LS;
@@ -39,7 +39,7 @@ final class MathematicaFormatter {
     private MathematicaFormatter() { /* package-local utility class */ }
 
     @SuppressWarnings("FeatureEnvy")
-    static void printData(Collection<Pair<String, ColonyRunResult>> overallResults) {
+    static void printDataThenClearSource(Collection<Pair<String, ColonyRunResult>> overallResults) {
         final StringBuilder out = new StringBuilder(0);
         fillDataForValue(overallResults, out, "accuracy", Pair::getKey);
         fillDataForValue(overallResults, out, "runs", result ->
