@@ -71,6 +71,6 @@ public final class OperationPerformance extends ComputingObject {
     @Nonnull
     @Override
     public String info() {
-        return (String.format("%s(%s) t=%smc", super.info(), operation.info(), time));
+        return (String.format("%s(%s) t=%s", super.info(), operation.info(), time));
     }
 }

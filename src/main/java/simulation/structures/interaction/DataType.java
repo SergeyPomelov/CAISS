@@ -27,6 +27,8 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public enum DataType {
-    BOOL, B_DEC, TWO_B_DEC, FOUR_B_DEC, EIGHT_B_DEC, SIXTEEN_B_DEC,
-    FOUR_B_FL, EIGHT_B_FL, SIXTEEN_B_FL
+    BOOL, B_DEC, TWO_B_DEC,
+    // --Commented out by Inspection (31/05/2016 22:11):SIXTEEN_B_FL
+    // --Commented out by Inspection (31/05/2016 22:10):FOUR_B_DEC, EIGHT_B_DEC, SIXTEEN_B_DEC,
+    FOUR_B_FL, EIGHT_B_FL, UNKNOWN,
 }

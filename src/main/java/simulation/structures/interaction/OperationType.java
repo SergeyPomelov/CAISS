@@ -27,5 +27,9 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public enum OperationType {
-    INVERSE, ADDITION, TRANSPOSE, TRANSFER, NONE
+    INVERSE, ADDITION,
+    // --Commented out by Inspection (31/05/2016 22:11):TRANSPOSE,
+    TRANSFER, READ_DATA, PRE_CALCULATIONS, OVERHEAD, INTERACTION,
+    ANT_SOLUTION_GENERATION,
+    // --Commented out by Inspection (31/05/2016 22:11):NONE
 }
