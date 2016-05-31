@@ -106,7 +106,7 @@ public final class DataLink extends ArchitectureComponent {
                 .append("b: ");
 
         for (final TransferCapability capability : getTransferCapabilities()) {
-            output.append(String.format("| %s*%s - %smc ", capability.getDataType().name(),
+            output.append(String.format("| %s*%s - %s ", capability.getDataType().name(),
                     capability.getDataCapacity(), capability.getDataTransferSpeed()));
         }
         output.append(LS);

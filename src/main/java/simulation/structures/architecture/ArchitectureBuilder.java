@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,9 +47,8 @@ public final class ArchitectureBuilder implements Serializable {
     private static final String WHOLE_ARRAY = "wholeArray";
     private static final String INVERSE = "inverse";
 
-    private static final MemoryNode memory = new MemoryNode("DDR3",
-            Collections.singletonList(
-                    new DataBlock("8bytes", DataType.EIGHT_B_FL, 1000L * 1000L)),
+    private static final MemoryNode memory = new MemoryNode("DDR2",
+            Collections.singletonList(new DataBlock("8bytes", DataType.EIGHT_B_FL, 1000L * 1000L)),
             BigDecimal.valueOf(8L * 1000L * 1000L));
 
     private static final DataBlock matrix =
@@ -68,17 +66,14 @@ public final class ArchitectureBuilder implements Serializable {
     private static final OperationPerformance inverseSmallPerformance =
             new OperationPerformance(CORE_PERFORMANCE, inverseSmall, 2000L);
 
+
     private static final List<OperationPerformance> speed;
 
     static {
-        final Collection<OperationPerformance> performances = new ArrayList<>(2);
-        performances.add(inverseLargePerformance);
-        performances.add(inverseSmallPerformance);
-        speed = ImmutableList.copyOf(performances);
+        speed = ImmutableList.of(inverseSmallPerformance, inverseLargePerformance);
     }
 
     private ArchitectureBuilder() { /* utility class */ }
-
 
     /**
      * @return one core PC model
@@ -100,8 +95,7 @@ public final class ArchitectureBuilder implements Serializable {
                 new ArrayList<>(Arrays.asList(coreOne, coreTwo, coreThree, coreFour));
 
         final DataLink bus =
-                new DataLink("bus", new TransferCapabilities(transferCapabilities, 4000L),
-                        inIn, inOut);
+                new DataLink("bus", new TransferCapabilities(transferCapabilities, 4000L), inIn, inOut);
 
         return new Computer(Collections.singletonList(bus));
     }
@@ -113,7 +107,6 @@ public final class ArchitectureBuilder implements Serializable {
     public static Computer buildTwoCore() {
         final CalculationNode coreOne = new CalculationNode("Core1", speed);
         final CalculationNode coreTwo = new CalculationNode("Core2", speed);
-
 
         final List<TransferCapability> transferCapabilities = ImmutableList.of(
                 new TransferCapability(DataType.FOUR_B_FL, 1_000_000, 1000L));
