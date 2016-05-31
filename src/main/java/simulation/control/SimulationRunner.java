@@ -21,21 +21,40 @@ package simulation.control;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 import util.GNUCopyright;
+
+import static util.ConversionUtil.bytesToMb;
 
 /**
  * Runs algorithm & architecture simulation and prints logs.
  * @author Sergey Pomelov on 15/04/2016.
  */
-final class SimulationControllerRunner {
+final class SimulationRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(SimulationControllerRunner.class);
+    private static final Logger log = LoggerFactory.getLogger(SimulationRunner.class);
 
-    private SimulationControllerRunner() { /* runnable class */ }
+    private SimulationRunner() { /* runnable class */ }
 
     public static void main(String... args) {
-        GNUCopyright.printLicence();
-        log.info((new SimulationController()).simulate());
+        log.info((new AntsSimulationController()).simulate());
         System.exit(0);
+    }
+
+    private static void printStats() {
+        GNUCopyright.printLicence();
+        log.info("Press to start. Cores: {}. Memory: {} Mb.",
+                Runtime.getRuntime().availableProcessors(),
+                bytesToMb(Runtime.getRuntime().maxMemory()));
+    }
+
+    private static void waitForInput() {
+        int input = 0;
+        try {
+            input = System.in.read();
+        } catch (IOException e) {
+            log.error("{} {}", input, e.getStackTrace());
+        }
     }
 }
