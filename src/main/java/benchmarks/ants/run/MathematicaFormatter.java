@@ -39,7 +39,7 @@ final class MathematicaFormatter {
     private MathematicaFormatter() { /* package-local utility class */ }
 
     @SuppressWarnings("FeatureEnvy")
-    static void printData(Collection<Pair<String, ColonyRunResult>> overallResults) {
+    static void printDataThenClearSource(Collection<Pair<String, ColonyRunResult>> overallResults) {
         final StringBuilder out = new StringBuilder(0);
         fillDataForValue(overallResults, out, "accuracy", Pair::getKey);
         fillDataForValue(overallResults, out, "runs", result ->

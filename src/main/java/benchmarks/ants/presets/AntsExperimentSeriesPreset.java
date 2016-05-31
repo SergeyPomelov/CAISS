@@ -20,6 +20,7 @@ package benchmarks.ants.presets;
 
 import com.google.common.collect.ImmutableList;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +66,7 @@ public final class AntsExperimentSeriesPreset implements Serializable {
     @SuppressWarnings("SameParameterValue")
     AntsExperimentSeriesPreset(Pair<Integer, String> data, List<Integer> colonies,
                                List<Integer> ants, float evaporation, int runsForAverageResult,
-                               long overallRunTimeInNanos) {
+                               long overallRunTimeInNanos) throws IOException {
         Restrictions.ifContainsNullFastFail(data, colonies, ants);
         Restrictions.ifNotOnlyPositivesFastFail(runsForAverageResult, overallRunTimeInNanos);
         this.data = data;

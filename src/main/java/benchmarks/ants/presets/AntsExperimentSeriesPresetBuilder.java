@@ -20,6 +20,7 @@ package benchmarks.ants.presets;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -75,7 +76,7 @@ public final class AntsExperimentSeriesPresetBuilder {
         return this;
     }
 
-    public AntsExperimentSeriesPreset createAntsExperimentPreset() {
+    public AntsExperimentSeriesPreset createAntsExperimentPreset() throws IOException {
         return new AntsExperimentSeriesPreset(data, colonies, ants, DEFAULT_EVAPORATION,
                 runsForAverageResult,
                 TimeUnit.MINUTES.toNanos(overallRunTimeInMinutes));

@@ -21,6 +21,7 @@ package benchmarks.ants.run;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,13 +32,13 @@ import benchmarks.ants.colonies.AntsExperimentData;
 import benchmarks.ants.colonies.AntsSettings;
 import benchmarks.ants.colonies.colony.ColonyRunResult;
 import benchmarks.ants.presets.AntsExperimentSeriesPreset;
+import benchmarks.ants.presets.ExperimentsSeriesPresetsBuilders;
 import javafx.util.Pair;
 import util.GNUCopyright;
 
 import static benchmarks.ants.colonies.ColonyResultsCompiler.avgResult;
-import static benchmarks.ants.presets.ExperimentsSeriesPresetsBuilders.QA194_8X8_1_10H;
 import static benchmarks.ants.presets.ExperimentsSeriesPresetsBuilders.WARM_UP;
-import static benchmarks.ants.run.MathematicaFormatter.printData;
+import static benchmarks.ants.run.MathematicaFormatter.printDataThenClearSource;
 
 /**
  * Runs ACO.
@@ -56,10 +57,17 @@ final class AntsRunner {
     private AntsRunner() { /* runnable class */ }
 
     public static void main(String... args) {
-        GNUCopyright.printLicence();
-        warmUp(WARM_UP.createAntsExperimentPreset());
-        runExperiment(QA194_8X8_1_10H.createAntsExperimentPreset());
-        System.exit(0);
+        //noinspection finally
+        try {
+            GNUCopyright.printLicence();
+            warmUp(WARM_UP.createAntsExperimentPreset());
+            runExperiment(ExperimentsSeriesPresetsBuilders.QA194_4X4_4_10H
+                    .createAntsExperimentPreset());
+        } catch (IOException e) {
+            log.error("IO Exception, possible .tsp file not found", e);
+        } finally {
+            System.exit(0);
+        }
     }
 
     private static void runExperiment(AntsExperimentSeriesPreset preset) {
@@ -67,7 +75,7 @@ final class AntsRunner {
                 preset.getAnts().forEach(antsAmount ->
                         runSeveralTimes(
                                 generateData(preset, coloniesAmount, antsAmount), false)));
-        printData(overallResults);
+        printDataThenClearSource(overallResults);
     }
 
     private static void warmUp(AntsExperimentSeriesPreset preset) {

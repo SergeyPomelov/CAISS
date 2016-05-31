@@ -164,6 +164,30 @@ public final class ExperimentsSeriesPresetsBuilders {
                     .setRunsForAverageResult(1)
                     .setOverallRunTimeInMinutes(10 * 60);
 
+    public static final AntsExperimentSeriesPresetBuilder QA194_S2_16X16_1_10H =
+            new AntsExperimentSeriesPresetBuilder()
+                    .setData(QA194)
+                    .setColonies(Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16))
+                    .setAnts(Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16))
+                    .setRunsForAverageResult(1)
+                    .setOverallRunTimeInMinutes(10 * 60);
+
+    public static final AntsExperimentSeriesPresetBuilder QA194_S4_64X64_1_10H =
+            new AntsExperimentSeriesPresetBuilder()
+                    .setData(QA194)
+                    .setColonies(Arrays.asList(128, 112, 96, 80, 64, 48, 32, 16))
+                    .setAnts(Arrays.asList(128, 112, 96, 80, 64, 48, 32, 16))
+                    .setRunsForAverageResult(1)
+                    .setOverallRunTimeInMinutes(10 * 60);
+
+    public static final AntsExperimentSeriesPresetBuilder QA194_4X4_4_10H =
+            new AntsExperimentSeriesPresetBuilder()
+                    .setData(QA194)
+                    .setColonies(Arrays.asList(1, 2, 3, 4))
+                    .setAnts(Arrays.asList(1, 2, 3, 4))
+                    .setRunsForAverageResult(4)
+                    .setOverallRunTimeInMinutes(10 * 16 * 4);
+
     public static final AntsExperimentSeriesPresetBuilder DCC911_3X3_3_18M =
             new AntsExperimentSeriesPresetBuilder()
                     .setData(DCC1911)
