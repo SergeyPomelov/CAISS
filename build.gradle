@@ -59,6 +59,16 @@ jmhJar {
     append "META-INF/CompilerHints"
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        //noinspection GroovyAssignabilityCheck - false, while it works don't touch it
+        attributes "Main-Class": "benchmarks.ants.run.AntsRunner"
+    }
+    baseName = project.name + "-all"
+    from { configurations.compile.collect { it.directory ? it : zipTree(it) } }
+    with jar
+}
+
 dependencies {
     apt "org.openjdk.jmh:jmh-generator-annprocess:${jmh.jmhVersion}" // jmh benchmarking
 
