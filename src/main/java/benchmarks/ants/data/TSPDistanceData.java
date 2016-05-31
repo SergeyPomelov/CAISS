@@ -20,8 +20,6 @@ package benchmarks.ants.data;
 
 import com.google.common.base.Charsets;
 
-import com.sun.istack.internal.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +34,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
 import javafx.util.Pair;
@@ -53,21 +52,21 @@ public final class TSPDistanceData implements IDistancesData {
     private static final long serialVersionUID = 6519359333995572903L;
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
-    @NotNull
+    @Nonnull
     private int[][] distances = new int[1][1];
     private int size = 0;
 
     /**
      * @param fileLocation - is a relative location, appended to the user.dir, root of the project
      */
-    public TSPDistanceData(String fileLocation) {
+    @SuppressWarnings({"OverlyBroadThrowsClause", "OverlyBroadCatchBlock"})
+    public TSPDistanceData(String fileLocation) throws IOException {
         try (BufferedReader br = buildBufferReader(fileLocation)) {
             distances = readData(br);
             size = distances.length;
-        } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException during construction!", e);
         } catch (IOException e) {
             log.error("IOException during construction!", e);
+            throw e;
         }
     }
 
