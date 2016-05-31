@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package simulation.control;
+package simulation.control.planner;
 
 import com.google.common.collect.ImmutableList;
 
@@ -29,9 +29,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import simulation.structures.architecture.ArchitectureComponent;
 import simulation.structures.architecture.CalculationNode;
@@ -39,8 +41,10 @@ import simulation.structures.architecture.Computer;
 import simulation.structures.architecture.DataLink;
 import simulation.structures.architecture.MemoryNode;
 import simulation.structures.interaction.OperationWithData;
+import util.FormatUtil;
 
 import static util.Constants.LS;
+import static util.FormatUtil.formatTime;
 import static util.Restrictions.containsNull;
 
 /**
@@ -48,60 +52,73 @@ import static util.Restrictions.containsNull;
  * is writing a computations process journal.
  * @author Sergey Pomelov on 9/3/14.
  */
-final class TasksPlanner {
+@SuppressWarnings("ObjectAllocationInLoop")
+public final class TasksPlanner {
+
     private static final Logger log = LoggerFactory.getLogger(TasksPlanner.class);
+    private static final double PERCENT = 100.0D;
+
     /** temporary list of current computer arithmetic nodes */
     @Nonnull
-    private final Collection<CalculationNode> cores = new ArrayList<>(8);
+    private final Collection<CalculationNode> calculationNodes = new ArrayList<>(0);
     /** temporary list of current computer memory nodes */
     @Nonnull
-    private final Collection<MemoryNode> memory = new ArrayList<>(4);
+    private final Collection<MemoryNode> memoryNodes = new ArrayList<>(0);
     /**
      * temporary table with information about computational tasks linked with components finish
      * time
      */
     @Nonnull
-    private HashMap<ArchitectureComponent, Long> timeTable = new HashMap<>(8);
-    /** computational process journal */
+    private final HashMap<ArchitectureComponent, Long> timeTable = new HashMap<>(8);
     @Nonnull
-    private StringBuilder journal = new StringBuilder("");
+    private final Collection<OperationRecord> operationsHistory = new ArrayList<>(0);
+    @Nullable
+    private final TimeUnit inputTimeUnit;
 
-    TasksPlanner(final Computer computer) {
+    public TasksPlanner(Computer computer, @Nullable TimeUnit inputTimeUnit) {
         load(computer);
+        this.inputTimeUnit = inputTimeUnit;
+    }
+
+    public TasksPlanner(Computer computer) {
+        this(computer, null);
+    }
+
+    public void barrierNow() {
+        final long maxTime = getMaxTime();
+        for (CalculationNode node : calculationNodes) {
+            final long busyTime = getTime(node);
+            if (getTime(node) < maxTime) {
+                timeTable.put(node, maxTime);
+                operationsHistory.add(new WaitOperationRecord(busyTime, maxTime, inputTimeUnit, node));
+            }
+        }
     }
 
     /**
      * @param computer for init class: could be automated. Currently if you want correct results you
      *                 should do it manually before any other tasks for this class.
      */
+    @SuppressWarnings("WeakerAccess")
     void load(Computer computer) {
         if (computer == null) {
             throw new IllegalArgumentException("The computer param shouldn't be null!");
         }
-        timeTable = new HashMap<>(16);
-        cores.clear();
-        memory.clear();
-        cores.addAll(computer.getCalculationNodes());
-        memory.addAll(computer.getMemoryNodes());
-        journal = new StringBuilder("");
-    }
-
-    /**
-     * @return computational process journal in text format.
-     */
-    @Nonnull
-    String getLog() {
-        return journal.toString();
+        timeTable.clear();
+        calculationNodes.clear();
+        memoryNodes.clear();
+        calculationNodes.addAll(computer.getCalculationNodes());
+        memoryNodes.addAll(computer.getMemoryNodes());
     }
 
     @Nonnull
     Collection<CalculationNode> getArchNodes() {
-        return ImmutableList.copyOf(cores);
+        return ImmutableList.copyOf(calculationNodes);
     }
 
     @Nonnull
     Collection<MemoryNode> getMemoryNodes() {
-        return ImmutableList.copyOf(memory);
+        return ImmutableList.copyOf(memoryNodes);
     }
 
     private void addTask(ArchitectureComponent actor, Long startTime, Long time) {
@@ -119,23 +136,38 @@ final class TasksPlanner {
     @Nonnull
     private ArrayList<CalculationNode> getSuccessArNode(OperationWithData operationWithData) {
         final ArrayList<CalculationNode> readyCores = new ArrayList<>(8);
-        cores.stream().forEach(core -> core.getAllowedOperations().stream()
+        calculationNodes.stream().forEach(core -> core.getAllowedOperations().stream()
                 .filter(oper -> oper.getOperation().equals(operationWithData))
                 .forEach(oper -> readyCores.add(core)));
         return readyCores;
+    }
+
+    @Nonnull
+    public String printHistory() {
+        final StringBuilder timings = new StringBuilder(64);
+        final long totalTime = getMaxTime();
+        final Iterator<OperationRecord> componentIterator = operationsHistory.iterator();
+        componentIterator.forEachRemaining(actor -> timings.append(actor).append(
+                percentOf(actor.getDuration(), totalTime)).append(LS));
+        return LS + "Timings: " + timings + LS + "Total time: " +
+                formatTime(totalTime, inputTimeUnit) + LS;
+    }
+
+    private static String percentOf(long duration, long totalTime) {
+        return '(' + FormatUtil.percentFormat((PERCENT * duration) / totalTime) + ")%";
     }
 
     /**
      * @return print current time table state.
      */
     @Nonnull
-    String printTimings() {
+    public String printTimings() {
         final StringBuilder timings = new StringBuilder(64);
         timings.append(LS);
         final Iterator<ArchitectureComponent> componentIterator = timeTable.keySet().iterator();
         componentIterator.forEachRemaining(actor -> timings.append(actor.getName()).append(" - ")
-                .append(timeTable.get(actor)).append("ms").append(LS));
-        return "Timings: " + timings + LS + "Total time: " + getMaxTime() + " ms" + LS;
+                .append(formatTime(timeTable.get(actor), inputTimeUnit)).append(LS));
+        return "Timings: " + timings + LS + "Total time: " + formatTime(getMaxTime(), inputTimeUnit) + LS;
     }
 
     /** @return current predicted finishing time. */
@@ -143,12 +175,8 @@ final class TasksPlanner {
     @Nonnegative
     private Long getMaxTime() {
         Long maxTime = 0L;
-        final Iterator<Entry<ArchitectureComponent, Long>> componentIterator =
-                timeTable.entrySet().iterator();
-        //noinspection MethodCallInLoopCondition, by design
-        for (Entry<ArchitectureComponent, Long> actor = componentIterator.next();
-             componentIterator.hasNext() && (actor != null); actor = componentIterator.next()) {
-            final Long endTime = timeTable.get(actor.getKey());
+        for (Entry<ArchitectureComponent, Long> actor : timeTable.entrySet()) {
+            final Long endTime = actor.getValue();
             if (maxTime < endTime) {
                 maxTime = endTime;
             }
@@ -161,7 +189,7 @@ final class TasksPlanner {
      * @return find first finishing node for planning.
      */
     @Nonnull
-    Optional<CalculationNode> getFreeCalculationNode(Iterable<CalculationNode> nodes) {
+    public Optional<CalculationNode> getFreeCalculationNode(Iterable<CalculationNode> nodes) {
         CalculationNode readyNode = null;
         for (final CalculationNode node : nodes) {
             if (node != null) {
@@ -183,30 +211,28 @@ final class TasksPlanner {
     }
 
     /**
-     * @param inMemory          where is the data
+     * @param memory          where is the data
      * @param dataLink          who should transfer data
      * @param core              destination of the data
      * @param operationWithData what shall be done
      */
-    void transfer(MemoryNode inMemory, DataLink dataLink, CalculationNode core,
-                  OperationWithData operationWithData) {
-        if (containsNull(inMemory, dataLink, core, operationWithData)) {
+    public void transfer(MemoryNode memory, DataLink dataLink, CalculationNode core,
+                         OperationWithData operationWithData) {
+        if (containsNull(memory, dataLink, core, operationWithData)) {
             log.error("wrong input transfer({},{},{},{}), transfer failed!",
-                    inMemory, dataLink.getName(), core, operationWithData);
+                    memory, dataLink.getName(), core, operationWithData);
             return;
         }
 
         final Optional<Float> optionalTime = dataLink.getTransferTime(operationWithData);
         if (optionalTime.isPresent()) {
             final long time = Math.round(optionalTime.get());
-            final Long start = findPossibleStart(inMemory, core, dataLink);
-            addTask(inMemory, start, time);
+            final Long start = findPossibleStart(memory, core, dataLink);
+            addTask(memory, start, time);
             addTask(dataLink, start, time);
             addTask(core, start, time);
-            journal.append("trans: ").append(inMemory.getName()).append("->")
-                    .append(dataLink.getName()).append("->").append(core.getName())
-                    .append(" : ").append(operationWithData.getData().info()).append(' ')
-                    .append(start).append("ms->").append(start + time).append("ms").append(LS);
+            operationsHistory.add(new TransferOperationRecord(start, start + time, inputTimeUnit,
+                    memory, dataLink, core, operationWithData));
         } else {
             log.error("wrong operation or wrong node, transfer failed!");
         }
@@ -232,7 +258,7 @@ final class TasksPlanner {
      * @param core              who should work
      * @param operationWithData what shall be done
      */
-    void calculate(CalculationNode core, OperationWithData operationWithData) {
+    public void calculate(CalculationNode core, OperationWithData operationWithData) {
         if (containsNull(operationWithData, core)) {
             log.error("wrong input calculate({},{}), calculation failed!", core, operationWithData);
             return;
@@ -242,11 +268,11 @@ final class TasksPlanner {
         if (time.isPresent()) {
             final Long start = getTime(core);
             addTask(core, start, time.get());
-            journal.append("comp: ").append(core.getName()).append(" : ")
-                    .append(operationWithData.info()).append(start).append("ms->")
-                    .append(start + time.get()).append("ms").append(LS);
+            operationsHistory.add(new CalculationOperationRecord(start, start + time.get(), inputTimeUnit,
+                    core, operationWithData));
         } else {
             log.error("wrong operation or wrong node, calculate failed!");
         }
     }
+
 }

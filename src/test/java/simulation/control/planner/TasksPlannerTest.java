@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package simulation.control;
+package simulation.control.planner;
 
 import org.junit.Test;
 
@@ -32,7 +32,6 @@ import simulation.structures.interaction.OperationWithData;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Sergey Pomelov on 05/05/2016.
@@ -43,7 +42,6 @@ public class TasksPlannerTest {
     @Test
     public void testLoad() {
         final TasksPlanner tasksPlanner = new TasksPlanner(ArchitectureBuilder.buildOneCore());
-        assertTrue(tasksPlanner.getLog().isEmpty());
         assertEquals(1, tasksPlanner.getArchNodes().size());
         assertEquals(1, tasksPlanner.getMemoryNodes().size());
     }
@@ -52,11 +50,9 @@ public class TasksPlannerTest {
     public void testLoadIndependency() {
         final TasksPlanner tasksPlanner = new TasksPlanner(ArchitectureBuilder.buildOneCore());
         tasksPlanner.load(ArchitectureBuilder.buildOneCore());
-        assertTrue(tasksPlanner.getLog().isEmpty());
         assertEquals(1, tasksPlanner.getArchNodes().size());
         assertEquals(1, tasksPlanner.getMemoryNodes().size());
         tasksPlanner.load(ArchitectureBuilder.buildTwoCore());
-        assertTrue(tasksPlanner.getLog().isEmpty());
         assertEquals(2, tasksPlanner.getArchNodes().size());
         assertEquals(1, tasksPlanner.getMemoryNodes().size());
     }
@@ -80,7 +76,8 @@ public class TasksPlannerTest {
         tasksPlanner.transfer(comp.getMemoryNodes().get(0), dataLink, core, transferSmall);
         tasksPlanner.calculate(core, subInverse);
         assertNotNull(tasksPlanner.getFreeCalculationNode(comp.getCalculationNodes()));
-        assertFalse(tasksPlanner.getLog().isEmpty());
+        assertFalse(tasksPlanner.printHistory().isEmpty());
+        assertFalse(tasksPlanner.printTimings().isEmpty());
     }
 
     @Test
