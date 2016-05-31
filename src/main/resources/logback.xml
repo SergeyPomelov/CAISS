@@ -20,9 +20,6 @@
 <!--suppress XmlUnboundNsPrefix -->
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level [%thread | %logger{1}]: %msg%n</pattern>
         </encoder>
@@ -64,17 +61,18 @@
             <maxIndex>3</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1MB</maxFileSize>
+            <maxFileSize>10MB</maxFileSize>
         </triggeringPolicy>
     </appender>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE_MAIN"/>
         <appender-ref ref="FILE_DEBUG"/>
     </root>
 
-    <logger name="benchmarks.ants.AntsColony" level="INFO"/>
-    <logger name="benchmarks.ants.AntColonyInteraction" level="INFO"/>
-    <logger name="benchmarks.ants.AntsRunner" level="INFO"/>
+    <logger name="util.GNUCopyright" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
 </configuration>
