@@ -40,7 +40,7 @@ final class TourBuilder {
     @Nonnull
     private final IDistancesData graphMatrix;
     @Nonnull
-    private final CachedRawEdgeQualities cachedRawEdgeQualities;
+    private final RouteFinder routeFinder;
     @Nonnull
     private final int[] tour;
     @Nonnull
@@ -56,12 +56,12 @@ final class TourBuilder {
     TourBuilder(IDistancesData graphMatrix, CachedRawEdgeQualities cachedRawEdgeQualities,
                 float[][] trail) {
         this.graphMatrix = graphMatrix;
-        this.cachedRawEdgeQualities = cachedRawEdgeQualities;
         this.trail = trail;
         size = graphMatrix.getSize();
         tour = new int[size];
         allowedVertexes = new int[size];
         visited = new boolean[size];
+        routeFinder = new RouteFinder(graphMatrix, cachedRawEdgeQualities);
         initPheromones();
     }
 
@@ -76,8 +76,8 @@ final class TourBuilder {
         long tourLength = 0L;
         boolean success = true;
         for (int i = 1; (i < size) && success; i++) {
-            final Optional<Integer> destinationIndex = RouteFinder.findNextVertex(currentVertex,
-                    trail, visited, allowedVertexes, graphMatrix, cachedRawEdgeQualities);
+            final Optional<Integer> destinationIndex = routeFinder.findNextVertex(currentVertex,
+                    trail, visited, allowedVertexes);
             if (destinationIndex.isPresent()) {
                 final int dst = goToDestination(destinationIndex.get(), i);
                 tourLength += graphMatrix.getDist(currentVertex, dst);

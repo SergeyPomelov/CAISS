@@ -104,7 +104,7 @@ public final class RunningAnt {
 
         final TourData finalTourData = new TourData(finalSuccess, tour, finalTourLength);
         return new AntRunResult(finalTourData, trailSpray.getTrailsPheromonesDelta(),
-                performanceMeasurer, resultToString(finalTourData));
+                performanceMeasurer, "");
     }
 
     @SuppressWarnings("FeatureEnvy")

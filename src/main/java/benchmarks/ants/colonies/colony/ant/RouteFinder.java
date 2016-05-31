@@ -24,6 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.NotThreadSafe;
 
 import benchmarks.ants.colonies.colony.CachedRawEdgeQualities;
 import benchmarks.ants.data.IDistancesData;
@@ -34,23 +35,26 @@ import benchmarks.ants.data.IDistancesData;
  * @author Sergey Pomelov on 28/04/2016.
  * @see RunningAnt
  */
+@NotThreadSafe
 @ParametersAreNonnullByDefault
 final class RouteFinder {
 
     private static final float MIN_VERTEX_QUALITY = Float.MIN_VALUE * 10.0E2F;
 
-    private RouteFinder() { /* utility package-local class */ }
+    private final int size;
+    private final float[][] edgeQualities;
+
+    RouteFinder(IDistancesData data, CachedRawEdgeQualities cachedRawEdgeQualities) {
+        size = data.getSize();
+        edgeQualities = cachedRawEdgeQualities.getEdgesQualities();
+    }
 
     @SuppressWarnings("MethodCanBeVariableArityMethod") // by design
     @Nonnull
     @Nonnegative
-    static Optional<Integer> findNextVertex(@Nonnegative int startVertex,
-                                            float[][] trail, boolean[] visited,
-                                            int[] allowedVertexes, IDistancesData data,
-                                            CachedRawEdgeQualities cachedRawEdgeQualities) {
-        final int size = data.getSize();
+    Optional<Integer> findNextVertex(@Nonnegative int startVertex, float[][] trail,
+                                     boolean[] visited, int[] allowedVertexes) {
         final float[] weights = new float[size];
-        final float[][] edgeQualities = cachedRawEdgeQualities.getEdgesQualities();
 
         int possibleVertexesToGo = 0;
         float totalWeight = 0;
