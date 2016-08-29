@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>simulation.structures.architecture</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">simulation.structures.commons.ComponentTyped</node>
+    <node x="272.25" y="160.0">simulation.structures.interaction.DataBlock</node>
+    <node x="183.125" y="320.0">simulation.structures.architecture.Computer</node>
+    <node x="187.25" y="80.0">simulation.structures.interaction.ComputingObject</node>
+    <node x="337.25" y="80.0">simulation.structures.interaction.DataType</node>
+    <node x="173.125" y="240.0">simulation.structures.architecture.MemoryNode</node>
+    <node x="34.25" y="80.0">simulation.structures.commons.StructureElement</node>
+    <node x="15.25" y="160.0">simulation.structures.architecture.ArchitectureComponent</node>
+    <node x="151.0" y="0.0">simulation.structures.interaction.SerializableElement</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="simulation.structures.architecture.ArchitectureComponent" target="simulation.structures.commons.StructureElement">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.MemoryNode" target="simulation.structures.architecture.ArchitectureComponent">
+      <point x="-27.0" y="-15.0" />
+      <point x="200.125" y="215.0" />
+      <point x="96.75" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons.StructureElement" target="simulation.structures.commons.ComponentTyped">
+      <point x="-31.25" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.DataBlock" target="simulation.structures.interaction.DataType">
+      <point x="21.75" y="-15.0" />
+      <point x="337.5" y="135.0" />
+      <point x="379.25" y="135.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.Computer" target="simulation.structures.architecture.MemoryNode">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.MemoryNode" target="simulation.structures.interaction.DataBlock">
+      <point x="27.0" y="-15.0" />
+      <point x="254.125" y="215.0" />
+      <point x="315.75" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.ComputingObject" target="simulation.structures.interaction.SerializableElement">
+      <point x="0.0" y="-15.0" />
+      <point x="33.75" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons.StructureElement" target="simulation.structures.interaction.SerializableElement">
+      <point x="31.25" y="-15.0" />
+      <point x="128.0" y="55.0" />
+      <point x="184.75" y="55.0" />
+      <point x="-33.75" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.DataBlock" target="simulation.structures.interaction.ComputingObject">
+      <point x="-21.75" y="-15.0" />
+      <point x="294.0" y="135.0" />
+      <point x="252.25" y="135.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="211.0" y="175.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>Production</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

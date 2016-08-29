@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>simulation.structures</OriginalElement>
+  <nodes>
+    <node x="164.0" y="160.0">simulation.structures.algorithm</node>
+    <node x="0.0" y="160.0">simulation.structures.architecture</node>
+    <node x="83.75" y="80.0">simulation.structures.commons</node>
+    <node x="82.25" y="0.0">simulation.structures.interaction</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="simulation.structures.architecture" target="simulation.structures.commons">
+      <point x="0.0" y="-15.0" />
+      <point x="72.0" y="135.0" />
+      <point x="117.5" y="135.0" />
+      <point x="-33.75" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons" target="simulation.structures.interaction">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.algorithm" target="simulation.structures.commons">
+      <point x="0.0" y="-15.0" />
+      <point x="230.5" y="135.0" />
+      <point x="185.0" y="135.0" />
+      <point x="33.75" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="148.5" y="95.0" />
+  <SelectedNodes>
+    <node>simulation.structures.interaction</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+
