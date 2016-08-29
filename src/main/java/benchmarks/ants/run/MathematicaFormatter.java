@@ -54,9 +54,9 @@ final class MathematicaFormatter {
         overallResults.clear();
     }
 
-    static void fillDataForValue(Iterable<Pair<String, ColonyRunResult>> overallResults,
-                                 StringBuilder out, String label,
-                                 Function<Pair<String, ColonyRunResult>, String>
+    private static void fillDataForValue(Iterable<Pair<String, ColonyRunResult>> overallResults,
+                                         StringBuilder out, String label,
+                                         Function<Pair<String, ColonyRunResult>, String>
                                                  valueExtractor) {
         out.append(label).append(" = {");
         boolean firstValue = true;

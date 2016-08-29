@@ -40,9 +40,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Sergey Pomelov on 06/05/2016.
  */
+@SuppressWarnings("ClassOnlyUsedInOneModule")
 public class AntsColoniesTest {
-
-    private static AntsSettings SETTINGS;
 
     private static AntsExperimentSeriesPreset WI29_2X2_2_3M;
 
@@ -54,9 +53,9 @@ public class AntsColoniesTest {
                     .setAnts(Collections.singletonList(2))
                     .setRunsForAverageResult(2)
                     .setOverallRunTimeInNanos(1000L).createAntsExperimentPreset();
-            SETTINGS = new AntsSettings(27603, "wi29",
+            AntsSettings SETTINGS = new AntsSettings(27603, "wi29",
                     1_000_000L, 100L, 0.01F, 1.0F);
-        } catch (IOException e) {
+        } catch (IOException notIgnored) {
             fail();
         }
     }

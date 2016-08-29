@@ -30,6 +30,7 @@ import static util.FormatUtil.formatTime;
 /**
  * @author Sergey Pomelov on 30/05/2016.
  */
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
 @Immutable
 abstract class OperationRecord {
     private final long start;

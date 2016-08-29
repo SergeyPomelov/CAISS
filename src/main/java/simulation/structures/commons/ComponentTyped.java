@@ -21,6 +21,7 @@ package simulation.structures.commons;
 /**
  * @author Sergey Pomelov on 11.11.14.
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 @FunctionalInterface
 interface ComponentTyped {
     ComponentType getComponentType();

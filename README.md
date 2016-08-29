@@ -17,7 +17,8 @@ The next runnable needs a JMH plugin and annotations processing on.
 **benchmarks.matrixes.JMHBenchmarksRunner** 
 
 ### Running via Gradle
-gradle -jmh command runs the **benchmarks.matrixes.JMHBenchmarksRunner** 
+gradle -jmh command runs the 
+**benchmarks.matrixes.JMHBenchmarksRunner** 
 without additional settings.
 
 # License

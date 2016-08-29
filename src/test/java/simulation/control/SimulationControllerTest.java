@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 /**
  * @author Sergey Pomelov on 05/05/2016.
  */
+@SuppressWarnings("ClassOnlyUsedInOneModule")
 public class SimulationControllerTest {
 
     @Test

@@ -76,6 +76,7 @@ final class AntsSimulationController implements ISimulationController {
 
         algorithm.getStructure().forEach(dependency -> {
             List<DataDependency> localDependency = Collections.singletonList(dependency);
+            //noinspection MethodCallInLoopCondition, by design
             do {
                 localDependency = doOperationsReturnNext(localDependency, timeManager, computer);
             } while (!localDependency.isEmpty());
@@ -85,7 +86,7 @@ final class AntsSimulationController implements ISimulationController {
         return out.toString();
     }
 
-    public String simulateAll() {
+    public static String simulateAll() {
         final Collection<SimulationResult> overallResults =
                 new ArrayList<>(0);
 
@@ -105,7 +106,7 @@ final class AntsSimulationController implements ISimulationController {
         return out.toString();
     }
 
-    private static void fillDataForValue(Collection<SimulationResult> overallResults, StringBuilder out) {
+    private static void fillDataForValue(Iterable<SimulationResult> overallResults, StringBuilder out) {
         out.append("runs = {");
         boolean firstValue = true;
         for (SimulationResult result : overallResults) {
@@ -175,6 +176,7 @@ final class AntsSimulationController implements ISimulationController {
     private static long runSimulation(Algorithm algorithm, TasksPlanner timeManager, Computer computer) {
         for (DataDependency dependency : algorithm.getStructure()) {
             List<DataDependency> localDependency = Collections.singletonList(dependency);
+            //noinspection MethodCallInLoopCondition, by design
             do {
                 localDependency = doOperationsReturnNext(localDependency, timeManager, computer);
             } while (!localDependency.isEmpty());

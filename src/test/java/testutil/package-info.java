@@ -16,29 +16,9 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package simulation.structures.algorithm;
-
-import javax.annotation.Nonnull;
-
-import simulation.structures.commons.ComponentType;
-import simulation.structures.commons.StructureElement;
-
 /**
- * A basic Algorithm component.
- * @author Sergey Pomelov on 2/5/14.
+ * Only test-purposes related utility classes package.
+ *
+ * @author Sergey Pomelov on 29/08/2016.
  */
-@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
-abstract class AlgorithmComponent extends StructureElement {
-
-    private static final long serialVersionUID = -7277409404088617966L;
-
-    AlgorithmComponent(@Nonnull String name) {
-        super(name);
-    }
-
-    @Nonnull
-    @Override
-    public final ComponentType getComponentType() {
-        return ComponentType.ALGORITHM;
-    }
-}
+package testutil;

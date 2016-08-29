@@ -49,6 +49,7 @@ import static org.openjdk.jmh.annotations.Mode.Throughput;
  * This class can't be final or not public because runtime instrumentation reasons.
  * @author Sergey Pomelov on 06/04/16.
  */
+@SuppressWarnings("WeakerAccess")
 @Fork(1)
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
