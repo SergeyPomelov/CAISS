@@ -104,8 +104,8 @@ public class CalculationNodeTest {
 
     @Test
     public void getOperationTime() {
-        assertEquals(INVERSE_LARGE_PERFORMANCE.getTime() / (MATRIX_SIZE / SUB_MATRIX_SIZE),
-                CORE.getOperationTime(INVERSE_SMALL).orElse(0L).longValue());
+        assertEquals(INVERSE_LARGE_PERFORMANCE.getNeededResources(SUB_MATRIX_SIZE),
+                CORE.getOperationNeededResources(INVERSE_SMALL).orElse(0L).longValue());
     }
 
     @Test
@@ -113,15 +113,15 @@ public class CalculationNodeTest {
         final Collection<OperationPerformance> performances2 = ImmutableList.of(
                 INVERSE_SMALL_PERFORMANCE);
         final CalculationNode core2 = new CalculationNode("Core1", performances2);
-        assertEquals(INVERSE_SMALL_PERFORMANCE.getTime(),
-                core2.getOperationTime(INVERSE_SMALL).orElse(0L).longValue());
+        assertEquals(INVERSE_SMALL_PERFORMANCE.getNeededResources(SUB_MATRIX_SIZE),
+                core2.getOperationNeededResources(INVERSE_SMALL).orElse(0L).longValue());
     }
 
     @Test
     public void getOperationTimeFromNonExistentOperation() {
         final OperationWithData transfer =
                 new OperationWithData("deadBeef", OperationType.TRANSFER, SUB_MATRIX);
-        assertFalse(CORE.getOperationTime(transfer).isPresent());
+        assertFalse(CORE.getOperationNeededResources(transfer).isPresent());
     }
 
     @Test

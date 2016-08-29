@@ -62,9 +62,11 @@ public final class ArchitectureBuilder implements Serializable {
             new OperationWithData(INVERSE, OperationType.INVERSE, subMatrix);
 
     private static final OperationPerformance inverseLargePerformance =
-            new OperationPerformance(CORE_PERFORMANCE, inverseLarge, 4000L);
+            new OperationPerformance(CORE_PERFORMANCE, inverseLarge,
+                    size -> (long) (size / (float) inverseLarge.getData().getSize()) * 4000L);
     private static final OperationPerformance inverseSmallPerformance =
-            new OperationPerformance(CORE_PERFORMANCE, inverseSmall, 2000L);
+            new OperationPerformance(CORE_PERFORMANCE, inverseSmall,
+                    size -> (long) (size / (float) inverseSmall.getData().getSize()) * 2000L);
 
 
     private static final List<OperationPerformance> speed;

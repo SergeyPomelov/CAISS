@@ -36,7 +36,7 @@ import static org.junit.Assert.assertFalse;
 /**
  * @author Sergey Pomelov on 05/05/2016.
  */
-@SuppressWarnings({"ConstantConditions", "OptionalGetWithoutIsPresent"})
+@SuppressWarnings({"ConstantConditions", "OptionalGetWithoutIsPresent", "ClassOnlyUsedInOneModule"})
 public class TasksPlannerTest {
 
     @Test

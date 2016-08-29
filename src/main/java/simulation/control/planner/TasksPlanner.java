@@ -264,7 +264,7 @@ public final class TasksPlanner {
             return;
         }
 
-        final Optional<Long> time = core.getOperationTime(operationWithData);
+        final Optional<Long> time = core.getOperationNeededResources(operationWithData);
         if (time.isPresent()) {
             final Long start = getTime(core);
             addTask(core, start, time.get());
