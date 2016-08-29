@@ -18,6 +18,7 @@
 
 package util;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
@@ -66,6 +67,7 @@ public final class FormatUtil {
         protected DecimalFormat initialValue() {
             final DecimalFormat formatLocal = new DecimalFormat("##.####");
             formatLocal.setDecimalSeparatorAlwaysShown(false);
+            formatLocal.setRoundingMode(RoundingMode.HALF_EVEN);
             return formatLocal;
         }
     }
@@ -75,6 +77,7 @@ public final class FormatUtil {
         protected DecimalFormat initialValue() {
             final DecimalFormat formatLocal = new DecimalFormat(".##");
             formatLocal.setDecimalSeparatorAlwaysShown(false);
+            formatLocal.setRoundingMode(RoundingMode.HALF_EVEN);
             return formatLocal;
         }
     }
