@@ -62,30 +62,47 @@ public final class AntsArchitectureBuilder {
         final OperationWithData colonyRuleOverhead =
                 new OperationWithData("colonyRuleOverhead", OperationType.OVERHEAD, unknownData);
         final OperationWithData systemOverhead =
-                new OperationWithData("systemOverhead", OperationType.OVERHEAD, unknownData);
+                new OperationWithData("systemOverhead", OperationType.SYSTEM_OVERHEAD, unknownData);
         final OperationWithData antSolutionGeneration =
                 new OperationWithData("antSolutionGeneration", OperationType.ANT_SOLUTION_GENERATION, tour);
         final OperationWithData antColonyInteraction =
                 new OperationWithData("antColonyInteraction", OperationType.INTERACTION, graph);
 
+/*
         readDataPerformance = new OperationPerformance("readDataPerformance", readData,
-                predictPerformance(/*1_390_000_000L*/ 1L, templateAntsProblemSize, problemSize, 1.0D));
+                predictPerformance(1L, templateAntsProblemSize, problemSize, 1.0D));
         preCalculationsPerformance = new OperationPerformance("preCalculationsPerformance", preCalculations,
-                predictPerformance(/*148_000_000L*/ 1L, templateAntsProblemSize, problemSize, 2.0D));
+                predictPerformance(1L, templateAntsProblemSize, problemSize, 2.0D));
 
         colonyRuleOverheadPerformance = new OperationPerformance("antsPerformance", colonyRuleOverhead,
-                predictPerformance(17_725_000L * ants, templateAntsProblemSize, problemSize, -1.0D));
+                predictPerformance(2_723_725_000L * ants, templateAntsProblemSize, problemSize, -1.0D));
 
         systemOverheadPerformance = new OperationPerformance("systemOverhead", systemOverhead,
-                predictPerformance(projectedRuns * 1_230_000L, projectedRuns, projectedRuns, 1.0D));
+                predictPerformance(projectedRuns * 130_000L, projectedRuns, projectedRuns, 1.0D));
 
         antSolutionGenerationPerformance = new OperationPerformance("antSolutionGeneration",
-                antSolutionGeneration, predictPerformance(projectedRuns * 6_391_000L, 15_000L,
-                projectedRuns / ((long) colonies * ants), 1.0D));
+                antSolutionGeneration, (projectedRuns / ((long) colonies * ants)) * 50_991_000L);
 
         antColonyInteractionPerformance = new OperationPerformance("antColonyInteraction",
-                antColonyInteraction, predictPerformance(projectedRuns * 3_652_000L, 15_000L,
-                projectedRuns / ((long) colonies * ants), 1.0D));
+                antColonyInteraction, (projectedRuns / ((long) colonies * ants)) * 3_852_000L);*/
+
+
+        readDataPerformance = new OperationPerformance("readDataPerformance", readData,
+                predictPerformance(1L, templateAntsProblemSize, problemSize, 1.0D));
+        preCalculationsPerformance = new OperationPerformance("preCalculationsPerformance", preCalculations,
+                predictPerformance(1L, templateAntsProblemSize, problemSize, 2.0D));
+
+        colonyRuleOverheadPerformance = new OperationPerformance("antsPerformance", colonyRuleOverhead,
+                predictPerformance(16_723_725_000L * ants, templateAntsProblemSize, problemSize, -1.0D));
+
+        systemOverheadPerformance = new OperationPerformance("systemOverhead", systemOverhead,
+                projectedRuns * 120_000L);
+
+        antSolutionGenerationPerformance = new OperationPerformance("antSolutionGeneration",
+                antSolutionGeneration, (projectedRuns / ((long) colonies * ants)) * 26_891_000L);
+
+        antColonyInteractionPerformance = new OperationPerformance("antColonyInteraction",
+                antColonyInteraction, (projectedRuns / ((long) colonies * ants)) * 2_755_000L);
     }
 
     /**

@@ -85,7 +85,7 @@ public final class AntAlgorithmBuilder {
     private static List<OperationWithData> generateAntOperations(DataBlock graph, DataBlock tour,
                                                                  DataBlock unknownData) {
         final OperationWithData systemOverhead =
-                new OperationWithData("systemOverhead", OperationType.OVERHEAD, unknownData);
+                new OperationWithData("systemOverhead", OperationType.SYSTEM_OVERHEAD, unknownData);
         final OperationWithData antSolutionGeneration =
                 new OperationWithData("antSolutionGeneration",
                         OperationType.ANT_SOLUTION_GENERATION, tour);
