@@ -159,8 +159,8 @@ public final class ExperimentsSeriesPresetsBuilders {
     public static final AntsExperimentSeriesPresetBuilder QA194_8X8_1_10H =
             new AntsExperimentSeriesPresetBuilder()
                     .setData(QA194)
-                    .setColonies(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8))
-                    .setAnts(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8))
+                    .setColonies(Arrays.asList(2, 3, 4, 5, 6, 7, 8))
+                    .setAnts(Arrays.asList(2, 3, 4, 5, 6, 7, 8))
                     .setRunsForAverageResult(1)
                     .setOverallRunTimeInMinutes(10 * 60);
 

@@ -75,4 +75,6 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
+    <logger name="simulation.control" level="DEBUG"/>
+
 </configuration>

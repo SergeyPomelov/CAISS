@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.OptionalDouble;
@@ -39,6 +38,7 @@ import util.GNUCopyright;
 import static benchmarks.ants.colonies.ColonyResultsCompiler.avgResult;
 import static benchmarks.ants.presets.ExperimentsSeriesPresetsBuilders.WARM_UP;
 import static benchmarks.ants.run.MathematicaFormatter.printDataThenClearSource;
+import static util.FormatUtil.percentFormat;
 
 /**
  * Runs ACO.
@@ -49,7 +49,6 @@ import static benchmarks.ants.run.MathematicaFormatter.printDataThenClearSource;
 final class AntsRunner {
 
     private static final Logger log = LoggerFactory.getLogger(AntsRunner.class);
-    private static final DecimalFormat format = new DecimalFormat("##.####");
     private static final double PERCENTS = 100.0D;
     private static final Collection<Pair<String, ColonyRunResult>> overallResults =
             new ArrayList<>(0);
@@ -61,7 +60,7 @@ final class AntsRunner {
         try {
             GNUCopyright.printLicence();
             warmUp(WARM_UP.createAntsExperimentPreset());
-            runExperiment(ExperimentsSeriesPresetsBuilders.QA194_4X4_4_10H
+            runExperiment(ExperimentsSeriesPresetsBuilders.QA194_8X8_1_10H
                     .createAntsExperimentPreset());
         } catch (IOException e) {
             log.error("IO Exception, possible .tsp file not found", e);
@@ -123,6 +122,6 @@ final class AntsRunner {
         final OptionalDouble optionalAccuracyPercent =
                 tourLengths.stream().mapToDouble(result ->
                         ((settings.getOptimum() * PERCENTS) / result)).average();
-        return format.format(optionalAccuracyPercent.orElse(0.0D));
+        return percentFormat(optionalAccuracyPercent.orElse(0.0D));
     }
 }
