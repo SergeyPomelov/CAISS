@@ -19,7 +19,6 @@
 package simulation.structures.interaction;
 
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
@@ -41,15 +40,14 @@ public final class OperationPerformance extends ComputingObject {
 
     @Nonnull
     private final OperationWithData operation;                  // what we do
-    @Nonnegative
-    private final ResourceComplexity complexity;                                    // how fast
+    private final ResourceComplexity complexity;                // how fast
 
     OperationPerformance(OperationPerformance operation) {
         this(operation.getName(), operation.operation, operation.complexity);
     }
 
     public OperationPerformance(String name, OperationWithData operation, long resources) {
-        this(name, operation, size -> resources);
+        this(name, operation, size -> Math.round((size / (float) operation.getData().getSize()) * resources));
         ifNegativeFail(resources);
     }
 
@@ -68,7 +66,6 @@ public final class OperationPerformance extends ComputingObject {
         return operation;
     }
 
-    @Nonnegative
     public long getNeededResources(long problemSize) {
         return complexity.getComplexity(problemSize);
     }
