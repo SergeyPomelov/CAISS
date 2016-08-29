@@ -173,7 +173,7 @@ public final class TasksPlanner {
     /** @return current predicted finishing time. */
     @Nonnull
     @Nonnegative
-    private Long getMaxTime() {
+    public Long getMaxTime() {
         Long maxTime = 0L;
         for (Entry<ArchitectureComponent, Long> actor : timeTable.entrySet()) {
             final Long endTime = actor.getValue();
