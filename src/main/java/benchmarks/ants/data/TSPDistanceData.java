@@ -20,8 +20,6 @@ package benchmarks.ants.data;
 
 import com.google.common.base.Charsets;
 
-import com.sun.istack.internal.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +33,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
 import javafx.util.Pair;
@@ -52,29 +52,31 @@ public final class TSPDistanceData implements IDistancesData {
     private static final long serialVersionUID = 6519359333995572903L;
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
-    @NotNull
+    @Nonnull
     private int[][] distances = new int[1][1];
     private int size = 0;
 
     /**
      * @param fileLocation - is a relative location, appended to the user.dir, root of the project
      */
-    public TSPDistanceData(String fileLocation) {
+    @SuppressWarnings({"OverlyBroadThrowsClause", "OverlyBroadCatchBlock"})
+    public TSPDistanceData(String fileLocation) throws IOException {
         try (BufferedReader br = buildBufferReader(fileLocation)) {
             distances = readData(br);
             size = distances.length;
-        } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException during construction!", e);
         } catch (IOException e) {
             log.error("IOException during construction!", e);
+            throw e;
         }
     }
 
+    @Nonnegative
     @Override
     public int getDist(int start, int destiny) {
         return distances[start][destiny];
     }
 
+    @Nonnegative
     @Override
     public int getSize() {
         return size;
@@ -90,7 +92,7 @@ public final class TSPDistanceData implements IDistancesData {
 
     private static int[][] readData(BufferedReader br) throws IOException {
         boolean nodesReadStart = false;
-        final List<Pair<Float, Float>> tempNodes = new ArrayList<>();
+        final List<Pair<Float, Float>> tempNodes = new ArrayList<>(0);
         // All right, lines from reader are finite.
         //noinspection ForLoopWithMissingComponent,MethodCallInLoopCondition
         for (String line; (((line = br.readLine())) != null) && !"EOF".equals(line); ) {
@@ -99,6 +101,9 @@ public final class TSPDistanceData implements IDistancesData {
             } else if ("NODE_COORD_SECTION".equals(line)) {
                 nodesReadStart = true;
             }
+        }
+        if (tempNodes.size() <= 0) {
+            throw new IllegalStateException("No nodes obtained from file !");
         }
         return convertToDistArray(tempNodes);
     }
@@ -116,6 +121,7 @@ public final class TSPDistanceData implements IDistancesData {
 
     //Rounding distance as in TSPLib for optimal solution from there matching.
     @SuppressWarnings("NumericCastThatLosesPrecision")
+    @Nonnegative
     private static int getDistInner(int start, int destiny, List<Pair<Float, Float>> tempNodes) {
         if (start == destiny) {
             return Integer.MAX_VALUE;

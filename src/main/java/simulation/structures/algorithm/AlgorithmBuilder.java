@@ -20,6 +20,7 @@ package simulation.structures.algorithm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -55,28 +56,17 @@ public final class AlgorithmBuilder implements Serializable {
                 new OperationWithData("tr", OperationType.TRANSFER, subMatrix);
 
         final ArrayList<OperationWithData> in = new ArrayList<>(4);
-        final ArrayList<OperationWithData> out = new ArrayList<>(4);
 
         in.add(transferSmall);
         in.add(transferSmall);
         in.add(transferSmall);
         in.add(transferSmall);
-        out.add(subInverse);
-        out.add(subInverse);
-        out.add(subInverse);
-        out.add(subInverse);
 
         final DataDependency dependency =
-                new DataDependency("data transfer", DependencyType.DATA_TRUE, in, out);
+                new DataDependency("data transfer", DependencyType.DATA_TRUE, in, Collections.emptyList());
         final List<DataDependency> listDep = new ArrayList<>(1);
         listDep.add(dependency);
 
         return new Algorithm(listDep);
-    }
-
-    public static Algorithm createAntsAlgorithm() {
-
-        final DataBlock subMatrix = new DataBlock("TSP_data", DataType.FOUR_B_FL, 194L);
-        return null;
     }
 }

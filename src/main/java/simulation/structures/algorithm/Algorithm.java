@@ -40,7 +40,7 @@ public final class Algorithm implements Serializable {
 
     private static final long serialVersionUID = -8563489136964513166L;
 
-    /** algorithm graph */
+    /** algorithm graph start points */
     @Nonnull
     private final List<DataDependency> structure;
 

@@ -27,15 +27,13 @@ import java.io.File;
  */
 public final class Constants {
     public static final String LS = System.lineSeparator().intern();
-    public static final String FS = File.separator;
+    public static final String FS = File.separator.intern();
     static final String GNU_COPYRIGHT_MSG =
             "    Computer and algorithm interaction simulation software (CAISS)." + LS +
-                    "    Copyright (C) " + TimeUtil.getCurrentYear()
-                    + " Pomelov Sergey Valer'evich." + LS +
+                    "    Copyright (C) 2016 Pomelov Sergey Valer'evich." + LS +
                     "    This program comes with ABSOLUTELY NO WARRANTY." + LS +
                     "    This is free software, and you are welcome to redistribute it" + LS +
-                    "    under certain conditions. " +
-                    "For details go to <http://www.gnu.org/licenses/>.";
+                    "    under certain conditions. For details go to <http://www.gnu.org/licenses/>.";
 
     private Constants() { /*utility class*/ }
 }

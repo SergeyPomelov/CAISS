@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>simulation.structures.architecture</OriginalElement>
+  <nodes>
+    <node x="0.0" y="160.0">simulation.structures.commons.ComponentTyped</node>
+    <node x="406.4282407407407" y="320.0">simulation.structures.interaction.OperationPerformance</node>
+    <node x="152.0" y="80.0">simulation.structures.interaction.DataType</node>
+    <node x="254.60185185185185" y="240.0">simulation.structures.interaction.OperationWithData</node>
+    <node x="22.0" y="320.0">simulation.structures.architecture.ArchitectureComponent</node>
+    <node x="217.97685185185185" y="0.0">simulation.structures.interaction.SerializableElement</node>
+    <node x="172.25" y="160.0">simulation.structures.interaction.DataBlock</node>
+    <node x="260.05555555555554" y="480.0">simulation.structures.architecture.Computer</node>
+    <node x="382.62731481481484" y="80.0">simulation.structures.interaction.ComputingObject</node>
+    <node x="279.25" y="160.0">simulation.structures.interaction.OperationType</node>
+    <node x="41.0" y="240.0">simulation.structures.commons.StructureElement</node>
+    <node x="242.55555555555551" y="400.0">simulation.structures.architecture.CalculationNode</node>
+    <node x="410.60185185185185" y="240.0">simulation.structures.interaction.ResourceComplexity</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="simulation.structures.architecture.ArchitectureComponent" target="simulation.structures.commons.StructureElement">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.Computer" target="simulation.structures.architecture.CalculationNode">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.ComputingObject" target="simulation.structures.interaction.SerializableElement">
+      <point x="0.0" y="-15.0" />
+      <point x="447.62731481481484" y="55.0" />
+      <point x="319.22685185185185" y="55.0" />
+      <point x="33.75" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationPerformance" target="simulation.structures.interaction.ResourceComplexity">
+      <point x="0.0" y="-15.0" />
+      <point x="483.9282407407407" y="295.0" />
+      <point x="481.60185185185185" y="295.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons.StructureElement" target="simulation.structures.interaction.SerializableElement">
+      <point x="31.25" y="-15.0" />
+      <point x="134.75" y="215.0" />
+      <point x="141.5" y="215.0" />
+      <point x="141.5" y="55.0" />
+      <point x="251.72685185185185" y="55.0" />
+      <point x="-33.75" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons.StructureElement" target="simulation.structures.commons.ComponentTyped">
+      <point x="-31.25" y="-15.0" />
+      <point x="72.25" y="215.0" />
+      <point x="65.5" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.DataBlock" target="simulation.structures.interaction.DataType">
+      <point x="-21.75" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationWithData" target="simulation.structures.interaction.OperationType">
+      <point x="0.0" y="-15.0" />
+      <point x="322.60185185185185" y="215.0" />
+      <point x="335.75" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationPerformance" target="simulation.structures.interaction.OperationWithData">
+      <point x="-51.66666666666663" y="-15.0" />
+      <point x="432.2615740740741" y="295.0" />
+      <point x="322.60185185185185" y="295.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.CalculationNode" target="simulation.structures.interaction.OperationPerformance">
+      <point x="30.75" y="-15.0" />
+      <point x="334.80555555555554" y="375.0" />
+      <point x="483.9282407407407" y="375.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationPerformance" target="simulation.structures.interaction.ComputingObject">
+      <point x="51.66666666666663" y="-15.0" />
+      <point x="535.5949074074074" y="295.0" />
+      <point x="563.1018518518518" y="295.0" />
+      <point x="563.1018518518518" y="135.0" />
+      <point x="490.9606481481482" y="135.0" />
+      <point x="43.33333333333337" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationWithData" target="simulation.structures.interaction.DataBlock">
+      <point x="-45.33333333333334" y="-15.0" />
+      <point x="277.26851851851853" y="215.0" />
+      <point x="215.75" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.DataBlock" target="simulation.structures.interaction.ComputingObject">
+      <point x="21.75" y="-15.0" />
+      <point x="237.5" y="135.0" />
+      <point x="404.2939814814815" y="135.0" />
+      <point x="-43.333333333333314" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationWithData" target="simulation.structures.interaction.ComputingObject">
+      <point x="45.333333333333314" y="-15.0" />
+      <point x="367.93518518518516" y="215.0" />
+      <point x="447.62731481481484" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.CalculationNode" target="simulation.structures.architecture.ArchitectureComponent">
+      <point x="-30.75" y="-15.0" />
+      <point x="273.30555555555554" y="375.0" />
+      <point x="103.5" y="375.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="282.0" y="255.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>Production</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

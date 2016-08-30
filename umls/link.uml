@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>simulation.structures.architecture</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">simulation.structures.commons.ComponentTyped</node>
+    <node x="138.75" y="320.0">simulation.structures.architecture.Computer</node>
+    <node x="283.875" y="160.0">simulation.structures.architecture.TransferCapabilities</node>
+    <node x="142.75" y="240.0">simulation.structures.architecture.DataLink</node>
+    <node x="310.875" y="0.0">simulation.structures.interaction.DataType</node>
+    <node x="74.13888888888891" y="80.0">simulation.structures.commons.StructureElement</node>
+    <node x="287.875" y="80.0">simulation.structures.architecture.TransferCapability</node>
+    <node x="55.138888888888914" y="160.0">simulation.structures.architecture.ArchitectureComponent</node>
+    <node x="151.0" y="0.0">simulation.structures.interaction.SerializableElement</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="simulation.structures.architecture.ArchitectureComponent" target="simulation.structures.commons.StructureElement">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons.StructureElement" target="simulation.structures.commons.ComponentTyped">
+      <point x="-31.25" y="-15.0" />
+      <point x="105.38888888888891" y="55.0" />
+      <point x="65.5" y="55.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.TransferCapabilities" target="simulation.structures.architecture.TransferCapability">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.Computer" target="simulation.structures.architecture.DataLink">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.DataLink" target="simulation.structures.architecture.ArchitectureComponent">
+      <point x="-26.66666666666667" y="-15.0" />
+      <point x="156.08333333333331" y="215.0" />
+      <point x="95.88888888888891" y="215.0" />
+      <point x="-40.75" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons.StructureElement" target="simulation.structures.interaction.SerializableElement">
+      <point x="31.25" y="-15.0" />
+      <point x="167.8888888888889" y="55.0" />
+      <point x="218.5" y="55.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.TransferCapability" target="simulation.structures.interaction.DataType">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.architecture.DataLink" target="simulation.structures.architecture.TransferCapabilities">
+      <point x="26.666666666666657" y="-15.0" />
+      <point x="209.41666666666666" y="215.0" />
+      <point x="352.875" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="211.0" y="175.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>Production</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

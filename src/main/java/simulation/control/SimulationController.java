@@ -27,19 +27,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import simulation.control.planner.TasksPlanner;
 import simulation.structures.algorithm.Algorithm;
 import simulation.structures.algorithm.AlgorithmBuilder;
 import simulation.structures.architecture.ArchitectureBuilder;
 import simulation.structures.architecture.CalculationNode;
 import simulation.structures.architecture.Computer;
 import simulation.structures.architecture.DataLink;
-import simulation.structures.commons.StructureElement;
 import simulation.structures.interaction.DataBlock;
 import simulation.structures.interaction.DataType;
 import simulation.structures.interaction.OperationType;
 import simulation.structures.interaction.OperationWithData;
 
-import static util.Constants.LS;
+import static simulation.control.SimulationUtil.addDivider;
+import static simulation.control.SimulationUtil.addElementsListInfo;
 
 /**
  * Class for control simulation process. Contains its logic.
@@ -48,7 +49,7 @@ import static util.Constants.LS;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public final class SimulationController implements ISimulationController {
+final class SimulationController implements ISimulationController {
 
     private static final Logger log = LoggerFactory.getLogger(SimulationController.class);
 
@@ -85,30 +86,17 @@ public final class SimulationController implements ISimulationController {
         return out.toString();
     }
 
-    private static void addElementsListInfo(Iterable<? extends StructureElement> elements,
-                                            StringBuilder out, String label) {
-        addDivider(out, label);
-        for (final StructureElement element : elements) {
-            out.append(element.info());
-        }
-    }
-
-    private static void addDivider(StringBuilder out, String label) {
-        out.append(LS).append(LS).append("===================================================")
-                .append(LS).append(label).append(LS);
-    }
 
     private void doAndLogFourOperations(TasksPlanner timeManager, Computer comp, StringBuilder out,
                                         String label) {
         addDivider(out, label);
-        doFourOperations(timeManager, comp, out);
+        doFourOperations(timeManager, comp);
     }
 
-    private void doFourOperations(TasksPlanner timeManager, Computer comp, StringBuilder out) {
+    private void doFourOperations(TasksPlanner timeManager, Computer comp) {
         for (int i = 1; i <= 4; i++) {
             doOperation(timeManager, comp);
         }
-        out.append(timeManager.getLog()).append(timeManager.printTimings());
     }
 
     private void doOperation(TasksPlanner timeManager, Computer comp) {

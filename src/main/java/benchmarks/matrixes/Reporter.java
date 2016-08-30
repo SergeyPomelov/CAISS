@@ -21,7 +21,7 @@ package benchmarks.matrixes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import benchmarks.matrixes.metrics.PerformanceRecord;
+import benchmarks.metrics.PerformanceRecord;
 
 import static util.TimeUtil.nanoToMls;
 

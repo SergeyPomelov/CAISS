@@ -22,7 +22,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import benchmarks.matrixes.metrics.Measurer;
+import benchmarks.metrics.PerformanceMeasurer;
 
 /**
  * @author Sergey Pomelov on 06/04/16.
@@ -36,7 +36,7 @@ final class TasksRunner {
         final Runnable divider = generateTask(
                 DataProcessor.generateRandomArray(problemSize, problemSize / threads),
                 taskMultiplicator);
-        Reporter.report(new Measurer().measurePerformance(() -> {
+        Reporter.report(new PerformanceMeasurer(true).measurePerformance(() -> {
             for (int i = 0; i < runs; i++) {
                 final ThreadPoolExecutor executor = generateExecutor(threads);
                 for (int threadIdx = 1; threadIdx <= threads; threadIdx++) {
@@ -48,7 +48,7 @@ final class TasksRunner {
     }
 
     private static Runnable generateTask(byte[][] data, int taskMultiplicator) {
-        return () -> Reporter.report(new Measurer().measurePerformance(() ->
+        return () -> Reporter.report(new PerformanceMeasurer(true).measurePerformance(() ->
                 DataProcessor.processArray(data, taskMultiplicator), "parallel task"));
     }
 

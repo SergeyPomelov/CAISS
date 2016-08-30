@@ -27,6 +27,7 @@ import simulation.structures.commons.StructureElement;
  * A basic Algorithm component.
  * @author Sergey Pomelov on 2/5/14.
  */
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 abstract class AlgorithmComponent extends StructureElement {
 
     private static final long serialVersionUID = -7277409404088617966L;

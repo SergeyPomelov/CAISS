@@ -18,7 +18,6 @@
 
 /**
  * Project wide utility class' package.
- *
  * @author Sergey Pomelov on 02/05/2016.
  */
 package util;

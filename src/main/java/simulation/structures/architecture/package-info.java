@@ -18,6 +18,7 @@
 
 /**
  * Abstract architecture representation.
+ *
  * @author Sergey Pomelov on 18.03.15.
  */
 package simulation.structures.architecture;

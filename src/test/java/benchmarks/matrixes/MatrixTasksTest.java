@@ -20,9 +20,12 @@ package benchmarks.matrixes;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Sergey Pomelov on 06/05/2016.
  */
+@SuppressWarnings("ClassOnlyUsedInOneModule")
 public class MatrixTasksTest {
 
     private static final int ITERATIONS = 1;
@@ -37,6 +40,6 @@ public class MatrixTasksTest {
 
     @Test
     public void memoryAllocSmoke() {
-        MatrixTasks.memoryAlloc(3);
+        assertNotNull(MatrixTasks.memoryAlloc(3));
     }
 }

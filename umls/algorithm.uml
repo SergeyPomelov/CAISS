@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>simulation.structures.algorithm</OriginalElement>
+  <nodes>
+    <node x="0.0" y="80.0">simulation.structures.commons.ComponentTyped</node>
+    <node x="185.37179487179483" y="400.0">simulation.structures.algorithm.Algorithm</node>
+    <node x="165.75" y="80.0">simulation.structures.interaction.DataType</node>
+    <node x="27.5" y="240.0">simulation.structures.algorithm.AlgorithmComponent</node>
+    <node x="270.2467948717949" y="240.0">simulation.structures.interaction.OperationWithData</node>
+    <node x="198.9967948717949" y="0.0">simulation.structures.interaction.SerializableElement</node>
+    <node x="167.37179487179486" y="320.0">simulation.structures.algorithm.DataDependency</node>
+    <node x="186.0" y="160.0">simulation.structures.interaction.DataBlock</node>
+    <node x="319.0" y="80.0">simulation.structures.interaction.ComputingObject</node>
+    <node x="293.0" y="160.0">simulation.structures.interaction.OperationType</node>
+    <node x="41.0" y="160.0">simulation.structures.commons.StructureElement</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="simulation.structures.interaction.ComputingObject" target="simulation.structures.interaction.SerializableElement">
+      <point x="0.0" y="-15.0" />
+      <point x="384.0" y="55.0" />
+      <point x="300.2467948717949" y="55.0" />
+      <point x="33.75" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons.StructureElement" target="simulation.structures.interaction.SerializableElement">
+      <point x="31.25" y="-15.0" />
+      <point x="134.75" y="135.0" />
+      <point x="141.5" y="135.0" />
+      <point x="141.5" y="55.0" />
+      <point x="232.7467948717949" y="55.0" />
+      <point x="-33.75" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.algorithm.DataDependency" target="simulation.structures.interaction.OperationWithData">
+      <point x="31.00000000000003" y="-15.0" />
+      <point x="260.3717948717949" y="295.0" />
+      <point x="338.2467948717949" y="295.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.commons.StructureElement" target="simulation.structures.commons.ComponentTyped">
+      <point x="-31.25" y="-15.0" />
+      <point x="72.25" y="135.0" />
+      <point x="65.5" y="135.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.DataBlock" target="simulation.structures.interaction.DataType">
+      <point x="-21.75" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.algorithm.Algorithm" target="simulation.structures.algorithm.DataDependency">
+      <point x="2.8421709430404007E-14" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationWithData" target="simulation.structures.interaction.OperationType">
+      <point x="0.0" y="-15.0" />
+      <point x="338.2467948717949" y="215.0" />
+      <point x="349.5" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.algorithm.DataDependency" target="simulation.structures.algorithm.AlgorithmComponent">
+      <point x="-30.99999999999997" y="-15.0" />
+      <point x="198.3717948717949" y="295.0" />
+      <point x="103.5" y="295.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.algorithm.AlgorithmComponent" target="simulation.structures.commons.StructureElement">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationWithData" target="simulation.structures.interaction.DataBlock">
+      <point x="-45.33333333333337" y="-15.0" />
+      <point x="292.91346153846155" y="215.0" />
+      <point x="229.5" y="215.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.DataBlock" target="simulation.structures.interaction.ComputingObject">
+      <point x="21.75" y="-15.0" />
+      <point x="251.25" y="135.0" />
+      <point x="351.5" y="135.0" />
+      <point x="-32.5" y="15.0" />
+    </edge>
+    <edge source="simulation.structures.interaction.OperationWithData" target="simulation.structures.interaction.ComputingObject">
+      <point x="45.333333333333314" y="-15.0" />
+      <point x="383.5801282051282" y="215.0" />
+      <point x="416.5" y="215.0" />
+      <point x="32.5" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="224.5" y="215.0" />
+  <SelectedNodes>
+    <node>simulation.structures.algorithm.Algorithm</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>Production</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

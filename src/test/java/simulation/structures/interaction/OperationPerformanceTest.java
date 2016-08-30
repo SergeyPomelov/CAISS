@@ -65,7 +65,7 @@ public class OperationPerformanceTest {
 
     @Test
     public void getTime() {
-        assertEquals(SIZE, PERFORMANCE.getTime());
+        assertEquals(SIZE, PERFORMANCE.getNeededResources(SIZE));
     }
 
     @Test

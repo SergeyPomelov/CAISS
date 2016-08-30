@@ -42,59 +42,57 @@ import static util.Restrictions.ifNullFail;
 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 @Immutable
 @ParametersAreNonnullByDefault
-final class DataDependency extends AlgorithmComponent {
+public final class DataDependency extends AlgorithmComponent {
 
     private static final long serialVersionUID = 988170536445679820L;
     private static final String OVERWHELMED = "Link cap overwhelmed";
     /** flow operation type */
     @Nonnull
     private final DependencyType type;
-    /** flow start data */
+    /** operations at this point */
     @Nonnull
-    private final List<OperationWithData> in;
-    /** flow end data */
-    @Nonnull
-    private final List<OperationWithData> out;
+    private final List<OperationWithData> operations;
+    /** next flow point */
+    private final List<DataDependency> next;
 
     DataDependency(DataDependency toCopy) {
-        this(toCopy.getName(), toCopy.type, toCopy.in, toCopy.out);
+        this(toCopy.getName(), toCopy.type,
+                toCopy.operations, toCopy.next);
     }
 
     /**
      * @param name name of transfer operation
      * @param type flow operation type
-     * @param in   flow start data
-     * @param out  low end data
+     * @param operations operations at this point
+     * @param next next flow point
      */
-    DataDependency(String name, DependencyType type, Collection<OperationWithData> in,
-                   Collection<OperationWithData> out) {
+    DataDependency(String name, DependencyType type, Collection<OperationWithData> operations,
+                   Collection<DataDependency> next) {
         super(name);
         this.type = ifNullFail(type);
-        this.in = ImmutableList.copyOf(nullFilter(in));
-        this.out = ImmutableList.copyOf(nullFilter(out));
+        this.operations = ImmutableList.copyOf(nullFilter(operations));
+        this.next = ImmutableList.copyOf(nullFilter(next));
+        checkNext();
+    }
+
+    private void checkNext() {
+        if (next.contains(this)) {
+            throw new IllegalStateException("Dependency can't point itself as next flow point.");
+        }
     }
 
     @Nonnull
-    public OperationWithData getIn(int i) {
-        if (i >= in.size()) {
+    public OperationWithData getOperation(int i) {
+        if (i >= operations.size()) {
             throw new IllegalArgumentException(OVERWHELMED);
         }
-        return in.get(i);
-    }
-
-    @Nonnull
-    public OperationWithData getOut(int i) {
-        if (i >= out.size()) {
-            throw new IllegalArgumentException(OVERWHELMED);
-        }
-        return out.get(i);
+        return operations.get(i);
     }
 
     @Nonnull
     public Collection<DataBlock> getUsedData() {
         final Collection<DataBlock> usedData = new ArrayList<>(10);
-        final Collection<OperationWithData> all = new ArrayList<>(in);
-        all.addAll(out);
+        final Iterable<OperationWithData> all = new ArrayList<>(operations);
         all.forEach(el -> usedData.add(el.getData()));
         return ImmutableList.copyOf(usedData);
     }
@@ -103,30 +101,38 @@ final class DataDependency extends AlgorithmComponent {
     @Override
     public String info() {
         final StringBuilder output = new StringBuilder(128);
-        output.append(LS).append(LS).append("Dependency - ")
-                .append(super.info()).append(':').append(type).append(':').append(LS);
+        return printNode(output, "");
+    }
 
-        output.append(LS).append("In:").append(LS);
-        for (final OperationWithData el : in) {
-            output.append(String.format(" | %s", el.info()));
-        }
-        output.append(LS);
-
-        output.append(LS).append("Out:").append(LS);
-        for (final OperationWithData el : out) {
+    private String innerData() {
+        final StringBuilder output = new StringBuilder(128);
+        for (final OperationWithData el : operations) {
             output.append(String.format(" | %s", el.info()));
         }
         return output.toString();
     }
 
-    @Nonnull
-    List<OperationWithData> getIn() {
-        return in;
+    private String printNode(StringBuilder output, String prefix) {
+
+        final boolean isTail = next.isEmpty();
+        output.append(prefix).append(isTail ? "└── " : "├── ").append(innerData()).append(LS);
+        for (int i = 0; i < (next.size() - 1); i++) {
+            next.get(i).printNode(output, prefix + (isTail ? "    " : "│     "));
+        }
+        if (!isTail) {
+            next.get(next.size() - 1).printNode(output, prefix + "     ");
+        }
+        return output.toString();
     }
 
     @Nonnull
-    List<OperationWithData> getOut() {
-        return out;
+    public Iterable<OperationWithData> getOperations() {
+        return operations;
+    }
+
+    @Nonnull
+    public Collection<DataDependency> getNext() {
+        return next;
     }
 
     @Nonnull

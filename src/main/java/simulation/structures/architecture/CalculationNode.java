@@ -58,14 +58,12 @@ public final class CalculationNode extends ArchitectureComponent {
     }
 
     @Nonnull
-    public Optional<Long> getOperationTime(OperationWithData operationWithData) {
+    public Optional<Long> getOperationNeededResources(OperationWithData operationWithData) {
         for (final OperationPerformance oper : allowedOperations) {
             if (oper.getOperation().getType() == operationWithData.getType()) {
                 final int i = allowedOperations.indexOf(oper);
-                return Optional.of((long) (getAllowedOperation(i).getTime() *
-                        ((float) operationWithData.getData().getSize()
-                                / getAllowedOperation(i).getOperation().getData().getSize()
-                        )));
+                return Optional.of((long) Math.round(
+                        getAllowedOperation(i).getNeededResources(operationWithData.getData().getSize())));
             }
         }
         return Optional.empty();

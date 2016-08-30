@@ -17,7 +17,8 @@
  */
 
 /**
- * @author Sergey Pomelov on 29/04/2016. Pacage of different distance between vertexes data
- * generation implementations.
+ * Package of different distanced between vertexes data generation implementations.
+ *
+ * @author Sergey Pomelov on 29/04/2016.
  */
 package benchmarks.ants.data;

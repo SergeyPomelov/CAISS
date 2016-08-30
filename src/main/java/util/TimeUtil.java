@@ -18,7 +18,6 @@
 
 package util;
 
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,7 +26,9 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class TimeUtil {
 
-    private TimeUtil() { /* utility class */ }
+    private TimeUtil() {
+        /* utility class */
+    }
 
     public static long nanoToMls(long nano) {
         return TimeUnit.NANOSECONDS.toMillis(nano);
@@ -38,10 +39,6 @@ public final class TimeUtil {
     }
 
     public static long mlsToNano(int milliseconds) {
-        return TimeUnit.SECONDS.toNanos(milliseconds);
-    }
-
-    static int getCurrentYear() {
-        return Calendar.getInstance().get(Calendar.YEAR);
+        return TimeUnit.MILLISECONDS.toNanos(milliseconds);
     }
 }

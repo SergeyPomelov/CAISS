@@ -18,18 +18,73 @@
 
 package benchmarks.ants;
 
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.Collections;
+
+import benchmarks.ants.colonies.AntsColonies;
+import benchmarks.ants.colonies.AntsExperimentData;
+import benchmarks.ants.colonies.AntsSettings;
+import benchmarks.ants.colonies.colony.ColonyRunResult;
+import benchmarks.ants.presets.AntsExperimentSeriesPreset;
+import benchmarks.ants.presets.AntsExperimentSeriesPresetBuilder;
+import javafx.util.Pair;
+
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Sergey Pomelov on 06/05/2016.
  */
+@SuppressWarnings("ClassOnlyUsedInOneModule")
 public class AntsColoniesTest {
 
-    private static final AntsSettings SETTINGS = new AntsSettings(27603, 1000, 100, 0.1F,
-            1.0F, "wi29");
+    private static AntsExperimentSeriesPreset WI29_2X2_2_3M;
+
+    static {
+        try {
+            WI29_2X2_2_3M = new AntsExperimentSeriesPresetBuilder()
+                    .setData(new Pair<>(27603, "wi29"))
+                    .setColonies(Collections.singletonList(2))
+                    .setAnts(Collections.singletonList(2))
+                    .setRunsForAverageResult(2)
+                    .setOverallRunTimeInNanos(1000L).createAntsExperimentPreset();
+            AntsSettings SETTINGS = new AntsSettings(27603, "wi29",
+                    1_000_000L, 100L, 0.01F, 1.0F);
+        } catch (IOException notIgnored) {
+            fail();
+        }
+    }
+
+    private static final ColonyRunResult result = AntsColonies.runCalculations(
+            new AntsExperimentData(2, 2, WI29_2X2_2_3M));
+
+    @Test
+    public void paramsPassedToEnd() {
+        assertEquals(2L, result.getAnts());
+        assertEquals(2L, result.getColonies());
+    }
+
+    @Test
+    public void existsResult() {
+        assertNotNull(result);
+        assertTrue(result.getResult() < Long.MAX_VALUE);
+    }
 
     @Test
     public void antsSmoke() {
-        AntsColonies.runCalculations(2, 2, SETTINGS);
+        assertTrue(result.getAntRuns() > 0L);
+        assertTrue(result.getAvgAntsRunNs() > 0L);
+    }
+
+    @Ignore
+    @Test
+    public void exchangesSmoke() {
+        assertTrue(result.getExchanges() > 0L);
+        assertTrue(result.getAvgExchangeNs() > 0L);
     }
 }

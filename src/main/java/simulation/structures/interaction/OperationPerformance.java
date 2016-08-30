@@ -19,7 +19,6 @@
 package simulation.structures.interaction;
 
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
@@ -41,21 +40,25 @@ public final class OperationPerformance extends ComputingObject {
 
     @Nonnull
     private final OperationWithData operation;                  // what we do
-    @Nonnegative
-    private final long time;                                    // how fast
+    private final ResourceComplexity complexity;                // how fast
 
     OperationPerformance(OperationPerformance operation) {
-        this(operation.getName(), operation.operation, operation.time);
+        this(operation.getName(), operation.operation, operation.complexity);
+    }
+
+    public OperationPerformance(String name, OperationWithData operation, long resources) {
+        this(name, operation, size -> Math.round((size / (float) operation.getData().getSize()) * resources));
+        ifNegativeFail(resources);
     }
 
     /**
      * @param operation which operation
-     * @param time      how fast we can do it
+     * @param complexity how mach resources we need for various data size. A function.
      */
-    public OperationPerformance(String name, OperationWithData operation, long time) {
+    public OperationPerformance(String name, OperationWithData operation, ResourceComplexity complexity) {
         super(name);
         this.operation = ifNullFail(operation);
-        this.time = ifNegativeFail(time);
+        this.complexity = ifNullFail(complexity);
     }
 
     @Nonnull
@@ -63,14 +66,13 @@ public final class OperationPerformance extends ComputingObject {
         return operation;
     }
 
-    @Nonnegative
-    public long getTime() {
-        return time;
+    public long getNeededResources(long problemSize) {
+        return complexity.getComplexity(problemSize);
     }
 
     @Nonnull
     @Override
     public String info() {
-        return (String.format("%s(%s) t=%smc", super.info(), operation.info(), time));
+        return (String.format("%s(%s) t=%s", super.info(), operation.info(), complexity));
     }
 }
