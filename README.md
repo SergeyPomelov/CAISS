@@ -1,4 +1,4 @@
-# Computer and algorithm interaction simulation software (CAISS).
+# Computer and Algorithm Interaction Simulation Software (CAISS).
 ![Computer and algorithm interaction simulation software (CAISS)](https://i.ibb.co/8mn6571/performance.jpg)
 
 The simulation software contains inside its core representations of 
@@ -22,6 +22,12 @@ The next runnable needs a JMH plugin and annotations processing on.
 gradle -jmh command runs the 
 **benchmarks.matrixes.JMHBenchmarksRunner** 
 without additional settings.
+
+### Relevant Publications
+1. Pomelov, S.V., Skopin, I.N. (2020). A Performance Prediction Method Showcase: Ant Colony Optimization Scaling for a Particular Computer System. Test Engineering and Management.
+2. Pomelov, S.V. (2019). ACO Execution Simulation. Control Systems and Informational Technologies.
+3. Pomelov, S.V. (2016). Simulation of the Algorithm Execution on a Given Architecture. Applied Informatics.
+4. Pomelov, S.V. (2015). Computer and algorithm interaction simulation software (CAISS). Patent No. 2015618314.
 
 # License
 GNU GENERAL PUBLIC LICENSE Version 3.
