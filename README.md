@@ -1,4 +1,6 @@
 # Computer and algorithm interaction simulation software (CAISS).
+![Computer and algorithm interaction simulation software (CAISS)](https://i.ibb.co/v18zKpc/performance.png)
+
 The simulation software contains inside its core representations of 
 architecture and algorithm implemented with respect to a derived in 
 a related PhD thesis mathematical model. It intended for simulation 
