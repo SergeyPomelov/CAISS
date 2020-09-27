@@ -1,13 +1,7 @@
 # Computer and Algorithm Interaction Simulation Software (CAISS).
-![Computer and algorithm interaction simulation software (CAISS)](https://i.ibb.co/8mn6571/performance.jpg)
+![Computer and algorithm interaction simulation software (CAISS)](https://i.ibb.co/PD5B7By/web-performance-monitoring-101.jpg)
 
-The simulation software contains inside its core representations of 
-architecture and algorithm implemented with respect to a derived in 
-a related PhD thesis mathematical model. It intended for simulation 
-architecture and algorithm interactions and listing the results for 
-optimization purposes. It, in addition, includes a few benchmarks for 
-comparison a real performance with simulation results for improving and 
-testing purposes.   
+The simulation software’s core contains representations of architecture and algorithm implemented with respect to a mathematical model derived in a related PhD thesis. It intended for simulation architecture and algorithm interactions and listing the results for optimization purposes. In addition, it includes a few benchmarks for comparison a real performance with simulation results for improving and testing purposes. 
 
 ### Running in IDEA
 First - import the gradle project. Then select the desired runnable 
