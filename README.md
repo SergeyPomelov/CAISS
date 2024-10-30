@@ -1,4 +1,11 @@
 # Computer and Algorithm Interaction Simulation Software (CAISS).
+
+![Repository Top Language](https://img.shields.io/github/languages/top/SergeyPomelov/CAISS)
+![Languages](https://img.shields.io/github/languages/count/SergeyPomelov/CAISS)
+![Github Repository Size](https://img.shields.io/github/repo-size/SergeyPomelov/CAISS)
+![Github Open Issues](https://img.shields.io/github/issues/SergeyPomelov/CAISS)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 ![Computer and algorithm interaction simulation software (CAISS)](https://i.ibb.co/PD5B7By/web-performance-monitoring-101.jpg)
 
 The simulation software’s core contains representations of architecture and algorithm implemented atop of a mathematical model derived in a related Ph.D thesises. It is intended for simulation architecture and algorithm interactions and listing the results for optimization purposes. Besides, it includes a few benchmarks for comparison a real performance with simulation results for improving and testing purposes. 
